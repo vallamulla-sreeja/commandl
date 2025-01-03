@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 
 interface FeatureCardProps {
   title: string;
@@ -11,32 +10,14 @@ interface FeatureCardProps {
 
 function FeatureCard({ title, description, index }: FeatureCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, delay: index * 0.2 }}
-      className="flex flex-col md:flex-row gap-8 items-center py-16"
-    >
+    <div className="flex flex-col md:flex-row gap-8 items-center py-16">
       {index % 2 === 0 ? (
         <>
-          <motion.div 
-            initial={{ x: -50 }}
-            whileInView={{ x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: index * 0.3 }}
-            className="flex-1 space-y-4"
-          >
+          <div className="flex-1 space-y-4">
             <h2 className="text-3xl md:text-4xl font-bold text-[#1e1e1e]">{title}</h2>
             <p className="text-xl text-gray-600">{description}</p>
-          </motion.div>
-          <motion.div 
-            initial={{ x: 50 }}
-            whileInView={{ x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: index * 0.3 }}
-            className="flex-1"
-          >
+          </div>
+          <div className="flex-1">
             <Image
               src="/images/editor-screenshot.png"
               alt="Editor Screenshot"
@@ -44,29 +25,17 @@ function FeatureCard({ title, description, index }: FeatureCardProps) {
               height={312}
               className="rounded-lg"
             />
-          </motion.div>
+          </div>
         </>
       ) : (
         <>
-          <motion.div 
-            initial={{ x: 50 }}
-            whileInView={{ x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: index * 0.3 }}
-            className="flex-1 md:order-2"
-          >
+          <div className="flex-1 md:order-2">
             <div className="space-y-4">
               <h2 className="text-3xl md:text-4xl font-bold text-[#1e1e1e]">{title}</h2>
               <p className="text-xl text-gray-600">{description}</p>
             </div>
-          </motion.div>
-          <motion.div 
-            initial={{ x: -50 }}
-            whileInView={{ x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: index * 0.3 }}
-            className="flex-1 md:order-1"
-          >
+          </div>
+          <div className="flex-1 md:order-1">
             <Image
               src="/images/editor-screenshot.png"
               alt="Editor Screenshot"
@@ -74,10 +43,10 @@ function FeatureCard({ title, description, index }: FeatureCardProps) {
               height={312}
               className="rounded-lg"
             />
-          </motion.div>
+          </div>
         </>
       )}
-    </motion.div>
+    </div>
   );
 }
 

@@ -13,10 +13,9 @@ export default function Navbar() {
         <Image
           src="/images/logo.png"
           alt="CommandL Logo"
-          width={48}
-          height={48}
+          width={140}
+          height={140}
           priority
-          className="w-12 h-12 md:w-16 md:h-16"
         />
       </Link>
       
