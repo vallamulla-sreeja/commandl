@@ -21,6 +21,6 @@
   }
 
   .buttonSecondary {
-    @apply bg-white text-[#1CB0F6] px-4 py-2 rounded-xl font-semibold text-lg transition-all border-2 border-gray-200 min-w-[150px] inline-block text-center relative shadow-sm hover:bg-gray-50 hover:translate-y-[1px];
+    @apply bg-white text-[#1CB0F6] px-4 py-2 rounded-xl font-semibold text-lg transition-all border-2 border-gray-200 min-w-[150px] inline-block text-center relative hover:bg-gray-50 hover:translate-y-[1px];
   }
 }
