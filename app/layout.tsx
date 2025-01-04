@@ -12,6 +12,14 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: 'CommandL - Your Code Editor Redefined with AI',
   description: 'Experience CommandL: a blazing fast code editor with AI superpowers. The perfect tool for students to learn programming effectively.',
+  metadataBase: new URL('https://www.commandl.com'),
+  alternates: {
+    canonical: '/',
+  },
+  keywords: 'code editor, AI programming, learn to code, programming education, coding tasks, interactive learning',
+  authors: [{ name: 'CommandL Team' }],
+  creator: 'CommandL',
+  publisher: 'CommandL',
   icons: {
     icon: '/images/favicon.ico',
     apple: '/images/favicon.ico',
@@ -37,15 +45,28 @@ export const metadata: Metadata = {
     title: 'CommandL - Your Code Editor Redefined with AI',
     description: 'Experience CommandL: a blazing fast code editor with AI superpowers.',
     images: ['/images/editor-screenshot.png'],
+    creator: '@CommandL',
+    site: '@CommandL',
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
   viewport: {
     width: 'device-width',
     initialScale: 1,
   },
+  // verification: {
+  //   google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  // },
+  category: 'Technology',
 };
 
 export default function RootLayout({
@@ -55,6 +76,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${nunito.variable}`}>
+      <head>
+        <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+      </head>
       <body className="font-sans antialiased bg-white text-gray-900">
         {children}
         <Footer />
