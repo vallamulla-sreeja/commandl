@@ -1,7 +1,6 @@
 'use client';
 
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 
 interface Update {
   date: string;
@@ -13,55 +12,41 @@ interface Update {
 
 const updates: Update[] = [
   {
-    date: "December 2023",
-    version: "v2.1.0",
-    title: "Enhanced AI Assistant & New Language Support",
-    description: "Major improvements to our AI assistant capabilities and expanded language support",
+    date: "December 29, 2024",
+    version: "v1.2.0",
+    title: "Audio Explanations & Enhanced Learning Experience",
+    description: "Introducing audio explanations and improved in-IDE learning features",
     changes: [
-      "Improved code suggestion accuracy with our latest AI model",
-      "Added support for TypeScript and Rust",
-      "Enhanced real-time error detection and fixes",
-      "New interactive tutorial system with immediate feedback",
-      "Improved code completion speed and relevance"
+      "Built-in audio explanations for tutorials and concepts",
+      "Interactive code walkthroughs with voice guidance",
+      "Enhanced in-IDE learning materials and documentation",
+      "Improved task progression system"
     ]
   },
   {
-    date: "November 2023",
-    version: "v2.0.5",
-    title: "Performance Optimization & UI Improvements",
-    description: "Significant performance enhancements and user interface updates",
+    date: "December 22, 2024",
+    version: "v1.1.0",
+    title: "UI Polish & Performance Updates",
+    description: "Improvements to user interface and system stability",
     changes: [
-      "Reduced startup time by 40%",
-      "New dark mode theme with customizable colors",
-      "Improved task sidebar organization",
-      "Added new keyboard shortcuts for common actions",
-      "Enhanced search functionality across projects"
+      "Enhanced user interface for better navigation",
+      "Fixed build and deployment related issues",
+      "Improved system performance and reduced loading times",
+      "Better error handling and user feedback",
+      "Enhanced compatibility across different operating systems"
     ]
   },
   {
-    date: "October 2023",
-    version: "v2.0.0",
-    title: "Major Release: CommandL 2.0",
-    description: "Complete overhaul of the CommandL learning experience",
+    date: "December 15, 2024",
+    version: "v1.0.0",
+    title: "Initial Release: CommandL Launch",
+    description: "Launching CommandL - Your AI-powered IDE for learning programming",
     changes: [
-      "Redesigned user interface for better learning flow",
-      "Introduced gamification system with points and badges",
-      "Added collaborative coding features for pair programming",
-      "New project templates for quick start",
-      "Integrated debugging tools with step-by-step guidance"
-    ]
-  },
-  {
-    date: "September 2023",
-    version: "v1.9.0",
-    title: "New Learning Paths & Bug Fixes",
-    description: "Introduction of structured learning paths and stability improvements",
-    changes: [
-      "Added specialized learning paths for different programming domains",
-      "Fixed multiple stability issues in the code editor",
-      "Improved code syntax highlighting",
-      "Enhanced offline mode capabilities",
-      "Added new exercise types for better practice"
+      "Task progress tracking in the sidebar",
+      "Initial set of programming tutorials and exercises",
+      "Basic task verification system",
+      "Progress tracking dashboard",
+      "Fundamental learning path structure"
     ]
   }
 ];
@@ -71,43 +56,45 @@ export default function UpdatesPage() {
     <>
       <Navbar />
       <div className="min-h-screen pt-24 pb-16 px-4">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-4xl font-bold text-[#58cc02] mb-8">Latest Updates</h1>
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl font-bold text-[#58cc02] mb-12">Latest Updates</h1>
           
-          <div className="space-y-8">
-            {updates.map((update, index) => (
-              <div 
-                key={index}
-                className="bg-white rounded-lg border border-gray-200 p-6"
-              >
-                <div className="flex flex-wrap items-center gap-4 mb-4">
-                  <span className="text-sm font-medium text-gray-500">{update.date}</span>
-                  <span className="px-3 py-1 rounded-full bg-[#58cc02] text-white text-sm font-medium">
-                    {update.version}
-                  </span>
+          <div className="relative">
+            {/* Timeline line */}
+            <div className="absolute left-[180px] top-6 bottom-10 w-[2px] bg-gray-200"></div>
+
+            <div className="space-y-16">
+              {updates.map((update, index) => (
+                <div key={index} className="relative flex">
+                  {/* Left side - Date and Version */}
+                  <div className="w-[180px] pr-8 flex flex-col items-end pt-[2px]">
+                    <div className="text-sm font-mono text-gray-500">{update.version}</div>
+                    <div className="text-sm font-bold text-gray-600">{update.date}</div>
+                  </div>
+
+                  {/* Timeline dot */}
+                  <div className="absolute left-[180px] -translate-x-1/2 top-[7px] w-[10px] h-[10px] rounded-full bg-[#1cb0f6] ring-4 ring-white"></div>
+                  
+                  {/* Right side - Content */}
+                  <div className="flex-1 pl-12">
+                    <h2 className="text-xl font-bold text-[#1cb0f6] mb-2">{update.title}</h2>
+                    <p className="text-gray-600 mb-4 text-sm">{update.description}</p>
+                    
+                    <ul className="space-y-2">
+                      {update.changes.map((change, changeIndex) => (
+                        <li key={changeIndex} className="flex items-start text-sm">
+                          <span className="mr-3 mt-1">•</span>
+                          <span className="text-gray-700">{change}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-                
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{update.title}</h2>
-                <p className="text-gray-600 mb-4">{update.description}</p>
-                
-                <ul className="space-y-2">
-                  {update.changes.map((change, changeIndex) => (
-                    <li key={changeIndex} className="flex items-start">
-                      <span className="mr-3 mt-1.5">
-                        <svg className="w-4 h-4 text-[#58cc02]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                      </span>
-                      <span className="text-gray-700">{change}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 } 
