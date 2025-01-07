@@ -6,14 +6,14 @@ const testimonials = [
     role: "CS Major",
     image: "/images/Sarah_Chen.png",
     type: 'image',
-    quote: "CommandL completely changed how I learn to code. I love that I don’t have to juggle multiple tutorial videos and an IDE—it’s all right here in one place. The built-in tutorials and tasks on the sidebar keep me focused, and the rewards push me to keep going. It really feels like having a mentor guide me step-by-step.",
+    quote: "CommandL completely changed how I learn to code. I love that I don’t have to juggle multiple tutorial videos and an IDE, it’s all right here in one place. The built-in tutorials and tasks on the sidebar keep me focused, and the rewards push me to keep going. It really feels like having a mentor guide me step-by-step.",
   },
   {
     name: "Marcus Rodriguez",
     role: "Electronics Major",
     image: "/images/Marcus_Rodriguez.png",
     type: 'image',
-    quote: "I used to struggle finding the right resources when I wanted to learn coding alongside my electronics projects. With CommandL, everything is organized in one spot, and the real-time feedback is super helpful. The tasks, tutorials, and rewards keep me motivated—and I can actually see my progress after each milestone!",
+    quote: "I used to struggle finding the right resources when I wanted to learn coding alongside my electronics projects. With CommandL, everything is organized in one spot, and the real-time feedback is super helpful. The tasks, tutorials, and rewards keep me motivated and I can actually see my progress after each milestone!",
   },
   {
     name: "Emily Thompson",
