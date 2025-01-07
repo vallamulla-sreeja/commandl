@@ -17,7 +17,7 @@ export default function Hero() {
         </p>
 
         {/* Feature Points with Checkmarks */}
-        <div className="flex justify-center gap-6 mt-4 mb-6">
+        {/* <div className="flex justify-center gap-6 mt-4 mb-6">
           <div className="flex items-center gap-2">
             <Image src="/images/check.png" alt="Checkmark" width={16} height={16} className="text-green-600" />
             <span>Structured Path to <strong>Mastery</strong></span>
@@ -30,14 +30,14 @@ export default function Hero() {
             <Image src="/images/check.png" alt="Checkmark" width={16} height={16} className="text-green-600" />
             <span>From <strong>Confusion</strong> to <strong>Clarity</strong></span>
           </div>
-        </div>
+        </div> */}
 
         {/* Buttons */}
         <div className="flex gap-3 justify-center w-full sm:w-auto flex-col sm:flex-row mt-6">
-          <a href="#download" className="buttonPrimary font-bold w-full sm:w-auto">
+          <a href="https://platform.vedaverse.io/" target="_blank" rel="noopener noreferrer" className="buttonPrimary font-bold w-full sm:w-auto">
             GET STARTED
           </a>
-          <a href="#get-copilot-free" className="buttonSecondary font-bold w-full sm:w-auto">
+          <a href="https://www.vedaverse.io/" target="_blank" rel="noopener noreferrer" className="buttonSecondary font-bold w-full sm:w-auto">
             WATCH DEMO
           </a>
         </div>
@@ -46,7 +46,7 @@ export default function Hero() {
       {/* Editor Screenshot */}
       <div className="w-full max-w-[1000px] mx-auto px-2 sm:px-4">
         <Image
-          src="/images/editor-screenshot.png"
+          src="/images/hero_image.png"
           alt="Screenshot of CommandL Code Editor"
           width={1000}
           height={625}
