@@ -9,6 +9,11 @@ const nunito = Nunito({
   variable: '--font-nunito',
 });
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   title: 'CommandL - Your Code Editor Redefined with AI',
   description: 'Experience CommandL: a blazing fast code editor with AI superpowers. The perfect tool for students to learn programming effectively.',
@@ -59,13 +64,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-  },
-  // verification: {
-  //   google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-  // },
   category: 'Technology',
 };
 
