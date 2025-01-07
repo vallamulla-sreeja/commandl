@@ -8,13 +8,20 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="col-span-1 md:col-span-1">
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/images/commandl_logo.png"
+                alt="CommandL Icon"
+                width={30}
+                height={30}
+                className="brightness-0 invert"
+              />
               <Image
                 src="/images/logo.png"
                 alt="CommandL Logo"
                 width={150}
                 height={40}
-                className="h-8 w-auto brightness-0 invert"
+                className="brightness-0 invert"
               />
             </Link>
             {/* <p className="mt-4 text-base text-white font-medium">
