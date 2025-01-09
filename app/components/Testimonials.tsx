@@ -62,8 +62,8 @@ export default function Testimonials() {
     <section className="py-16 px-4 overflow-hidden">
       <div className="max-w-[1200px] mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-extrabold mb-4 text-[#58cc02]">What Our Users Say</h2>
-          <p className="text-xl text-gray-600">Join thousands of satisfied learners who&apos;ve transformed their coding journey with CommandL</p>
+          <h2 className="text-4xl font-extrabold mb-4 text-[#58cc02]">Hear From Our Users</h2>
+          <p className="text-xl text-gray-600">Join thousands of satisfied learners who&apos;ve built projects and learned to code</p>
         </div>
         
         <div className="relative">
