@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Navbar from '../components/Navbar';
 
 interface FAQItem {
@@ -44,48 +43,21 @@ const faqs: FAQItem[] = [
 ];
 
 export default function FAQPage() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
   return (
     <>
       <Navbar />
       <div className="min-h-screen pt-24 pb-16 px-4">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-4xl font-bold text-[#58cc02] mb-8">Frequently Asked Questions</h1>
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-4xl font-bold text-[#58cc02] mb-12 text-center">Frequently Asked Questions</h1>
           
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {faqs.map((faq, index) => (
               <div 
                 key={index}
-                className="border border-gray-200 rounded-lg overflow-hidden"
+                className="bg-white rounded-xl border border-gray-200 p-6"
               >
-                <button
-                  className="w-full px-6 py-4 text-left bg-white hover:bg-gray-50 flex justify-between items-center"
-                  onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                >
-                  <span className="text-lg font-semibold text-gray-900">{faq.question}</span>
-                  <span className="ml-6">
-                    <svg
-                      className={`w-6 h-6 transform ${openIndex === index ? 'rotate-180' : ''} transition-transform duration-200`}
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </span>
-                </button>
-                
-                {openIndex === index && (
-                  <div className="px-6 py-4 bg-gray-50">
-                    <p className="text-gray-700">{faq.answer}</p>
-                  </div>
-                )}
+                <h2 className="text-lg font-bold text-gray-900 mb-4">{faq.question}</h2>
+                <p className="text-sm text-gray-700 leading-relaxed">{faq.answer}</p>
               </div>
             ))}
           </div>
