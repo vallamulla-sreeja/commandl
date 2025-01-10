@@ -6,11 +6,11 @@ import FeatureCards from './components/FeatureCards';
 import Testimonials from './components/Testimonials';
 
 export const metadata: Metadata = {
-  title: 'CommandL - Learn Programming the Smart Way',
-  description: 'Start your programming journey with CommandL. Our AI-powered code editor makes learning to code fun and effective.',
+  title: 'CommandL - Best Code Editor for Students | Learn Programming with AI',
+  description: 'CommandL (Command L) is the best code editor for students learning to code. Our AI-powered IDE makes programming education fun, interactive, and effective with built-in tutorials and real-time assistance.',
   openGraph: {
-    title: 'CommandL - Learn Programming the Smart Way',
-    description: 'Start your programming journey with CommandL. Our AI-powered code editor makes learning to code fun and effective.',
+    title: 'CommandL - Best Code Editor for Students | Learn Programming with AI',
+    description: 'CommandL (Command L) is the best code editor for students learning to code. Our AI-powered IDE makes programming education fun, interactive, and effective with built-in tutorials and real-time assistance.',
   }
 };
 

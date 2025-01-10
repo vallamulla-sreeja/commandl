@@ -40,7 +40,7 @@ export default function Hero() {
           </span>
         </h1>
         <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-600 font-bold mt-2 max-w-[600px]">
-          The fun &amp; effective way to learn programming
+          The fun &amp; effective way to build projects end-to-end
         </p>
 
         {/* Buttons */}

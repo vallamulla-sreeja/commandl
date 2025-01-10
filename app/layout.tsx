@@ -15,13 +15,13 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'CommandL - Your Code Editor Redefined with AI',
-  description: 'Experience CommandL: a blazing fast code editor with AI superpowers. The perfect tool for students to learn programming effectively.',
+  title: 'CommandL - Best Code Editor for Students | Learn Programming with AI',
+  description: 'CommandL (Command L) is the best code editor designed specifically for students. Experience a blazing fast, AI-powered IDE that makes learning to code fun and effective. Perfect for beginners and students learning programming.',
   metadataBase: new URL('https://www.commandl.com'),
   alternates: {
     canonical: '/',
   },
-  keywords: 'code editor, AI programming, learn to code, programming education, coding tasks, interactive learning',
+  keywords: 'CommandL, Command L, best code editor for students, student code editor, AI programming, learn to code, programming education, coding tasks, interactive learning, beginner friendly IDE',
   authors: [{ name: 'CommandL Team' }],
   creator: 'CommandL',
   publisher: 'CommandL',
@@ -30,8 +30,8 @@ export const metadata: Metadata = {
     apple: '/images/favicon.ico',
   },
   openGraph: {
-    title: 'CommandL - Your Code Editor Redefined with AI',
-    description: 'Experience CommandL: a blazing fast code editor with AI superpowers. The perfect tool for students to learn programming effectively.',
+    title: 'CommandL - Best Code Editor for Students | Learn Programming with AI',
+    description: 'CommandL (Command L) is the best code editor designed specifically for students. Experience a blazing fast, AI-powered IDE that makes learning to code fun and effective.',
     type: 'website',
     url: 'https://www.commandl.com',
     siteName: 'CommandL',
@@ -41,14 +41,14 @@ export const metadata: Metadata = {
         url: '/images/editor-screenshot.png',
         width: 1000,
         height: 625,
-        alt: 'CommandL Code Editor Interface',
+        alt: 'CommandL Code Editor Interface - The Best IDE for Students',
       }
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'CommandL - Your Code Editor Redefined with AI',
-    description: 'Experience CommandL: a blazing fast code editor with AI superpowers.',
+    title: 'CommandL - Best Code Editor for Students',
+    description: 'Experience CommandL (Command L): The best code editor designed for students learning to program. Built-in AI assistance and interactive learning.',
     images: ['/images/editor-screenshot.png'],
     creator: '@CommandL',
     site: '@CommandL',
