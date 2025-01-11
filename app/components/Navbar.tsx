@@ -68,7 +68,6 @@ export default function Navbar() {
             <div className="flex flex-col p-4 gap-4">
               <Link href="/updates" className="text-sm text-gray-600 hover:text-[#0066b8] transition-colors">Updates</Link>
               <Link href="/faq" className="text-sm text-gray-600 hover:text-[#0066b8] transition-colors">FAQ</Link>
-              <Link href="/download" className="buttonPrimary text-center">Download</Link>
             </div>
           </div>
         )}
