@@ -1,7 +1,10 @@
-import './globals.css';
-import { Metadata } from 'next';
+import { UserProvider } from '@auth0/nextjs-auth0/client';
+import type { Metadata } from 'next';
 import { Nunito } from 'next/font/google';
-import Footer from './components/Footer';
+import { Inter } from 'next/font/google';
+import './globals.css';
+
+const inter = Inter({ subsets: ['latin'] });
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -77,9 +80,10 @@ export default function RootLayout({
       <head>
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
       </head>
-      <body className="font-sans antialiased bg-white text-gray-900">
-        {children}
-        <Footer />
+      <body className={`font-sans antialiased bg-white text-slate-900 ${inter.className}`}>
+        <UserProvider>
+          {children}
+        </UserProvider>
       </body>
     </html>
   );
