@@ -114,7 +114,7 @@ export default function Sidebar() {
                       </Link>
                     )}
                     {item.name === 'Settings' && showLogout && (
-                      <a
+                      <Link
                         href="/api/auth/logout"
                         className={`absolute top-full left-0 w-full flex items-center ${isCollapsed ? 'justify-center' : ''} gap-4 px-5 py-3.5 text-gray-700 hover:bg-gray-50 hover:text-[#58cc02] rounded-lg transition-all duration-200 bg-white shadow-md z-10`}
                       >
@@ -122,7 +122,7 @@ export default function Sidebar() {
                         {!isCollapsed && (
                           <span className="font-medium text-[15px]">Logout</span>
                         )}
-                      </a>
+                      </Link>
                     )}
                   </li>
                 );
