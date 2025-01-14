@@ -46,18 +46,22 @@ export default function Sidebar() {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md hover:bg-gray-100"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md hover:bg-gray-100 bg-white"
+        aria-label="Toggle menu"
       >
         <FiMenu className="w-6 h-6" />
       </button>
 
       {/* Sidebar */}
-      <div className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transform transition-all duration-300 ease-in-out ${
-        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-      } ${isCollapsed ? 'w-20' : 'w-72'}`}>
+      <div 
+        className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transform transition-all duration-300 ease-in-out z-40
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} 
+          ${isCollapsed ? 'w-20' : 'w-72'} 
+          lg:z-30`}
+      >
         <div className="flex flex-col h-full relative">
           <div className={`py-5 ${isCollapsed ? 'px-4' : 'px-6'}`}>
-            <Link href="/" className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
               <Image
                 src="/images/commandl_logo.png"
                 alt="CommandL Icon"
@@ -80,15 +84,15 @@ export default function Sidebar() {
           </div>
 
           {/* Stats Section */}
-          <div className={`${isCollapsed ? 'px-4' : 'px-6'} pb-4`}>
-            <div className={`flex items-center ${isCollapsed ? 'justify-center flex-col gap-2' : 'justify-between'} w-full`}>
-              <div className="flex items-center gap-2 px-5 py-3 rounded-lg">
-                <span className="text-4xl">🔥</span>
-                <span className="text-black font-bold text-2xl">5</span>
+          <div className={`${isCollapsed ? 'px-2' : 'px-6'} pb-4`}>
+            <div className={`flex ${isCollapsed ? 'flex-col' : 'flex-row'} items-center gap-2 w-full`}>
+              <div className={`flex items-center ${isCollapsed ? 'flex-col' : 'flex-row'} gap-2 px-3 py-2 rounded-lg`}>
+                <span className={`text-2xl ${isCollapsed ? 'text-xl' : 'text-2xl'}`}>🔥</span>
+                <span className="text-black font-bold text-lg">5</span>
               </div>
-              <div className="flex items-center gap-2 px-5 py-3 rounded-lg">
-                <span className="text-4xl">⭐</span>
-                <span className="text-black font-bold text-2xl">1235</span>
+              <div className={`flex items-center ${isCollapsed ? 'flex-col' : 'flex-row'} gap-2 px-3 py-2 rounded-lg`}>
+                <span className={`text-2xl ${isCollapsed ? 'text-xl' : 'text-2xl'}`}>⭐</span>
+                <span className="text-black font-bold text-lg">1235</span>
               </div>
             </div>
           </div>
@@ -165,7 +169,7 @@ export default function Sidebar() {
       {/* Overlay for mobile */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden transition-opacity duration-300"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

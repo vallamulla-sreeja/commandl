@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 // import Features from './components/Features';
 import FeatureCards from './components/FeatureCards';
 import Testimonials from './components/Testimonials';
+import Footer from './components/Footer';
 
 export const metadata: Metadata = {
   title: 'CommandL - Best Code Editor for Students | Learn Programming with AI',
@@ -24,6 +25,7 @@ export default function Home() {
         <FeatureCards />
         <Testimonials />
       </main>
+      <Footer />
     </>
   );
 }
