@@ -22,8 +22,15 @@ const handler = handleAuth({
     })
 });
 
-export async function GET(req: NextRequest, context: { params: { auth0: string[] } }) {
-    // Ensure params are properly awaited
-    const params = await Promise.resolve(context.params);
-    return handler(req, { params });
+export async function GET(
+    request: NextRequest,
+    { params }: { params: { auth0: string[] } }
+): Promise<Response> {
+    try {
+        const resolvedParams = await Promise.resolve(params);
+        return await handler(request, { params: resolvedParams });
+    } catch (error) {
+        console.error('Auth error:', error);
+        return new Response('Auth error', { status: 500 });
+    }
 }
