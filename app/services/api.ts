@@ -1,4 +1,3 @@
-import { handleLogout } from '@auth0/nextjs-auth0';
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
 
@@ -29,6 +28,12 @@ export const fetchAccessToken = async (): Promise<string> => {
       console.error('Error fetching access token:', error);
       throw error;
     }
+  }
+};
+
+export const handleLogout = async () => {
+  if (typeof window !== 'undefined') {
+    window.location.href = '/api/auth/logout';
   }
 };
 
