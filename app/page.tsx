@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import FeatureCards from './components/FeatureCards';
 import Testimonials from './components/Testimonials';
+import CallToAction from './components/CallToAction';
 import Footer from './components/Footer';
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function Home() {
         <Hero />
         <FeatureCards />
         <Testimonials />
+        <CallToAction />
       </main>
       <Footer />
     </>
