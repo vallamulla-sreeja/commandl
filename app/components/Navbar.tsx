@@ -51,7 +51,7 @@ export default function Navbar() {
             onClick={handleAuth}
             className="buttonPrimary"
           >
-            {isLoading ? 'Loading...' : user ? 'Logout' : 'Login / Signup'}
+            {isLoading ? 'Loading...' : user ? 'Logout' : 'Login'}
           </button>
         </div>
 
@@ -80,16 +80,16 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-200 md:hidden">
-            <div className="flex flex-col p-4 gap-4">
-              <Link href="/projects" className="text-sm text-gray-600 hover:text-[#58CC02] transition-colors">Projects</Link>
-              <Link href="/updates" className="text-sm text-gray-600 hover:text-[#0066b8] transition-colors">Updates</Link>
-              <Link href="/faq" className="text-sm text-gray-600 hover:text-[#0066b8] transition-colors">FAQ</Link>
+          <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-200 md:hidden min-h-[calc(100vh-4rem)] shadow-lg">
+            <div className="flex flex-col p-6 gap-6">
+              <Link href="/projects" className="text-base font-medium text-gray-800 hover:text-[#58CC02] transition-colors">Projects</Link>
+              <Link href="/updates" className="text-base font-medium text-gray-800 hover:text-[#0066b8] transition-colors">Updates</Link>
+              <Link href="/faq" className="text-base font-medium text-gray-800 hover:text-[#0066b8] transition-colors">FAQ</Link>
               <button 
                 onClick={handleAuth}
-                className="text-sm text-gray-600 hover:text-[#0066b8] transition-colors"
+                className="buttonPrimary"
               >
-                {isLoading ? 'Loading...' : user ? 'Logout' : 'Login / Signup'}
+                {isLoading ? 'Loading...' : user ? 'Logout' : 'Login'}
               </button>
             </div>
           </div>
