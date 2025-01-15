@@ -46,15 +46,26 @@ export default function Hero() {
         {/* Buttons */}
         <div className="flex gap-3 justify-center w-full sm:w-auto flex-col sm:flex-row mt-6">
           <a href="https://forms.gle/Hxukr6goWjztYtyW8" target="_blank" rel="noopener noreferrer" className="buttonPrimary font-bold w-full sm:w-auto">
-            JOIN WAITLIST
+            GET STARTED
           </a>
-          <button 
-            onClick={() => setShowVideo(true)} 
+          <button
+            onClick={() => setShowVideo(true)}
             className="buttonSecondary font-bold w-full sm:w-auto"
           >
             WATCH DEMO
           </button>
         </div>
+      </div>
+
+      <div className="flex items-center gap-2 text-lg sm:text-xl text-gray-700 font-semibold bg-white/80 px-4 mb-4 rounded-full">
+        <Image
+          src="/images/microsoft-logo.png"
+          alt="Microsoft Logo"
+          width={24}
+          height={24}
+          className="w-6 h-6"
+        />
+        Backed by Microsoft for Startups
       </div>
 
       {/* Screenshot or Video */}
