@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { TagIcon, UserGroupIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { UserGroupIcon, EyeIcon } from '@heroicons/react/24/outline';
 
 interface Project {
   id: number;
@@ -58,7 +58,7 @@ export default function FeaturedProjects() {
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Discover what our students have built in just 2 weeks. From AI-powered applications to environmental impact trackers,
-            see how they're making a difference through code.
+            see how they&apos;re making a difference through code.
           </p>
         </div>
 

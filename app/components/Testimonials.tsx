@@ -1,8 +1,7 @@
 "use client"
 
 import Image from 'next/image';
-import Link from 'next/link';
-import { TagIcon, UserGroupIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { EyeIcon } from '@heroicons/react/24/outline';
 import { Metadata } from 'next';
 import Head from 'next/head';
 
@@ -204,7 +203,7 @@ export default function Testimonials() {
                       </figcaption>
                     </div>
                     <blockquote className="text-gray-700 italic font-nunito">
-                      "{project.testimonial}"
+                      {project.testimonial}
                     </blockquote>
                   </figure>
                 </div>

@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { TagIcon, UserGroupIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { EyeIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 
 interface Project {
@@ -177,7 +176,7 @@ export default function Projects() {
                     </div>
                   </div>
                   <blockquote className="text-gray-700 italic font-nunito">
-                    "{project.testimonial}"
+                    {project.testimonial}
                   </blockquote>
                 </div>
               </div>
