@@ -44,6 +44,7 @@ export default function Navbar() {
         
         {/* Desktop Right Side Navigation */}
         <div className="hidden md:flex items-center gap-6 ml-auto">
+          <Link href="/projects" className="text-base font-medium text-gray-800 hover:text-[#58CC02] transition-colors">Projects</Link>
           <Link href="/updates" className="text-base font-medium text-gray-800 hover:text-[#0066b8] transition-colors">Updates</Link>
           <Link href="/faq" className="text-base font-medium text-gray-800 hover:text-[#0066b8] transition-colors">FAQ</Link>
           <button 
@@ -81,6 +82,7 @@ export default function Navbar() {
         {isMenuOpen && (
           <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-200 md:hidden">
             <div className="flex flex-col p-4 gap-4">
+              <Link href="/projects" className="text-sm text-gray-600 hover:text-[#58CC02] transition-colors">Projects</Link>
               <Link href="/updates" className="text-sm text-gray-600 hover:text-[#0066b8] transition-colors">Updates</Link>
               <Link href="/faq" className="text-sm text-gray-600 hover:text-[#0066b8] transition-colors">FAQ</Link>
               <button 
