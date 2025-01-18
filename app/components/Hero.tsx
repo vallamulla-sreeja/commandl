@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { Stream } from "@cloudflare/stream-react";
 import { Suspense, useState } from 'react';
+import Link from 'next/link';
 
 const VideoPlayer = ({ muted = true }) => {
   return (
@@ -45,9 +46,9 @@ export default function Hero() {
 
         {/* Buttons */}
         <div className="flex gap-3 justify-center w-full sm:w-auto flex-col sm:flex-row mt-6">
-          <a href="https://forms.gle/Hxukr6goWjztYtyW8" target="_blank" rel="noopener noreferrer" className="buttonPrimary font-bold w-full sm:w-auto">
+          <Link href="/api/auth/login" className="buttonPrimary font-bold w-full sm:w-auto">
             GET STARTED
-          </a>
+          </Link>
           <button
             onClick={() => setShowVideo(true)}
             className="buttonSecondary font-bold w-full sm:w-auto"
