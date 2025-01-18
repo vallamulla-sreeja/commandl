@@ -11,7 +11,7 @@ const VideoPlayer = ({ muted = true }) => {
       <div className="aspect-video">
         <Stream
           controls
-          src="d73b6525e1b8d43f5970c13e883afecc"
+          src="aafc2832a7f9e35f7c4f9df27bc34e0c"
           height="100%"
           width="100%"
           responsive={true}
