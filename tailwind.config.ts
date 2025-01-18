@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import forms from '@tailwindcss/forms';
 
 export default {
   content: [
@@ -11,6 +12,10 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        primary: {
+          DEFAULT: '#58CC02',
+          hover: '#50b802',
+        },
       },
       fontFamily: {
         sans: ['Nunito', 'sans-serif'],
@@ -26,5 +31,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [forms],
 } satisfies Config;

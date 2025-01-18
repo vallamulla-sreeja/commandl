@@ -1,92 +1,43 @@
 'use client';
 
-import { useUser } from '@auth0/nextjs-auth0/client';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import React from 'react';
 import Sidebar from '../components/Sidebar';
-import { ArrowDownCircleIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 
 export default function Dashboard() {
-  const { user, isLoading, error } = useUser();
-  const router = useRouter();
-  // const [accessToken, setAccessToken] = useState<string>('');
-
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push('/api/auth/login');
-    }
-  }, [user, isLoading, router]);
-
-  // useEffect(() => {
-  //   const fetchToken = async () => {
-  //     try {
-  //       const response = await fetch('/api/auth/token');
-  //       const data = await response.json();
-  //       // setAccessToken(data.accessToken || '');
-  //     } catch (err) {
-  //       console.error('Error fetching token:', err);
-  //     }
-  //   };
-
-  //   if (user) {
-  //     fetchToken();
-  //   }
-  // }, [user]);
-
-  if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="min-h-screen flex items-center justify-center">Error: {error.message}</div>;
-  }
-
-  if (!user) {
-    return null;
-  }
-
   return (
-    <div className="flex min-h-screen">
+    <div className="min-h-screen flex">
       <Sidebar />
-      <main className="flex-1 lg:ml-72 transition-all duration-300 p-4 lg:p-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-2xl p-4 lg:p-8">
-            <div className="text-center mb-6 lg:mb-8">
-              <div className="flex items-center justify-center w-12 h-12 lg:w-16 lg:h-16 bg-[#58CC02] bg-opacity-10 rounded-2xl mx-auto mb-4 lg:mb-6">
-                <ArrowDownCircleIcon className="w-6 h-6 lg:w-8 lg:h-8 text-[#58CC02]" />
-              </div>
-              <h1 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3 lg:mb-4">
-                Download CommandL Code Editor
-              </h1>
-              <p className="text-gray-600 text-base lg:text-lg mb-6 lg:mb-8 max-w-xl mx-auto">
-                To get started with CommandL, download our code editor and sign in with the email address you used to create your account.
+      <main className="flex-1 py-10 lg:pl-72">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              Welcome to CommandL
+            </h1>
+            {/* <p className="text-xl text-gray-600 mb-8">
+              Your journey to becoming a skilled developer starts here. With built-in tutorials, 
+              guided paths, hints, and real-time feedback—plus fun reward points—you&apos;ll have 
+              the support you need at every step of your coding journey.
+            </p> */}
+            <div className="p-8 rounded-2xl">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Ready to Start Building?
+              </h2>
+              <p className="text-lg text-gray-600 mb-6">
+                Fill out our quick form to join the waitlist and be among the first to explore 
+                all that CommandL has to offer!
               </p>
-              <button className="buttonPrimary mb-6 lg:mb-8">
-                Download CommandL
-              </button>
-            </div>
-
-            <div className="border-t border-gray-100 pt-6 lg:pt-8">
-              <div className="flex items-start space-x-3 lg:space-x-4 max-w-xl mx-auto">
-                <div className="flex-shrink-0 mt-1">
-                  <EnvelopeIcon className="w-5 h-5 lg:w-6 lg:h-6 text-[#1CB0F6]" />
-                </div>
-                <div>
-                  <h2 className="text-base lg:text-lg font-semibold text-gray-900 mb-2">
-                    Your Registered Email
-                  </h2>
-                  <p className="text-sm lg:text-base text-gray-600 mb-2">
-                    Use this email address to sign in to the desktop application:
-                  </p>
-                  <div className="bg-gray-50 p-3 lg:p-4 rounded-lg">
-                    <p className="font-medium text-sm lg:text-base text-gray-900">{user.email}</p>
-                  </div>
-                </div>
-              </div>
+              <a
+                href="https://forms.gle/HadSaA64CD9UyoJE6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-primary text-white text-xl font-medium py-4 px-8 rounded-lg hover:bg-primary-hover transition-colors duration-200"
+              >
+                Join the Waitlist
+              </a>
             </div>
           </div>
         </div>
       </main>
     </div>
   );
-} 
+}
