@@ -11,9 +11,9 @@ interface Step {
 
 const steps: Step[] = [
   {
-    title: 'All-in-One Coding Platform with a Clear Structured Path',
+    title: 'Beginners way to build real projects',
     description:
-      'Experience seamless learning in a single workspace with a guided roadmap from fundamentals to advanced projects.',
+      'A beginner-friendly code editor that guides you through building complete projects from start to finish, with everything you need in one place.',
     image: '/gifs/Structured_path.gif',
   },
   {
@@ -47,10 +47,10 @@ function StepSection({ step }: { step: Step }) {
 
   return (
     <div className="flex flex-col items-center text-center space-y-6 md:space-y-8">
-      <h3 className="text-2xl md:text-3xl font-bold" style={{ color: '#58cc02' }}>
+      <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold" style={{ color: '#58cc02' }}>
         {title}
       </h3>
-      <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
+      <p className="text-xl md:text-2xl text-[#4b4b4b] max-w-3xl mx-auto">
         {description}
       </p>
       <div className="relative w-full max-w-[900px] rounded-lg overflow-hidden shadow-lg">
