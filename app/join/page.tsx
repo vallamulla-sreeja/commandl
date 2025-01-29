@@ -51,10 +51,11 @@ export default function JoinPage() {
 
       {/* Perks Section - With Green Checkmarks */}
       <div className="mb-16 max-w-4xl mx-auto">
-        <h2 className="text-4xl sm:text-5xl font-extrabold mb-8 text-center text-black font-nunito">What You Get by enrolling in 2 week program</h2>
+        <h2 className="text-4xl sm:text-5xl font-extrabold mb-8 text-center text-black font-nunito">Next Cohort Starts February 10th, 2025
+        </h2>
         <div className="space-y-6 font-nunito text-[#4b4b4b]">
           {[
-            'Learn to build a project from scratch in 2 weeks',
+            'Learn to build a full-stack project from scratch in 2 weeks',
             'Learn to build professional network with recruiters',
             'Access our advanced resume tool to place you in the top 1% of applicants',
             'Receive hands-on mentorship from our founders for 2 weeks',
