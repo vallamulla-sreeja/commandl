@@ -1,18 +1,26 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import { Nunito } from 'next/font/google';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { fetchAccessToken } from '../services/api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BASE_URL } from '../services/api';
 import ApplyFor10DayProgram from '../components/project-task-board-components/applyFor10DayProgram';
-// import CountdownTimer from '../components/project-task-board-components/CountdownTimer';
+import CountdownTimer from '../components/project-task-board-components/CountdownTimer';
 import DaySelector from '../components/project-task-board-components/DaySelector';
 import AssignmentHeader from '../components/project-task-board-components/AssignmentHeader';
 import TaskBoard from '../components/project-task-board-components/TaskBoard';
 import TaskDetails from '../components/project-task-board-components/TaskDetails';
 import { DropResult } from 'react-beautiful-dnd';
 import { Clock, CheckCircle2, Circle } from 'lucide-react';
+import { debounce } from 'lodash';
+import { Slide } from 'react-toastify';
+
+const nunito = Nunito({
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 interface Subtask {
   id: string;
@@ -38,36 +46,12 @@ interface Assignment {
   description: string;
 }
 
-interface ClientProps {
+interface AssignmentPageProps {
   params: {
     id: string;
     sectionId: string;
     assignmentId: string;
   };
-}
-
-interface Project {
-  project_id: number;
-  title: string;
-  description: string;
-  tasks: ProjectTask[];
-}
-
-interface ProjectTask {
-  id: string;
-  title: string;
-  description: string;
-  status: 'To Do' | 'In Progress' | 'Done';
-  subtasks: ProjectSubtask[];
-  day_assigned: number;
-}
-
-interface ProjectSubtask {
-  id: string;
-  title: string;
-  description: string;
-  completed: boolean;
-  spark_studio?: boolean;
 }
 
 const markdownLinkStyles = `
@@ -82,7 +66,7 @@ const markdownLinkStyles = `
   }
 `;
 
-export default function ProjectTaskBoardClient({ params }: ClientProps) {
+const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -90,16 +74,18 @@ export default function ProjectTaskBoardClient({ params }: ClientProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [allTasksCompleted, setAllTasksCompleted] = useState<boolean>(false);
+
   const [selectedDay, setSelectedDay] = useState<number>(1);
   const [lockedMessageDay, setLockedMessageDay] = useState<number | null>(null);
-  const [maxUnlockedDay, setMaxUnlockedDay] = useState<number>(1);
 
-//   const [timeRemaining, setTimeRemaining] = useState<{
-//     days: number;
-//     hours: number;
-//     minutes: number;
-//     seconds: number;
-//   }>({ days: 10, hours: 0, minutes: 0, seconds: 0 });
+  const [timeRemaining, setTimeRemaining] = useState<{
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+  }>({ days: 10, hours: 0, minutes: 0, seconds: 0 });
+
+  const [maxUnlockedDay, setMaxUnlockedDay] = useState<number>(1);
 
   const selectedTask = tasks.find((task) => task.id === selectedTaskId);
 
@@ -127,7 +113,7 @@ export default function ProjectTaskBoardClient({ params }: ClientProps) {
         return;
       }
 
-      const project = projects[0] as Project;
+      const project = projects[0];
 
       const newAssignment: Assignment = {
         id: project.project_id.toString(),
@@ -135,16 +121,16 @@ export default function ProjectTaskBoardClient({ params }: ClientProps) {
         description: project.description || 'No description provided.'
       };
 
-      const newTasks: Task[] = (project.tasks || []).map((task: ProjectTask) => {
+      const newTasks: Task[] = (project.tasks || []).map((task: any) => {
         const subtasks = (task.subtasks || [])
-          .map((st: ProjectSubtask) => ({
+          .map((st: any) => ({
             id: st.id,
             title: st.title,
             description: st.description || '',
             completed: st.completed || false,
             spark_studio: st.spark_studio || false,
           }))
-          .sort((a, b) => parseInt(a.id) - parseInt(b.id));
+          .sort((a: { id: string; }, b: { id: string; }) => parseInt(a.id) - parseInt(b.id));
 
         return {
           id: task.id,
@@ -160,8 +146,8 @@ export default function ProjectTaskBoardClient({ params }: ClientProps) {
       setTasks(newTasks);
       setIsLoading(false);
 
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unknown error occurred.');
+    } catch (err: any) {
+      setError(err.message || 'An unknown error occurred.');
       setIsLoading(false);
     }
   };
@@ -182,6 +168,7 @@ export default function ProjectTaskBoardClient({ params }: ClientProps) {
         break;
       }
     }
+    console.log('Setting maxUnlockedDay to:', maxDay);
     setMaxUnlockedDay(Math.min(maxDay, 10));
   }, [tasks]);
 
@@ -190,31 +177,31 @@ export default function ProjectTaskBoardClient({ params }: ClientProps) {
     setAllTasksCompleted(allDone);
   }, [tasks]);
 
-//   useEffect(() => {
-//     const startDate = new Date('2024-12-28T00:00:00.000Z');
-//     const endDate = new Date(startDate);
-//     endDate.setDate(endDate.getDate() + 6);
+  useEffect(() => {
+    const startDate = new Date('2024-12-28T00:00:00.000Z');
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + 6);
 
-//     const timer = setInterval(() => {
-//       const now = new Date();
-//       const diff = endDate.getTime() - now.getTime();
+    const timer = setInterval(() => {
+      const now = new Date();
+      const diff = endDate.getTime() - now.getTime();
 
-//       if (diff <= 0) {
-//         setTimeRemaining({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-//         clearInterval(timer);
-//         return;
-//       }
+      if (diff <= 0) {
+        setTimeRemaining({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        clearInterval(timer);
+        return;
+      }
 
-//       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-//       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-//       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-//       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-//       setTimeRemaining({ days, hours, minutes, seconds });
-//     }, 1000);
+      setTimeRemaining({ days, hours, minutes, seconds });
+    }, 1000);
 
-//     return () => clearInterval(timer);
-//   }, []);
+    return () => clearInterval(timer);
+  }, []);
 
   const getTaskProgress = (task: Task) => {
     const completed = task.subtasks.filter((st) => st.completed).length;
@@ -235,59 +222,71 @@ export default function ProjectTaskBoardClient({ params }: ClientProps) {
     }
   };
 
-  const handleSaveProgress = async (updatedTasks: Task[]) => {
-    const savingToastId = toast.info('Saving changes...', {
-      position: "bottom-center",
-      autoClose: false,
-      hideProgressBar: true,
-      closeOnClick: false,
-      pauseOnHover: false,
-      draggable: false,
-      className: 'bg-blue-500 text-white font-medium'
-    });
-
-    try {
-      const token = await fetchAccessToken();
-      const response = await fetch(`${BASE_URL}/save-progress-project-building`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          tasks: updatedTasks.map((task) => ({
-            id: task.id,
-            status: task.status,
-            subtasks: task.subtasks.map((st) => ({
-              id: st.id,
-              completed: st.completed
-            }))
-          })),
-        }),
+  const debouncedSaveProgress = useCallback(
+    debounce(async (updatedTasks: Task[]) => {
+      const savingToastId = toast.info('Saving changes...', {
+        position: "bottom-center",
+        autoClose: false,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        className: 'bg-blue-500 text-white font-medium'
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to save progress');
+      try {
+        const token = await fetchAccessToken();
+        const response = await fetch(`${BASE_URL}/save-progress-project-building`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            tasks: updatedTasks.map((task) => ({
+              id: task.id,
+              status: task.status,
+              subtasks: task.subtasks.map((st) => ({
+                id: st.id,
+                completed: st.completed
+              }))
+            })),
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to save progress');
+        }
+
+        toast.dismiss(savingToastId);
+        toast.success('Progress saved!', {
+          position: "bottom-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+        });
+      } catch (error) {
+        console.error('Error saving progress:', error);
+        toast.dismiss(savingToastId);
+        toast.error('Failed to save progress. Please try again.', {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+        });
       }
+    }, 1000),
+    []
+  );
 
-      toast.update(savingToastId, {
-        render: "Changes Saved",
-        type: 'success',
-        autoClose: 2000,
-        closeOnClick: true,
-        className: ''
-      });
-
-    } catch (err) {
-      console.error(err);
-      toast.update(savingToastId, {
-        render: 'An error occurred while saving progress.',
-        type: 'error',
-        autoClose: 5000,
-        closeOnClick: true
-      });
-    }
-  };
+  const handleSaveProgress = useCallback((updatedTasks: Task[]) => {
+    setTasks(updatedTasks);
+    debouncedSaveProgress(updatedTasks);
+  }, [debouncedSaveProgress]);
 
   const taskHasSparkStudio = (task: Task) => {
     return task.subtasks.some((st) => st.spark_studio === true);
@@ -310,7 +309,11 @@ export default function ProjectTaskBoardClient({ params }: ClientProps) {
       if (!allSubtasksCompleted) {
         toast.error('Complete all subtasks before moving to Done', {
           position: "bottom-center",
-          autoClose: 3000
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
         });
         return;
       }
@@ -319,24 +322,25 @@ export default function ProjectTaskBoardClient({ params }: ClientProps) {
     const movingToInProgressFromDifferentStatus =
       destStatus === 'In Progress' && sourceStatus !== 'In Progress';
 
-    setTasks((prevTasks) => {
-      const newTasks = prevTasks.map((t) =>
-        t.id === draggableId ? { ...t, status: destStatus } : t
+    const updatedTasks = tasks.map((t) =>
+      t.id === draggableId ? { ...t, status: destStatus } : t
+    );
+
+    handleSaveProgress(updatedTasks);
+
+    if (movingToInProgressFromDifferentStatus && taskHasSparkStudio(task)) {
+      toast.info(
+        "This task will be completed on CommandL. Please open CommandL. See task details for more info.",
+        {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+        }
       );
-      handleSaveProgress(newTasks);
-
-      if (movingToInProgressFromDifferentStatus && taskHasSparkStudio(task)) {
-        toast.info(
-          "This task will be completed on Spark Studio. Please open Spark Studio. See task details for more info.",
-          {
-            position: "bottom-center",
-            autoClose: 5000
-          }
-        );
-      }
-
-      return newTasks;
-    });
+    }
   };
 
   const handleSubtaskToggle = (taskId: string, subtaskId: string) => {
@@ -345,19 +349,19 @@ export default function ProjectTaskBoardClient({ params }: ClientProps) {
       return;
     }
 
-    setTasks((prevTasks) => {
-      const newTasks = prevTasks.map((t) => {
-        if (t.id === taskId) {
-          const updatedSubtasks = t.subtasks.map((st) =>
+    const updatedTasks = tasks.map(t => {
+      if (t.id === taskId) {
+        return {
+          ...t,
+          subtasks: t.subtasks.map(st => 
             st.id === subtaskId ? { ...st, completed: !st.completed } : st
-          );
-          return { ...t, subtasks: updatedSubtasks };
-        }
-        return t;
-      });
-      handleSaveProgress(newTasks);
-      return newTasks;
+          )
+        };
+      }
+      return t;
     });
+
+    handleSaveProgress(updatedTasks);
   };
 
   const handleTaskClick = (task: Task) => {
@@ -377,23 +381,8 @@ export default function ProjectTaskBoardClient({ params }: ClientProps) {
     });
   };
 
-  const days = Array.from({ length: 10 }, (_, i) => i + 1);
-  const completedDaysMap = useMemo(() => {
-    const map = new Map<number, boolean>();
-    for (let day = 1; day <= 10; day++) {
-      const dayTasks = tasks.filter(task => task.day_assigned === day);
-      const completed = dayTasks.length > 0 && dayTasks.every(task => task.status === 'Done');
-      map.set(day, completed);
-    }
-    return map;
-  }, [tasks]);
-
-  const isDayCompleted = (day: number) => {
-    return completedDaysMap.get(day) || false;
-  };
-
   const handleDaySelect = (day: number, isLocked: boolean) => {
-    if (isLocked) {
+    if (day > maxUnlockedDay) {
       setLockedMessageDay(day);
       setTimeout(() => setLockedMessageDay(null), 2000);
     } else {
@@ -404,6 +393,22 @@ export default function ProjectTaskBoardClient({ params }: ClientProps) {
   const closeTaskDetails = () => {
     setSelectedTaskId(null);
   };
+
+  const filteredTasks = tasks.filter(task => task.day_assigned === selectedDay);
+
+  const completedDaysMap = useMemo(() => {
+    const map = new Map<number, boolean>();
+    for (let day = 1; day <= 10; day++) {
+      const dayTasks = tasks.filter(task => task.day_assigned === day);
+      const completed = dayTasks.length > 0 && dayTasks.every(task => task.status === 'Done');
+      map.set(day, completed);
+    }
+    return map;
+  }, [tasks]);
+
+  const isDayCompleted = useCallback((day: number) => {
+    return completedDaysMap.get(day) || false;
+  }, [completedDaysMap]);
 
   if (isLoading) {
     return (
@@ -429,54 +434,79 @@ export default function ProjectTaskBoardClient({ params }: ClientProps) {
     );
   }
 
-  const filteredTasks = tasks.filter(task => task.day_assigned === selectedDay);
+  const days = Array.from({ length: 10 }, (_, i) => i + 1);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <ToastContainer />
-      {assignment && (
-        <AssignmentHeader
-          title={assignment.title}
-          description={assignment.description}
-        />
-      )}
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col space-y-6">
-          {/* <CountdownTimer
-            days={timeRemaining.days}
-            hours={timeRemaining.hours}
-            minutes={timeRemaining.minutes}
-            seconds={timeRemaining.seconds}
-          /> */}
-          <DaySelector
-            days={days}
-            selectedDay={selectedDay}
-            onDaySelect={handleDaySelect}
-            maxUnlockedDay={maxUnlockedDay}
-            lockedMessageDay={lockedMessageDay}
-            isDayCompleted={isDayCompleted}
-          />
-          <TaskBoard
-            tasks={filteredTasks}
-            onDragEnd={onDragEnd}
-            getTaskProgress={getTaskProgress}
-            getStatusIcon={getStatusIcon}
-            handleTaskClick={handleTaskClick}
-          />
+    <div className={`container mx-auto px-4 py-8 min-h-screen relative ${nunito.className}`}>
+      <ToastContainer 
+        position="bottom-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+        pauseOnHover={false}
+        theme="light"
+        limit={2}
+        transition={Slide}
+      />
+
+      <CountdownTimer
+        days={timeRemaining.days}
+        hours={timeRemaining.hours}
+        minutes={timeRemaining.minutes}
+        seconds={timeRemaining.seconds}
+      />
+
+      <DaySelector
+        days={days}
+        selectedDay={selectedDay}
+        lockedMessageDay={lockedMessageDay}
+        onDaySelect={handleDaySelect}
+        maxUnlockedDay={maxUnlockedDay}
+        isDayCompleted={isDayCompleted}
+      />
+
+      <AssignmentHeader
+        title={assignment.title}
+        description={assignment.description}
+      />
+
+      {allTasksCompleted && (
+        <div className="mb-8 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 text-sm sm:text-base">
+          <p>Congratulations! All the tasks for Day {selectedDay} are done.</p>
         </div>
-      </div>
-      {selectedTask && (
-        <TaskDetails
-          selectedTask={selectedTask}
-          onClose={closeTaskDetails}
-          expandedSubtasks={expandedSubtasks}
-          toggleSubtaskDescription={toggleSubtaskDescription}
-          handleSubtaskToggle={handleSubtaskToggle}
-          maxUnlockedDay={maxUnlockedDay}
-          markdownLinkStyles={markdownLinkStyles}
-        />
       )}
-      {allTasksCompleted && <ApplyFor10DayProgram />}
+
+      <TaskBoard
+        tasks={filteredTasks}
+        onDragEnd={onDragEnd}
+        selectedDay={selectedDay}
+        handleTaskClick={handleTaskClick}
+        getTaskProgress={getTaskProgress}
+        getStatusIcon={getStatusIcon}
+      />
+
+      <TaskDetails
+        selectedTask={selectedTask || null}
+        expandedSubtasks={expandedSubtasks}
+        toggleSubtaskDescription={toggleSubtaskDescription}
+        handleSubtaskToggle={handleSubtaskToggle}
+        markdownLinkStyles={markdownLinkStyles}
+        selectedDay={selectedDay}
+        maxUnlockedDay={maxUnlockedDay}
+        onClose={closeTaskDetails}
+      />
+
+      {selectedDay > maxUnlockedDay && (
+        <div className="mt-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 text-sm sm:text-base">
+          <p>This day is currently locked. Please complete Day {maxUnlockedDay - 1} to unlock Day {selectedDay}.</p>
+        </div>
+      )}
     </div>
   );
-} 
+};
+
+export default AssignmentPage;
