@@ -7,17 +7,19 @@ const nunito = Nunito({
 });
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
     sectionId: string;
     assignmentId: string;
-  };
+  }>;
 }
 
-export default function ProjectTaskBoard({ params }: PageProps) {
+export default async function ProjectTaskBoard({ params }: PageProps) {
+  const resolvedParams = await params;
+  
   return (
     <div className={nunito.className}>
-      <ProjectTaskBoardClient params={params} />
+      <ProjectTaskBoardClient params={resolvedParams} />
     </div>
   );
 }
