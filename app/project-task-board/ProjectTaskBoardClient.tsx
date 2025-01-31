@@ -22,6 +22,23 @@ const nunito = Nunito({
   display: 'swap',
 });
 
+interface ApiSubtask {
+  id: string;
+  title: string;
+  description?: string;
+  completed?: boolean;
+  spark_studio?: boolean;
+}
+
+interface ApiTask {
+  id: string;
+  title: string;
+  description?: string;
+  subtasks?: ApiSubtask[];
+  status?: 'To Do' | 'In Progress' | 'Done';
+  day_assigned: number;
+}
+
 interface Subtask {
   id: string;
   title: string;
@@ -121,9 +138,9 @@ const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
         description: project.description || 'No description provided.'
       };
 
-      const newTasks: Task[] = (project.tasks || []).map((task: any) => {
+      const newTasks: Task[] = (project.tasks as ApiTask[] || []).map((task: ApiTask) => {
         const subtasks = (task.subtasks || [])
-          .map((st: any) => ({
+          .map((st: ApiSubtask) => ({
             id: st.id,
             title: st.title,
             description: st.description || '',
@@ -146,8 +163,8 @@ const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
       setTasks(newTasks);
       setIsLoading(false);
 
-    } catch (err: any) {
-      setError(err.message || 'An unknown error occurred.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred.');
       setIsLoading(false);
     }
   };
@@ -222,7 +239,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
     }
   };
 
-  const debouncedSaveProgress = useCallback(
+  const debouncedSaveProgress = useMemo(() => 
     debounce(async (updatedTasks: Task[]) => {
       const savingToastId = toast.info('Saving changes...', {
         position: "bottom-center",
@@ -381,7 +398,8 @@ const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
     });
   };
 
-  const handleDaySelect = (day: number, isLocked: boolean) => {
+  // const handleDaySelect = (day: number, isLocked: boolean) => {
+  const handleDaySelect = (day: number) => {
     if (day > maxUnlockedDay) {
       setLockedMessageDay(day);
       setTimeout(() => setLockedMessageDay(null), 2000);
@@ -483,7 +501,6 @@ const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
       <TaskBoard
         tasks={filteredTasks}
         onDragEnd={onDragEnd}
-        selectedDay={selectedDay}
         handleTaskClick={handleTaskClick}
         getTaskProgress={getTaskProgress}
         getStatusIcon={getStatusIcon}

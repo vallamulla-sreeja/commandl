@@ -5,7 +5,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import '../../styles/notes.css'; // Make sure to import the same CSS file
+import '../../styles/notes.css';
 
 interface SubTaskRendererProps {
   subtask: string;
@@ -22,10 +22,10 @@ const SubTaskRenderer: React.FC<SubTaskRendererProps> = ({
 
         return (
           <SyntaxHighlighter
-            style={tomorrow as any}
             language={match[1]}
             PreTag="div"
             {...props}
+            style={tomorrow}
           >
             {String(children).replace(/\n$/, '')}
           </SyntaxHighlighter>
