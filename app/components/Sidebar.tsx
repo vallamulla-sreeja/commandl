@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { FiHome, FiSettings, FiLogOut, FiMenu, FiChevronLeft, FiFolder, FiUser } from 'react-icons/fi';
+import { FiHome, FiSettings, FiLogOut, FiMenu, FiChevronLeft, FiUser } from 'react-icons/fi';
+// import { FiFolder } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
 
 const clearAllCache = async () => {
@@ -36,7 +37,7 @@ export default function Sidebar() {
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: FiHome },
-    { name: 'Projects', path: '/project-dashboard', icon: FiFolder },
+    // { name: 'Projects', path: '/project-dashboard', icon: FiFolder },
     { name: 'Profile', path: '/profile', icon: FiUser },
     { name: 'Settings', icon: FiSettings },
   ];
