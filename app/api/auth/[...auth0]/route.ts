@@ -1,4 +1,5 @@
 import { handleAuth, handleLogin, handleLogout } from '@auth0/nextjs-auth0';
+import { type NextRequest } from 'next/server';
 
 const handler = handleAuth({
     login: handleLogin({
@@ -21,5 +22,21 @@ const handler = handleAuth({
     })
 });
 
-// Using the correct type for Next.js App Router
-export const GET = handler;
+export type Context = {
+    params: Promise<{
+        auth0: string[]
+    }>
+}
+
+export async function GET(
+    request: NextRequest,
+    context: Context
+): Promise<Response> {
+    try {
+        const params = await context.params;
+        return await handler(request, { params });
+    } catch (error) {
+        console.error('Auth error:', error);
+        return new Response('Auth error', { status: 500 });
+    }
+}
