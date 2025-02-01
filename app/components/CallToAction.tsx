@@ -12,10 +12,10 @@ const CallToAction = () => {
           </h2>
 
           <button
-            className="bg-[#E85D45] text-white hover:bg-[#d54d35] transition-colors duration-300 text-xl px-8 py-6 rounded-[8px] font-extrabold inline-flex items-center gap-2 hover:scale-105 transform transition-transform mb-16"
-            onClick={() => window.location.href = '/dashboard'}
+            className="bg-[#E85D45] text-white hover:bg-[#d54d35] transition-colors duration-300 text-2xl px-8 py-6 rounded-[8px] font-extrabold inline-flex items-center gap-2 hover:scale-105 transform transition-transform mb-16"
+            onClick={() => window.location.href = '/api/auth/login'}
           >
-            GET STARTED
+            GET STARTED FOR FREE
           </button>
         </div>
       </div>
