@@ -31,6 +31,81 @@ export const fetchAccessToken = async (): Promise<string> => {
   }
 };
 
+export interface SignupData {
+  name: string;
+  date_of_birth: string;
+  email: string;
+  mobile: string;
+  country: string;
+  college: string;
+}
+interface CollegeSuggestion {
+  college_name: string;
+  university_name: string;
+  state: string;
+}
+
+export const getCollegeSuggestions = async (query: string): Promise<string[]> => {
+  try {
+    const accessToken = await fetchAccessToken();
+    const response = await api.get<CollegeSuggestion[]>('/search/college', {
+      params: { q: query },
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+    return response.data.map(college => college.college_name);
+  } catch (error) {
+    console.error('Error fetching college suggestions:', error);
+    if (error instanceof Error && error.message === 'Unauthorized') {
+      await handleLogout();
+      throw error;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+    } else if (error instanceof Error) {
+      console.error('Error message:', error.message);
+    }
+    throw error;
+  }
+};
+
+interface SignupResponse {
+  message: string;
+  userId: string;
+}
+export const signup = async (userData: SignupData): Promise<SignupResponse> => {
+  try {
+    const accessToken = await fetchAccessToken();
+    const response = await api.post('/signup', userData, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (response.data.message === 'User already exists') {
+      return {
+        message: 'User already exists',
+        userId: response.data.userId
+      };
+    }
+    return {
+      message: 'User signed up successfully',
+      userId: response.data.userId
+    };
+  } catch (error) {
+    if (error instanceof Error && error.message === 'Unauthorized') {
+      await handleLogout();
+      throw error;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error || 'An error occurred during signup');
+    }
+    throw new Error('An error occurred during signup');
+  }
+};
+
 export const handleLogout = async () => {
   if (typeof window !== 'undefined') {
     window.location.href = '/api/auth/logout';
