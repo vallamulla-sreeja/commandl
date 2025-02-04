@@ -1,11 +1,11 @@
 import React from 'react';
 import Image from 'next/image';
-import { ArrowRight, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 const ApplyFor10DayProgram = () => {
-  const handleApply = () => {
-    window.open('https://docs.google.com/forms/d/e/1FAIpQLSfoa_LPZhX9VN0H4wyvv8kO2DGH9-n6G9YmbZMIO5P3uvzuNg/viewform', '_blank');
-  };
+  // const handleApply = () => {
+  //   window.open('https://docs.google.com/forms/d/e/1FAIpQLSfoa_LPZhX9VN0H4wyvv8kO2DGH9-n6G9YmbZMIO5P3uvzuNg/viewform', '_blank');
+  // };
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -26,7 +26,7 @@ const ApplyFor10DayProgram = () => {
             <div className="relative aspect-square w-full max-w-[300px]">
               <Image
                 src="/images/10-day-program-page.png"
-                alt="10 Day Program"
+                alt="2 week Project Building Program"
                 fill
                 className="object-contain"
                 priority
@@ -39,20 +39,23 @@ const ApplyFor10DayProgram = () => {
             <div className="space-y-8">
               <div>
                 <h2 className="text-3xl font-bold text-[#274c77] leading-tight mb-4">
-                  10-Day Project Building Program
+                  2 Week Project Building Program
                 </h2>
                 <p className="text-gray-600 mb-6">
                   But don&apos;t worry! You can apply for our upcoming batches and start your journey towards becoming a better developer.
                 </p>
+                <p className="text-gray-600 mb-6">
+                  Mail us at <a href="mailto:sai@vedaverse.io" className="text-[#58cc02] hover:underline">sai@vedaverse.io</a> or <a href="mailto:sreeja.v@vedaverse.io" className="text-[#58cc02] hover:underline">sreeja.v@vedaverse.io</a> to contact us for the next batch.
+                </p>
               </div>
 
-              <button
+              {/* <button
                 onClick={handleApply}
                 className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#58cc02] text-white px-8 py-4 rounded-xl font-semibold hover:bg-[#4fb102] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#58cc02] shadow-lg hover:shadow-xl"
               >
                 Apply Now
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
