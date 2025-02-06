@@ -2,18 +2,28 @@ import React from 'react';
 import { Nunito } from 'next/font/google';
 import { ChevronDown, X, Check, AlertTriangle } from 'lucide-react';
 import SubTaskRenderer from './SubTaskRenderer';
+import { toast } from 'react-hot-toast';
 
 const nunito = Nunito({
   subsets: ['latin'],
   display: 'swap',
 });
 
+interface MoreInfo {
+  data: {
+    verify_field: {
+      type: string;
+    };
+  };
+}
+
 interface Subtask {
   id: string;
   title: string;
   description: string;
   completed: boolean;
-  spark_studio?: boolean; // Already added
+  spark_studio?: boolean;
+  more_info?: MoreInfo | null;
 }
 
 interface Task {
@@ -34,6 +44,8 @@ interface TaskDetailsProps {
   selectedDay: number;
   maxUnlockedDay: number;
   onClose: () => void;
+  urlInputs: { [key: string]: string };
+  handleUrlChange: (subtaskId: string, value: string) => void;
 }
 
 const TaskDetails: React.FC<TaskDetailsProps> = ({
@@ -43,9 +55,64 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   handleSubtaskToggle,
   markdownLinkStyles,
   maxUnlockedDay,
-  onClose
+  onClose,
+  urlInputs,
+  handleUrlChange
 }) => {
   const isVisible = !!selectedTask;
+
+  const validateUrl = (url: string, type: string): boolean => {
+    if (!url) return false;
+    
+    if (type === 'linkedin') {
+      return url.toLowerCase().includes('linkedin.com/');
+    } else if (type === 'github') {
+      return url.toLowerCase().includes('github.com/');
+    }
+    return false;
+  };
+
+  const handleSubtaskToggleWrapper = (taskId: string, subtask: Subtask) => {
+    if (subtask.completed) {
+      toast.error('Completed subtasks cannot be unchecked', {
+        duration: 3000,
+        position: 'top-center',
+      });
+      return;
+    }
+
+    if (subtask.spark_studio) {
+      toast.error('This task can only be completed in the CommandL application', {
+        duration: 3000,
+        position: 'top-center',
+      });
+      return;
+    }
+
+    const subtaskIndex = selectedTask?.subtasks.findIndex(st => st.id === subtask.id) ?? -1;
+    if (subtaskIndex > 0 && !selectedTask?.subtasks[subtaskIndex - 1].completed) {
+      toast.error('Please complete the previous subtask first', {
+        duration: 3000,
+        position: 'top-center',
+      });
+      return;
+    }
+
+    if (subtask.more_info?.data?.verify_field) {
+      const url = urlInputs[subtask.id] || '';
+      const urlType = subtask.more_info.data.verify_field.type;
+      
+      if (!validateUrl(url, urlType)) {
+        toast.error(`Please enter a valid ${urlType} URL`, {
+          duration: 3000,
+          position: 'top-center',
+        });
+        return;
+      }
+    }
+
+    handleSubtaskToggle(taskId, subtask.id);
+  };
 
   const handleOverlayClick = () => {
     onClose();
@@ -107,6 +174,15 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                     (selectedTask.status === 'Done' && !subtask.completed)
                   );
 
+                const verifyField = subtask.more_info?.data?.verify_field;
+                const urlValue = urlInputs[subtask.id] || '';
+                const isUrlValid = verifyField ? validateUrl(urlValue, verifyField.type) : true;
+
+                // Check if this subtask can be completed (based on previous subtask)
+                const subtaskIndex = selectedTask.subtasks.findIndex(st => st.id === subtask.id);
+                const isPreviousSubtaskCompleted = subtaskIndex === 0 || selectedTask.subtasks[subtaskIndex - 1].completed;
+                const canBeCompleted = !subtask.completed && isPreviousSubtaskCompleted;
+
                 return (
                   <div
                     key={subtask.id}
@@ -128,27 +204,19 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                           {subtask.title}
                         </span>
 
-                        {/* 
-                          CHANGES: Add a small label if subtask has spark_studio = true 
-                        */}
                         {isSubtaskSparkStudio && (
-                          // CHANGES: Wrap the SparkStudio text in a group container with a tooltip
                           <div className="group relative ml-2 inline-block">
                             <span className="px-2 py-1 text-xs font-semibold text-white bg-pink-500 rounded-full cursor-help">
                               CommandL
                             </span>
-
-                            {/* 
-      CHANGES: The tooltip itself (hidden by default, visible on hover)
-    */}
                             <div
                               className="
-        absolute bottom-full left-1/2 transform -translate-x-1/2 
-        mb-2 px-3 py-1 text-xs text-white bg-black rounded 
-        opacity-0 group-hover:opacity-100 
-        transition-opacity duration-200 z-10
-        whitespace-nowrap
-      "
+                                absolute bottom-full left-1/2 transform -translate-x-1/2 
+                                mb-2 px-3 py-1 text-xs text-white bg-black rounded 
+                                opacity-0 group-hover:opacity-100 
+                                transition-opacity duration-200 z-10
+                                whitespace-nowrap
+                              "
                             >
                               This task will be done in CommandL
                             </div>
@@ -159,25 +227,45 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleSubtaskToggle(selectedTask.id, subtask.id);
+                          handleSubtaskToggleWrapper(selectedTask.id, subtask);
                         }}
-                        disabled={selectedTask.day_assigned > maxUnlockedDay}
+                        disabled={
+                          selectedTask.day_assigned > maxUnlockedDay || 
+                          (verifyField && !isUrlValid) || 
+                          (isSubtaskSparkStudio && !subtask.completed) ||
+                          subtask.completed ||
+                          !canBeCompleted
+                        }
                         className={`
                           w-6 h-6 rounded-lg flex items-center justify-center
                           transition-all duration-200 ease-in-out ml-4
                           ${subtask.completed
-                            ? 'bg-[#58cc02] text-white'
-                            : 'bg-white border-2 border-[#58cc02]'
+                            ? 'bg-[#58cc02] text-white cursor-not-allowed'
+                            : canBeCompleted
+                              ? 'bg-white border-2 border-[#58cc02]'
+                              : 'bg-white border-2 border-gray-300 cursor-not-allowed'
                           }
-                          ${selectedTask.day_assigned > maxUnlockedDay
+                          ${(selectedTask.day_assigned > maxUnlockedDay || 
+                            (verifyField && !isUrlValid) || 
+                            (isSubtaskSparkStudio && !subtask.completed) ||
+                            !canBeCompleted)
                             ? 'opacity-50 cursor-not-allowed'
                             : 'hover:bg-[#58cc02] hover:bg-opacity-10 cursor-pointer'
                           }
                         `}
                         aria-label={
                           subtask.completed
-                            ? 'Mark as incomplete'
-                            : 'Mark as complete'
+                            ? 'Completed'
+                            : canBeCompleted
+                              ? 'Mark as complete'
+                              : 'Complete previous subtask first'
+                        }
+                        title={
+                          subtask.completed
+                            ? 'Completed'
+                            : canBeCompleted
+                              ? 'Mark as complete'
+                              : 'Complete previous subtask first'
                         }
                       >
                         {subtask.completed && <Check className="w-4 h-4 stroke-[3]" />}
@@ -187,10 +275,6 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                     {expandedSubtasks.has(subtask.id) && (
                       <div className="px-4 pb-4">
                         <div className="ml-8 text-md text-[#4B4B4B] bg-white rounded-lg border border-[#E5E5E5] p-4 break-words">
-                          {/* 
-                            CHANGES: Show instruction if subtask requires SparkStudio 
-                            AND the task is in 'To Do' or 'Done' but incomplete.
-                          */}
                           {showMoveToInProgressInstruction && (
                             <div className="mt-4 p-3 bg-yellow-100 border-black-400 text-black-800 text-sm rounded">
                               <p>
@@ -204,27 +288,75 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                           <style>{markdownLinkStyles}</style>
                           <SubTaskRenderer subtask={subtask.description} />
 
+                          {!isSubtaskSparkStudio && subtask.more_info?.data?.verify_field && (
+                            <div className="mt-6 border-t border-gray-200 pt-4">
+                              <div className="bg-white">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                  Enter your {subtask.more_info.data.verify_field.type} profile URL:
+                                </label>
+                                <input
+                                  type="url"
+                                  value={urlValue}
+                                  onChange={(e) => handleUrlChange(subtask.id, e.target.value)}
+                                  placeholder={`https://${subtask.more_info.data.verify_field.type}.com/your-profile`}
+                                  className={`
+                                    w-full px-3 py-2 border rounded-md shadow-sm
+                                    focus:outline-none focus:ring-2 focus:ring-offset-2
+                                    ${urlValue && isUrlValid
+                                      ? 'border-green-300 focus:border-green-500 focus:ring-green-500'
+                                      : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
+                                    }
+                                  `}
+                                />
+                                {urlValue && !isUrlValid && (
+                                  <p className="mt-2 text-sm text-red-600">
+                                    Please enter a valid {subtask.more_info.data.verify_field.type} profile URL
+                                  </p>
+                                )}
+                                <p className="mt-2 text-sm text-gray-500">
+                                  You must provide a valid {subtask.more_info.data.verify_field.type} profile URL to mark this task as complete
+                                </p>
+                              </div>
+                            </div>
+                          )}
+
                           <div className="mt-4 flex justify-end">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleSubtaskToggle(selectedTask.id, subtask.id);
+                                handleSubtaskToggleWrapper(selectedTask.id, subtask);
                               }}
-                              disabled={selectedTask.day_assigned > maxUnlockedDay}
+                              disabled={
+                                selectedTask.day_assigned > maxUnlockedDay || 
+                                (verifyField && !isUrlValid) || 
+                                (isSubtaskSparkStudio && !subtask.completed) ||
+                                subtask.completed ||
+                                !canBeCompleted
+                              }
                               className={`
                                 px-4 py-2 rounded-lg font-medium
                                 transition-all duration-200 ease-in-out
                                 ${subtask.completed
-                                  ? 'bg-[#58cc02] text-white hover:bg-[#4fb102]'
-                                  : 'bg-[#1cb0f6] text-white hover:bg-[#1a9fe6]'
+                                  ? 'bg-[#58cc02] text-white cursor-not-allowed'
+                                  : canBeCompleted
+                                    ? 'bg-[#1cb0f6] text-white hover:bg-[#1a9fe6]'
+                                    : 'bg-gray-300 text-white cursor-not-allowed'
                                 }
-                                ${selectedTask.day_assigned > maxUnlockedDay
-                                  ? 'opacity-50 cursor-not-allowed'
-                                  : 'cursor-pointer'
+                                ${(selectedTask.day_assigned > maxUnlockedDay || 
+                                  (verifyField && !isUrlValid) || 
+                                  (isSubtaskSparkStudio && !subtask.completed) ||
+                                  !canBeCompleted)
+                                  ? 'opacity-50'
+                                  : ''
                                 }
                               `}
                             >
-                              {subtask.completed ? 'Completed' : 'Mark as complete'}
+                              {subtask.completed 
+                                ? 'Completed' 
+                                : canBeCompleted
+                                  ? 'Mark as complete'
+                                  : 'Complete previous subtask first'
+                              }
                             </button>
                           </div>
                         </div>
