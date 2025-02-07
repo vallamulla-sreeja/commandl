@@ -3,23 +3,38 @@
 'use client';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import type { Components } from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import '../../styles/notes.css';
 
+interface VerifyField {
+  type: string;
+}
+
+interface MoreInfo {
+  data: {
+    verify_field: VerifyField;
+  };
+  user_input?: string;
+}
+
 interface SubTaskRendererProps {
   subtask: string;
+  completed?: boolean;
+  more_info?: MoreInfo | null;
 }
 
 const SubTaskRenderer: React.FC<SubTaskRendererProps> = ({ 
-  subtask, 
+  subtask,
+  completed = false,
+  more_info = null,
 }) => {
 
-  const components = {
-    code({ inline, className, children, ...props }: React.ComponentPropsWithoutRef<'code'> & { inline?: boolean }) {
+  const components: Partial<Components> = {
+    code({ inline, className, children, ...props }: any) {
       const match = /language-(\w+)/.exec(className || '');
       if (!inline && match) {
-
         return (
           <SyntaxHighlighter
             language={match[1]}
@@ -37,16 +52,57 @@ const SubTaskRenderer: React.FC<SubTaskRendererProps> = ({
         </code>
       );
     },
+    // Add custom renderers for other markdown elements
+    h1: ({ children }: any) => <h1 className="text-2xl font-bold">{children}</h1>,
+    h2: ({ children }: any) => <h2 className="text-xl font-bold">{children}</h2>,
+    h3: ({ children }: any) => <h3 className="text-lg font-bold">{children}</h3>,
+    ul: ({ children }: any) => <ul className="list-disc list-outside">{children}</ul>,
+    ol: ({ children }: any) => <ol className="list-decimal list-outside">{children}</ol>,
+    li: ({ children }: any) => <li className="ml-4">{children}</li>,
+    a: ({ href, children }: any) => (
+      <a 
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 hover:text-blue-800 underline"
+      >
+        {children}
+      </a>
+    ),
+    strong: ({ children }: any) => <strong className="font-semibold">{children}</strong>,
+    em: ({ children }: any) => <em className="italic text-gray-700">{children}</em>,
+    blockquote: ({ children }: any) => (
+      <blockquote className="border-l-4 border-gray-300 pl-4 italic">{children}</blockquote>
+    ),
   };
 
   return (
-    <div className={`container mx-auto px-2 sm:px-4 py-2 relative`}>
+    <div className="container mx-auto px-2 sm:px-4 py-2 relative">
       <div className="pr-4 sm:pr-16">
-        <div className={`prose max-w-none prose-sm sm:prose-base`}>
+        <div className="prose max-w-none prose-sm sm:prose-base">
           {subtask ? (
-            <ReactMarkdown components={components}>
-              {subtask}
-            </ReactMarkdown>
+            <>
+              <ReactMarkdown components={components}>
+                {subtask}
+              </ReactMarkdown>
+              
+              {completed && more_info?.data?.verify_field && more_info.user_input && (
+                <div className="mt-6 border-t border-gray-200 pt-4">
+                  <div className="bg-white">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Your submitted {more_info.data.verify_field.type} profile URL:
+                    </label>
+                    <input
+                      type="url"
+                      value={more_info.user_input}
+                      readOnly
+                      disabled
+                      className="w-full px-3 py-2 border rounded-md shadow-sm bg-gray-50 text-gray-700 cursor-not-allowed"
+                    />
+                  </div>
+                </div>
+              )}
+            </>
           ) : (
             <p>No sub tasks available for this task.</p>
           )}
