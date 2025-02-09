@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { DocumentTextIcon, UserCircleIcon, StarIcon, FolderIcon, DocumentArrowUpIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { DocumentArrowUpIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
 interface Project {
   id: string;
