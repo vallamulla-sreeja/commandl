@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { DocumentArrowUpIcon } from '@heroicons/react/24/outline';
+// import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface ResumeUploadProps {
   resumeFile: File | null;
@@ -8,6 +10,27 @@ interface ResumeUploadProps {
 }
 
 export default function ResumeUpload({ resumeFile, onFileChange, onContinue }: ResumeUploadProps) {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (5MB)
+    const fiveMB = 5 * 1024 * 1024;
+    if (file.size > fiveMB) {
+      toast.error('File size must be less than 5MB');
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Only PDF, DOC, and DOCX files are allowed');
+      return;
+    }
+
+    onFileChange(e); // Update parent component with validated file
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -30,12 +53,20 @@ export default function ResumeUpload({ resumeFile, onFileChange, onContinue }: R
             </p>
             <p className="text-sm text-gray-500">PDF, DOC, or DOCX (max. 5MB)</p>
           </div>
-          <input type="file" className="hidden" onChange={onFileChange} accept=".pdf,.doc,.docx" />
+          <input 
+            type="file" 
+            className="hidden" 
+            onChange={handleFileChange} 
+            accept=".pdf,.doc,.docx"
+          />
         </label>
         <button
           onClick={onContinue}
           disabled={!resumeFile}
-          className={`w-full mt-6 py-4 rounded-xl text-lg font-semibold transition-all duration-300 ${!resumeFile ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-[#58CC02] text-white hover:bg-[#58CC02]/90'}`}
+          className={`w-full mt-6 py-4 rounded-xl text-lg font-semibold transition-all duration-300 
+            ${!resumeFile ? 
+              'bg-gray-200 text-gray-500 cursor-not-allowed' : 
+              'bg-[#58CC02] text-white hover:bg-[#58CC02]/90'}`}
         >
           Continue
         </button>
