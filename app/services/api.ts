@@ -238,11 +238,15 @@ export const checkUserStatusAPI = async (): Promise<PaymentStatusResponse> => {
 // Error handling middleware
 api.interceptors.response.use(
   (response) => response,
-  (error: AxiosError) => {
+  async (error: AxiosError) => {
     // Handle different error cases
     if (error.response?.status === 401) {
-      // Handle unauthorized access
-      window.location.href = '/api/auth/login';
+      // Clear any local session data
+      if (typeof window !== 'undefined') {
+        // Handle unauthorized access by redirecting to logout
+        // This will clear the session and redirect back to login
+        await handleLogout();
+      }
     }
     return Promise.reject(error);
   }
