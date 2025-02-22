@@ -26,43 +26,43 @@ const VideoPlayer = () => {
   );
 };
 
-const CountdownTimer = () => {
-  const [timeLeft, setTimeLeft] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0
-  });
+// const CountdownTimer = () => {
+//   const [timeLeft, setTimeLeft] = useState({
+//     days: 0,
+//     hours: 0,
+//     minutes: 0,
+//     seconds: 0
+//   });
 
-  useEffect(() => {
-    const targetDate = new Date('2025-02-14T23:59:00-05:00'); // EST time
+//   useEffect(() => {
+//     const targetDate = new Date('2025-02-14T23:59:00-05:00'); // EST time
 
-    const calculateTimeLeft = () => {
-      const now = new Date();
-      const difference = targetDate.getTime() - now.getTime();
+//     const calculateTimeLeft = () => {
+//       const now = new Date();
+//       const difference = targetDate.getTime() - now.getTime();
 
-      if (difference > 0) {
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((difference / 1000 / 60) % 60);
-        const seconds = Math.floor((difference / 1000) % 60);
+//       if (difference > 0) {
+//         const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+//         const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+//         const minutes = Math.floor((difference / 1000 / 60) % 60);
+//         const seconds = Math.floor((difference / 1000) % 60);
 
-        setTimeLeft({ days, hours, minutes, seconds });
-      }
-    };
+//         setTimeLeft({ days, hours, minutes, seconds });
+//       }
+//     };
 
-    calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 1000);
+//     calculateTimeLeft();
+//     const timer = setInterval(calculateTimeLeft, 1000);
 
-    return () => clearInterval(timer);
-  }, []);
+//     return () => clearInterval(timer);
+//   }, []);
 
-  return (
-    <div className="font-mono text-base text-[#4b4b4b] mt-2 font-semibold">
-      {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s left to enroll
-    </div>
-  );
-};
+//   return (
+//     <div className="font-mono text-base text-[#4b4b4b] mt-2 font-semibold">
+//       {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s left to enroll
+//     </div>
+//   );
+// };
 
 export default function JoinPage() {
   // Define the 3 common problems array
@@ -147,9 +147,9 @@ export default function JoinPage() {
 
           {/* Updated Cohort + Perks Section */}
           <div className="mb-16 max-w-4xl mx-auto">
-            <h2 className="text-4xl sm:text-5xl font-extrabold mb-8 text-center text-black font-nunito">
+            {/* <h2 className="text-4xl sm:text-5xl font-extrabold mb-8 text-center text-black font-nunito">
               Starts on February 17th, 2025
-            </h2>
+            </h2> */}
             <div className="space-y-6 font-nunito text-[#4b4b4b]">
               {[
                 'Build a real-world full-stack project in just 14 days',
@@ -175,16 +175,16 @@ export default function JoinPage() {
                 Limited Time Discount
               </p>
               <div className="flex items-center justify-center gap-3 mt-2">
-                <span className="text-3xl md:text-4xl font-black line-through text-gray-400">$200</span>
-                <span className="text-3xl md:text-4xl font-black text-[#4b4b4b]">$149</span>
+                <span className="text-3xl md:text-4xl font-black line-through text-gray-400">$250</span>
+                <span className="text-3xl md:text-4xl font-black text-[#4b4b4b]">$200</span>
               </div>
-              <CountdownTimer />
+              {/* <CountdownTimer /> */}
             </div>
             <p className="text-lg text-[#FF4B4B] mb-2 font-extrabold">
               100% Money-Back Guarantee
             </p>
             <a
-              href="https://buy.stripe.com/7sI5nl9DPgQIbw4fZ2"
+              href="https://buy.stripe.com/eVa9DB3fr9og0RqeUZ"
               target="_blank"
               rel="noopener noreferrer"
               className="buttonPrimary inline-block font-black text-3xl px-12 py-6"
