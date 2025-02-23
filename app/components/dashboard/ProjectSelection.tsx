@@ -47,6 +47,8 @@ export default function ProjectSelection({ projects, selectedProject, onProjectS
               <Image
                 src={project.image}
                 alt={project.title}
+                width={400}
+                height={300}
                 className="w-full h-full object-cover"
               />
             </div>
