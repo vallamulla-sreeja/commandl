@@ -154,6 +154,13 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
                     description: "This task is only available for premium users. Upgrade now to access this content.",
                     completed: false,
                     spark_studio: false
+                  },
+                  {
+                    id: "subtask-1-2",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
                   }
                 ]
               },
@@ -166,6 +173,13 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
                 subtasks: [
                   {
                     id: "subtask-2-1",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
+                  },
+                  {
+                    id: "subtask-2-2",
                     title: "Premium Task - Upgrade to Unlock",
                     description: "This task is only available for premium users. Upgrade now to access this content.",
                     completed: false,
@@ -191,8 +205,8 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
               },
               {
                 id: "task-4",
-                title: "Frontend Foundations",
-                description: "Learn the fundamentals of frontend development",
+                title: "Understanding Document Structure & Basic Syntax in HTML",
+                description: "Learn the fundamentals of HTML",
                 status: "To Do",
                 day_assigned: 1,
                 subtasks: [
@@ -204,7 +218,88 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
                     spark_studio: false
                   }
                 ]
-              }
+              },
+              {
+                id: "task-5",
+                title: "Core HTML Elements for Web Applications – Content & Navigation",
+                description: "Learn the core elements of HTML for web applications",
+                status: "To Do",
+                day_assigned: 1,
+                subtasks: [
+                  {
+                    id: "subtask-5-1",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
+                  },
+                  {
+                    id: "subtask-5-2",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
+                  },
+                  {
+                    id: "subtask-5-3",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
+                  },
+                  {
+                    id: "subtask-5-4",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
+                  }
+                ]
+              },
+              {
+                id: "task-6",
+                title: "Core HTML Elements for Web Applications – Forms & Semantic HTML",
+                description: "Learn the core elements like forms and semantic HTML for web applications",
+                status: "To Do",
+                day_assigned: 1,
+                subtasks: [
+                  {
+                    id: "subtask-6-1",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
+                  },
+                  {
+                    id: "subtask-6-2",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
+                  },
+                  {
+                    id: "subtask-6-3",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
+                  },
+                  {
+                    id: "subtask-6-4",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
+                  },
+                  {
+                    id: "subtask-6-5",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
+                  }
+                ]
+              },
             ];
 
             setAssignment(mockAssignment);
