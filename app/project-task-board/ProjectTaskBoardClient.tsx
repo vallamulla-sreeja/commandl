@@ -14,6 +14,7 @@ import TaskDetails from '../components/project-task-board-components/TaskDetails
 import { DropResult } from 'react-beautiful-dnd';
 import { debounce } from 'lodash';
 import { Slide } from 'react-toastify';
+import { Crown } from 'lucide-react';
 // import ApplyFor10DayProgram from '../components/project-task-board-components/applyFor10DayProgram';
 
 const nunito = Nunito({
@@ -103,16 +104,11 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
   const [allTasksCompleted, setAllTasksCompleted] = useState<boolean>(false);
   const [selectedDay, setSelectedDay] = useState<number>(1);
   const [lockedMessageDay, setLockedMessageDay] = useState<number | null>(null);
-  // const [timeRemaining, setTimeRemaining] = useState<{
-  //   days: number;
-  //   hours: number;
-  //   minutes: number;
-  //   seconds: number;
-  // }>({ days: 10, hours: 0, minutes: 0, seconds: 0 });
   const [maxUnlockedDay, setMaxUnlockedDay] = useState<number>(1);
-  const [currentUnlockedTaskId, setCurrentUnlockedTaskId] = useState<string | null>(null);
   const [urlInputs, setUrlInputs] = useState<{ [key: string]: string }>({});
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isPremiumUser, setIsPremiumUser] = useState(true);
+  const [currentUnlockedTaskId, setCurrentUnlockedTaskId] = useState<string | null>(null);
 
   const selectedTask = tasks.find((task) => task.id === selectedTaskId);
 
@@ -131,6 +127,94 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
             Authorization: `Bearer ${token}`
           }
         });
+
+        if (response.status === 403) {
+          // Handle unpaid user case
+          const errorData = await response.json();
+          if (errorData.message === "User not paid") {
+            // Create mock project with locked tasks
+            const mockAssignment: Assignment = {
+              id: "mock-project",
+              title: "Your Learning Path",
+              description: "Complete these tasks to build your foundation. Upgrade to unlock all tasks and track your progress."
+            };
+
+            // Create mock tasks with premium indicators
+            const mockTasks: Task[] = [
+              {
+                id: "task-1",
+                title: "LinkedIn Setup",
+                description: "Set up your professional LinkedIn profile",
+                status: "In Progress",
+                day_assigned: 1,
+                subtasks: [
+                  {
+                    id: "subtask-1-1",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
+                  }
+                ]
+              },
+              {
+                id: "task-2",
+                title: "GitHub Setup",
+                description: "Set up your GitHub profile and repositories",
+                status: "To Do",
+                day_assigned: 1,
+                subtasks: [
+                  {
+                    id: "subtask-2-1",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
+                  }
+                ]
+              },
+              {
+                id: "task-3",
+                title: "CommandL Installation",
+                description: "Install and set up CommandL for your development environment",
+                status: "To Do",
+                day_assigned: 1,
+                subtasks: [
+                  {
+                    id: "subtask-3-1",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: true
+                  }
+                ]
+              },
+              {
+                id: "task-4",
+                title: "Frontend Foundations",
+                description: "Learn the fundamentals of frontend development",
+                status: "To Do",
+                day_assigned: 1,
+                subtasks: [
+                  {
+                    id: "subtask-4-1",
+                    title: "Premium Task - Upgrade to Unlock",
+                    description: "This task is only available for premium users. Upgrade now to access this content.",
+                    completed: false,
+                    spark_studio: false
+                  }
+                ]
+              }
+            ];
+
+            setAssignment(mockAssignment);
+            setTasks(mockTasks);
+            setIsPremiumUser(false);
+            setIsInitialized(true);
+            setIsLoading(false);
+            return;
+          }
+        }
 
         if (!response.ok) {
           throw new Error('Failed to fetch project data');
@@ -211,7 +295,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
     // Update allTasksCompleted
     const allDone = tasks.every((task) => task.status === 'Done');
     setAllTasksCompleted(allDone);
-
+    
     // Update currentUnlockedTaskId
     if (tasks.length === 0) {
       setCurrentUnlockedTaskId(null);
@@ -262,11 +346,17 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
   };
 
   const isTaskLocked = (task: Task): boolean => {
-    if (!currentUnlockedTaskId) return task.id !== tasks[0]?.id;
+    // For unpaid users, all tasks are locked
+    if (!isPremiumUser) {
+      return true;
+    }
     
+    // For paid users, use the original locking logic
+    if (!currentUnlockedTaskId) return task.id !== tasks[0]?.id;
+     
     const taskIndex = tasks.findIndex(t => t.id === task.id);
     if (taskIndex === 0) return false;
-    
+     
     const previousTask = tasks[taskIndex - 1];
     return !previousTask.subtasks.every(st => st.completed);
   };
@@ -346,6 +436,43 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
     const { destination, source, draggableId } = result;
     if (!destination) return;
 
+    // For unpaid users, don't allow any drag operations
+    if (!isPremiumUser) {
+      toast.error('Upgrade to premium to move tasks between columns', {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+      });
+      
+      // Show a toast with an upgrade button
+      toast.info(
+        <div className="flex flex-col items-center">
+          <p className="mb-2">Upgrade to premium to access all features</p>
+          <button
+            className="px-4 py-2 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition-colors"
+            onClick={() => {
+              window.open('https://buy.stripe.com/eVa9DB3fr9og0RqeUZ', '_blank');
+            }}
+          >
+            Upgrade Now
+          </button>
+        </div>,
+        {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: false,
+        }
+      );
+      
+      return;
+    }
+
     const task = tasks.find((t) => t.id === draggableId);
     if (!task || task.day_assigned > maxUnlockedDay) return;
 
@@ -394,6 +521,44 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
   };
 
   const handleSubtaskToggle = (taskId: string, subtaskId: string) => {
+    // For unpaid users, don't allow toggling subtasks
+    if (!isPremiumUser) {
+      toast.error('Upgrade to premium to complete tasks', {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+      });
+      
+      // Show a toast with an upgrade button
+      toast.info(
+        <div className="flex flex-col items-center">
+          <p className="mb-2">Upgrade to premium to access all features</p>
+          <button
+            className="px-4 py-2 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition-colors"
+            onClick={() => {
+              window.open('https://buy.stripe.com/eVa9DB3fr9og0RqeUZ', '_blank');
+            }}
+          >
+            Upgrade Now
+          </button>
+        </div>,
+        {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: false,
+        }
+      );
+      
+      return;
+    }
+    
+    // For paid users, follow the normal logic
     const task = tasks.find(t => t.id === taskId);
     if (!task || task.day_assigned > maxUnlockedDay) {
       return;
@@ -415,6 +580,13 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
   };
 
   const handleTaskClick = (task: Task) => {
+    // For unpaid users, always show the task details with premium content
+    if (!isPremiumUser) {
+      setSelectedTaskId(task.id);
+      return;
+    }
+    
+    // For paid users, follow the normal locking logic
     if (isTaskLocked(task)) {
       toast.warning('Please complete the previous task before proceeding to this one.', {
         position: "top-center",
@@ -526,6 +698,29 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
         limit={2}
         transition={Slide}
       />
+
+      {!isPremiumUser && (
+        <div className="mb-8 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl p-4 shadow-md">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Crown className="w-6 h-6 mr-3" />
+              <div>
+                <h3 className="font-bold text-lg">Unlock All Tasks & Features</h3>
+                <p className="text-amber-100">Get full access to all tasks and track your progress</p>
+              </div>
+            </div>
+            <button 
+              className="px-4 py-2 bg-white text-amber-600 font-semibold rounded-lg hover:bg-amber-50 transition-colors"
+              onClick={() => {
+                // Navigate to the Stripe payment link
+                window.open('https://buy.stripe.com/eVa9DB3fr9og0RqeUZ', '_blank');
+              }}
+            >
+              Upgrade Now
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* <CountdownTimer
         days={timeRemaining.days}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Nunito } from 'next/font/google';
-import { ChevronDown, X, Check, AlertTriangle } from 'lucide-react';
+import { ChevronDown, X, Check, AlertTriangle, Crown } from 'lucide-react';
 import SubTaskRenderer from './SubTaskRenderer';
 import { toast } from 'react-hot-toast';
 
@@ -60,6 +60,14 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   handleUrlChange
 }) => {
   const isVisible = !!selectedTask;
+  
+  // Check if this is a premium locked task - only for unpaid users
+  // We need to check if the task is specifically a premium task for unpaid users
+  // not just any locked task for paid users
+  const isPremiumTask = selectedTask && 
+    selectedTask.subtasks.length === 1 && 
+    selectedTask.subtasks[0].title.includes("Premium Task - Upgrade to Unlock") &&
+    selectedTask.day_assigned > maxUnlockedDay; // This ensures it's actually locked due to premium status
 
   const validateUrl = (url: string, type: string): boolean => {
     if (!url) return false;
@@ -122,6 +130,66 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
     e.stopPropagation();
   };
 
+  // For premium tasks (unpaid users), show a special UI
+  if (isPremiumTask) {
+    return (
+      <div
+        className={`fixed inset-0 z-50 ${isVisible ? 'flex' : 'hidden'} items-center justify-center bg-black bg-opacity-60`}
+        onClick={handleOverlayClick}
+      >
+        <div
+          className={`bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden transform transition-all duration-300 ${nunito.className}`}
+          onClick={handlePanelClick}
+        >
+          <div className="flex justify-between items-center p-6 border-b">
+            <h2 className="text-2xl font-bold text-[#4B4B4B] flex items-center">
+              {selectedTask?.title || 'Task Details'}
+              <span className="ml-2 px-2 py-1 text-xs font-semibold text-white bg-amber-500 rounded-full flex items-center">
+                <Crown className="w-3 h-3 mr-1" />
+                Premium
+              </span>
+            </h2>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+
+          <div className="p-6 border-b">
+            <p className="text-[#4B4B4B] whitespace-pre-line">
+              {selectedTask?.description}
+            </p>
+          </div>
+
+          <div className="p-6 flex flex-col items-center justify-center">
+            <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-6 mb-4 w-full">
+              <div className="flex items-center justify-center mb-4">
+                <Crown className="w-10 h-10 text-amber-500 mr-2" />
+                <h3 className="text-xl font-bold text-amber-700">Premium Content</h3>
+              </div>
+              <p className="text-center text-amber-700 mb-6">
+                This task is only available for premium users. Upgrade now to access all tasks and track your progress.
+              </p>
+              <button 
+                className="w-full py-3 px-4 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg transition-colors"
+                onClick={() => {
+                  // Navigate to the Stripe payment link
+                  window.open('https://buy.stripe.com/eVa9DB3fr9og0RqeUZ', '_blank');
+                  onClose();
+                }}
+              >
+                Upgrade Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Original UI for paid users - DO NOT MODIFY THIS SECTION
   return (
     <div
       className={`

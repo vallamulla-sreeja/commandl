@@ -127,7 +127,13 @@ export default function Dashboard() {
         const isEnrolled = response.project_enrolled === 'yes';
         setIsProjectEnrolled(isEnrolled);
         
+        // Redirect both paid and unpaid users to project-task-board
+        // This ensures unpaid users also see the project board with premium content
         if (isEnrolled) {
+          router.replace('/project-task-board');
+        } else if (!isPaid) {
+          // For unpaid users who aren't enrolled yet, also redirect to project-task-board
+          // They will see the premium content UI there
           router.replace('/project-task-board');
         }
       } catch (error) {
@@ -139,6 +145,8 @@ export default function Dashboard() {
         if (isMounted) {
           setUserStatus({ isPaid: false });
           setIsProjectEnrolled(false);
+          // Redirect unpaid users to project-task-board even if there was an error
+          router.replace('/project-task-board');
         }
       } finally {
         if (isMounted) {
@@ -302,26 +310,9 @@ export default function Dashboard() {
       <main className="flex-1 lg:ml-72 transition-all duration-300">
         <div className="min-h-screen p-4 sm:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
-            {!userStatus.isPaid ? (
-              <div className="text-center p-8">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-                <div className="text-center">
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] mb-6 sm:mb-8">
-                    Welcome to CommandL
-                  </h1>
-                  <div className="rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-12">
-                    {/* <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8">
-                      We&apos;re excited to have you on board.
-                    </p> */}
-                    <div className="inline-flex items-center justify-center space-x-2 bg-[#58CC02]/10 text-[#58CC02] font-medium py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      <span>You&apos;re on our waitlist</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {isCheckingStatus ? (
+              <div className="flex justify-center items-center h-[60vh]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#58cc02]"></div>
               </div>
             ) : enrollmentSuccess ? (
               <motion.div
@@ -338,53 +329,10 @@ export default function Dashboard() {
                 <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8">
                   You&apos;ve successfully enrolled in the project. Get ready to start your development journey!
                 </p>
-                <div className="flex justify-center">
-                  <button 
-                    onClick={() => router.push('/project-task-board')}
-                    className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-[#58CC02] text-white rounded-lg sm:rounded-xl font-semibold hover:bg-[#58CC02]/90 transition-colors text-sm sm:text-base"
-                  >
-                    Go to Project Dashboard
-                  </button>
-                </div>
               </motion.div>
             ) : (
-              <div className="space-y-6 sm:space-y-8 max-w-4xl mx-auto">
-                <div className="text-center">
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                    <span className="bg-[#efccff] text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-md inline-block">
-                      Project Enrollment
-                    </span>
-                  </h1>
-                </div>
-                <div className="flex justify-center mb-6 sm:mb-8">
-                  <div className="flex items-center space-x-2 sm:space-x-4">
-                    {[3, 4, 5].map((step, index) => (
-                      <div key={step} className="flex items-center">
-                        <div
-                          className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-sm sm:text-base ${
-                            step === currentStep
-                              ? 'bg-[#58CC02] text-white'
-                              : step < currentStep
-                              ? 'bg-[#58CC02]/20 text-[#58CC02]'
-                              : 'bg-gray-200 text-gray-400'
-                          }`}
-                        >
-                          {index + 1}
-                        </div>
-                        {step < 5 && (
-                          <div
-                            className={`w-8 sm:w-16 h-0.5 ${
-                              step < currentStep ? 'bg-[#58CC02]' : 'bg-gray-200'
-                            }`}
-                          />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="px-4 sm:px-6 lg:px-8">
-                  {renderStep()}
-                </div>
+              <div className="space-y-8">
+                {renderStep()}
               </div>
             )}
           </div>
