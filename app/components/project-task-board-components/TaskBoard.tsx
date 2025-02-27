@@ -8,7 +8,7 @@ import {
   DroppableStateSnapshot,
 } from 'react-beautiful-dnd';
 import { StrictModeDroppable } from './StrictModeDroppable';
-import { Lock, Unlock, ListTodo, Clock, CheckCircle2 } from 'lucide-react';
+import { Lock, Unlock, ListTodo, Clock, CheckCircle2, Crown } from 'lucide-react';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -168,7 +168,12 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
                                   {task.title}
                                 </h3>
                                 {locked ? (
-                                  <Lock className="w-4 h-4 text-gray-400" />
+                                  <div className="flex items-center">
+                                    {task.subtasks.length === 1 && task.subtasks[0].title.includes("Premium Task - Upgrade to Unlock") ? (
+                                      <Crown className="w-4 h-4 text-amber-500 mr-1" />
+                                    ) : null}
+                                    <Lock className="w-4 h-4 text-gray-400" />
+                                  </div>
                                 ) : (
                                   <Unlock className="w-4 h-4 text-[#58CC02]" />
                                 )}

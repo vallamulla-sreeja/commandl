@@ -6,9 +6,10 @@ import { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 // import { ArrowDownCircleIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import ResumeUpload from '../components/dashboard/ResumeUpload';
+// Commented out unused components
+// import ResumeUpload from '../components/dashboard/ResumeUpload';
 import ProjectSelection from '../components/dashboard/ProjectSelection';
-import AboutSection from '../components/dashboard/AboutSection';
+// import AboutSection from '../components/dashboard/AboutSection';
 import GoalsSection from '../components/dashboard/GoalsSection';
 import EnrollmentSummary from '../components/dashboard/EnrollmentSummary';
 import { checkUserStatusAPI } from '../services/api';
@@ -58,14 +59,22 @@ export default function Dashboard() {
   const router = useRouter();
   const [userStatus, setUserStatus] = useState<UserStatus | null>(null);
   const [selectedProject, setSelectedProject] = useState<string>('');
+  
+  // These state variables are kept for future use and compatibility with the EnrollmentSummary component
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [resumeFile, setResumeFile] = useState<File | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [about, setAbout] = useState('');
+  
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [enrollmentSuccess, setEnrollmentSuccess] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
+  // Start with GoalsSection (step 3) instead of ResumeUpload (step 1)
+  const [currentStep, setCurrentStep] = useState(3);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
   const [isProjectEnrolled, setIsProjectEnrolled] = useState<boolean | null>(null);
+  // Add state for sidebar collapsed status
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -120,6 +129,8 @@ export default function Dashboard() {
         const isEnrolled = response.project_enrolled === 'yes';
         setIsProjectEnrolled(isEnrolled);
         
+        // Only redirect to project-task-board if the user is already enrolled in a project
+        // This ensures both paid and unpaid users go through the enrollment process first
         if (isEnrolled) {
           router.replace('/project-task-board');
         }
@@ -132,6 +143,8 @@ export default function Dashboard() {
         if (isMounted) {
           setUserStatus({ isPaid: false });
           setIsProjectEnrolled(false);
+          // Remove the automatic redirect for unpaid users on error
+          // Let them go through the enrollment process
         }
       } finally {
         if (isMounted) {
@@ -152,12 +165,15 @@ export default function Dashboard() {
     };
   }, [user, isUserLoading, router]);
 
+  // Commented out as it's no longer needed
+  /*
   const handleResumeUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setResumeFile(file);
     }
   };
+  */
 
   const handleProjectSelection = (projectId: string) => {
     setSelectedProject(projectId);
@@ -181,25 +197,6 @@ export default function Dashboard() {
       const project = PROJECTS.find(p => p.id === selectedProject);
       if (!project) throw new Error('Project not found');
       
-      // First upload the resume and get the URL
-      let resumeUrl = null;
-      if (resumeFile) {
-        const formData = new FormData();
-        formData.append('file', resumeFile);
-        
-        const resumeResponse = await fetch('/api/upload-resume', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!resumeResponse.ok) {
-          throw new Error('Failed to upload resume');
-        }
-
-        const resumeData = await resumeResponse.json();
-        resumeUrl = resumeData.url;
-      }
-
       // Now make the API call to generate project tasks with the resume URL
       const accessToken = await fetchAccessToken();
       const response = await fetch(`${BASE_URL}/generate-14-day-project-tasks`, {
@@ -211,8 +208,6 @@ export default function Dashboard() {
         body: JSON.stringify({
           project_name: project.title.toLowerCase().replace(/\s+/g, '_'),
           project_description: project.description,
-          resume_url: resumeUrl,
-          about: about,
           goals: selectedGoals
         })
       });
@@ -243,30 +238,13 @@ export default function Dashboard() {
 
   const renderStep = () => {
     switch (currentStep) {
-      case 1:
-        return (
-          <ResumeUpload
-            resumeFile={resumeFile}
-            onFileChange={handleResumeUpload}
-            onContinue={() => resumeFile && setCurrentStep(2)}
-          />
-        );
-      case 2:
-        return (
-          <AboutSection
-            about={about}
-            onAboutChange={setAbout}
-            onContinue={() => about.trim() && setCurrentStep(3)}
-            onBack={() => setCurrentStep(1)}
-          />
-        );
       case 3:
         return (
           <GoalsSection
             selectedGoals={selectedGoals}
             onGoalToggle={handleGoalToggle}
             onContinue={() => selectedGoals.length >= 3 && setCurrentStep(4)}
-            onBack={() => setCurrentStep(2)}
+            onBack={() => {}}
           />
         );
       case 4:
@@ -281,7 +259,7 @@ export default function Dashboard() {
         );
       case 5:
         const project = PROJECTS.find(p => p.id === selectedProject);
-        if (!project || !resumeFile) return null;
+        if (!project) return null;
         return (
           <EnrollmentSummary
             resumeFile={resumeFile}
@@ -326,30 +304,13 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-white">
-      <Sidebar />
-      <main className="flex-1 lg:ml-72 transition-all duration-300">
+      <Sidebar isCollapsedCallback={setIsSidebarCollapsed} />
+      <main className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-72'}`}>
         <div className="min-h-screen p-4 sm:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
-            {!userStatus.isPaid ? (
-              <div className="text-center p-8">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-                <div className="text-center">
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] mb-6 sm:mb-8">
-                    Welcome to CommandL
-                  </h1>
-                  <div className="rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-12">
-                    {/* <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8">
-                      We&apos;re excited to have you on board.
-                    </p> */}
-                    <div className="inline-flex items-center justify-center space-x-2 bg-[#58CC02]/10 text-[#58CC02] font-medium py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      <span>You&apos;re on our waitlist</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {isCheckingStatus ? (
+              <div className="flex justify-center items-center h-[60vh]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#58cc02]"></div>
               </div>
             ) : enrollmentSuccess ? (
               <motion.div
@@ -376,43 +337,30 @@ export default function Dashboard() {
                 </div>
               </motion.div>
             ) : (
-              <div className="space-y-6 sm:space-y-8 max-w-4xl mx-auto">
-                <div className="text-center">
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                    <span className="bg-[#efccff] text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-md inline-block">
-                      Project Enrollment
-                    </span>
-                  </h1>
-                </div>
-                <div className="flex justify-center mb-6 sm:mb-8">
-                  <div className="flex items-center space-x-2 sm:space-x-4">
-                    {[1, 2, 3, 4, 5].map((step) => (
-                      <div key={step} className="flex items-center">
-                        <div
-                          className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-sm sm:text-base ${
-                            step === currentStep
-                              ? 'bg-[#58CC02] text-white'
-                              : step < currentStep
-                              ? 'bg-[#58CC02]/20 text-[#58CC02]'
-                              : 'bg-gray-200 text-gray-400'
-                          }`}
-                        >
-                          {step}
+              <div className="space-y-8">
+                {!userStatus.isPaid && (
+                  <div className="text-center p-4 mb-8">
+                    <div className="max-w-4xl mx-auto">
+                      <div className="text-center">
+                        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#4b4b4b] mb-6">
+                          Welcome to CommandL
+                        </h1>
+                        {/* <div className="rounded-xl p-4 mb-6">
+                          <div className="inline-flex items-center justify-center space-x-2 bg-[#58CC02]/10 text-[#58CC02] font-medium py-2.5 px-4 rounded-lg text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            <span>You&apos;re on our waitlist</span>
+                          </div>
                         </div>
-                        {step < 5 && (
-                          <div
-                            className={`w-8 sm:w-16 h-0.5 ${
-                              step < currentStep ? 'bg-[#58CC02]' : 'bg-gray-200'
-                            }`}
-                          />
-                        )}
+                        <p className="text-lg text-gray-600 mb-6">
+                          While you&apos;re waiting, you can start the enrollment process to get ready for your project.
+                        </p> */}
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </div>
-                <div className="px-4 sm:px-6 lg:px-8">
-                  {renderStep()}
-                </div>
+                )}
+                {renderStep()}
               </div>
             )}
           </div>
