@@ -154,30 +154,6 @@ export default function BenefitsPage() {
             </div>
           </div>
 
-          {/* 3 Common Problems Section */}
-          <div className="mb-16 max-w-4xl mx-auto">
-            <h2 className="text-4xl sm:text-5xl font-extrabold mb-8 text-center text-black font-nunito">
-              3 Common Problems (And How We Solve Them)
-            </h2>
-            <div className="space-y-6 font-nunito text-[#4b4b4b]">
-              {commonProblems.map((item, index) => (
-                <div key={index} className="mb-8">
-                  <h3 className="text-2xl md:text-3xl font-bold mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-lg md:text-xl mb-2">
-                    <strong className="block mb-1">Problem:</strong>
-                    {item.problem}
-                  </p>
-                  <p className="text-lg md:text-xl">
-                    <strong className="block mb-1">Solution:</strong>
-                    {item.solution}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Updated Cohort + Perks Section */}
           <div className="mb-16 max-w-4xl mx-auto">
             <h2 className="text-4xl sm:text-5xl font-extrabold mb-8 text-center text-black font-nunito">
@@ -253,6 +229,32 @@ export default function BenefitsPage() {
               </Link>
             </div>
           )}
+
+          {/* FAQ Section - Moved to bottom and redesigned */}
+          <div className="mb-16 max-w-5xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-extrabold mb-8 text-center text-black font-nunito">
+              Frequently Asked Questions
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-nunito text-[#4b4b4b]">
+              {commonProblems.map((item, index) => (
+                <div key={index} className="border border-gray-200 rounded-lg p-5 flex flex-col h-full">
+                  <h3 className="text-xl font-bold mb-3">
+                    {item.title}
+                  </h3>
+                  <div className="text-sm space-y-3 flex-grow">
+                    <div>
+                      <span className="font-semibold block mb-1">Problem:</span>
+                      <p>{item.problem}</p>
+                    </div>
+                    <div>
+                      <span className="font-semibold block mb-1">Solution:</span>
+                      <p>{item.solution}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* Contact Information Section */}
           <div className="text-center font-nunito mb-12">
