@@ -16,7 +16,7 @@ const clearAllCache = async () => {
   sessionStorage.clear();
 };
 
-export default function Sidebar() {
+export default function Sidebar({ isCollapsedCallback }: { isCollapsedCallback?: (isCollapsed: boolean) => void } = {}) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -47,6 +47,12 @@ export default function Sidebar() {
     // Cleanup
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    if (isCollapsedCallback) {
+      isCollapsedCallback(isCollapsed);
+    }
+  }, [isCollapsed, isCollapsedCallback]);
 
   const isActive = (path: string) => pathname === path;
 
