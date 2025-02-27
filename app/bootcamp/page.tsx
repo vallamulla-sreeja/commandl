@@ -181,7 +181,7 @@ export default function BootcampPage() {
           {/* Updated Cohort + Perks Section */}
           <div className="mb-16 max-w-4xl mx-auto">
             <h2 className="text-4xl sm:text-5xl font-extrabold mb-8 text-center text-black font-nunito">
-              What You'll Get
+              What You&apos;ll Get
             </h2>
             <div className="space-y-6 font-nunito text-[#4b4b4b]">
               {[
