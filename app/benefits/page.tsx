@@ -240,7 +240,7 @@ export default function BenefitsPage() {
           {!isCheckingStatus && isPaid === true && (
             <div className="text-center font-nunito bg-gray-50 rounded-xl p-8 mb-12">
               <h2 className="text-3xl sm:text-4xl font-extrabold mb-6 text-green-600">
-                You're Already Enrolled!
+                You&apos;re Already Enrolled!
               </h2>
               <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
                 Thank you for joining our bootcamp! You have full access to all features and benefits.
