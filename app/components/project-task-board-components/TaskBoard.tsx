@@ -31,6 +31,7 @@ interface Task {
   status: 'To Do' | 'In Progress' | 'Done';
   completed?: boolean;
   day_assigned: number;
+  hasLimitedDetails?: boolean;
 }
 
 interface TaskBoardProps {
@@ -169,7 +170,9 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
                                 </h3>
                                 {locked ? (
                                   <div className="flex items-center">
-                                    {task.subtasks.length === 1 && task.subtasks[0].title.includes("Premium Task - Upgrade to Unlock") ? (
+                                    {task.hasLimitedDetails ? (
+                                      <Crown className="w-4 h-4 text-amber-500 mr-1" />
+                                    ) : task.subtasks.length === 1 && task.subtasks[0].title.includes("Premium Task - Upgrade to Unlock") ? (
                                       <Crown className="w-4 h-4 text-amber-500 mr-1" />
                                     ) : null}
                                     <Lock className="w-4 h-4 text-gray-400" />
