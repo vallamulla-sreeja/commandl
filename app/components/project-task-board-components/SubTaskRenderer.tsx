@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Crown } from 'lucide-react';
 import '../../styles/notes.css';
 
 interface VerifyField {
@@ -110,11 +111,33 @@ const SubTaskRenderer: React.FC<SubTaskRendererProps> = ({
     ),
   };
 
+  // Check if this is a limited details subtask (empty or very short description)
+  const isLimitedDetails = !subtask || subtask.trim() === '';
+
   return (
     <div className="container mx-auto px-2 sm:px-4 py-2 relative">
       <div className="pr-4 sm:pr-16">
         <div className="prose max-w-none prose-sm sm:prose-base">
-          {subtask ? (
+          {isLimitedDetails ? (
+            <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-6 mb-4 w-full">
+              <div className="flex items-center justify-center mb-4">
+                <Crown className="w-8 h-8 text-amber-500 mr-2" />
+                <h3 className="text-lg font-bold text-amber-700">Premium Content</h3>
+              </div>
+              <p className="text-center text-amber-700 mb-6">
+                This content is only available for premium users. Upgrade now to access the full details and complete this task.
+              </p>
+              <button 
+                className="w-full py-3 px-4 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg transition-colors"
+                onClick={() => {
+                  // Navigate to the Stripe payment link
+                  window.open('https://buy.stripe.com/eVa9DB3fr9og0RqeUZ', '_blank');
+                }}
+              >
+                Upgrade Now
+              </button>
+            </div>
+          ) : (
             <>
               <ReactMarkdown components={components}>
                 {subtask}
@@ -157,8 +180,6 @@ const SubTaskRenderer: React.FC<SubTaskRendererProps> = ({
                 </div>
               )}
             </>
-          ) : (
-            <p>No sub tasks available for this task.</p>
           )}
         </div>
       </div>
