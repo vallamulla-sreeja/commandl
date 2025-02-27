@@ -706,7 +706,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
               <Crown className="w-6 h-6 mr-3" />
               <div>
                 <h3 className="font-bold text-lg">Unlock All Tasks & Features</h3>
-                <p className="text-amber-100">Get full access to all tasks and track your progress</p>
+                <p className="text-amber-100 font-bold">Start your first project and get full access to AI resume tool and CommandL</p>
               </div>
             </div>
             <button 
