@@ -79,7 +79,7 @@ export default function BootcampPage() {
       description: "Learn about our 14-day program and how it will transform your coding skills."
     },
     {
-      id: "https://bypr8o9pz5zjf5of.public.blob.vercel-storage.com/careerfornia-captions-compressed-F3ixwJI67gGJ9KmMVuhiLZ8HUMfsAC.mp4",
+      id: "cfccff2f2d5f1d0742dd21524493b86b",
       title: "Powerful AI Resume Tool",
       description: "Generate best resume for each role with a single click and be in top 1% of all the candidates that apply to the position. Get interview calls in 2 weeks."
     }
