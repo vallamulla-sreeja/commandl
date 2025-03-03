@@ -100,7 +100,7 @@ export default function Dashboard() {
                       Did you know?
                     </p>
                     <p className="mt-1 text-sm text-gray-500">
-                      You'll get 1 year of free access to Code editor with this program!
+                      You&apos;ll get 1 year of free access to Code editor with this program!
                     </p>
                   </div>
                 </div>
@@ -138,7 +138,7 @@ export default function Dashboard() {
                       Did you know?
                     </p>
                     <p className="mt-1 text-sm text-gray-500">
-                      Personalizing your resume increases interview call chances by 3x. With this program, you'll have 3 months of unlimited access to this tool!
+                      Personalizing your resume increases interview call chances by 3x. With this program, you&apos;ll have 3 months of unlimited access to this tool!
                     </p>
                   </div>
                 </div>
@@ -465,7 +465,7 @@ export default function Dashboard() {
                               </span>
                             </h1>
                             <p className="text-lg text-gray-700 mt-3">
-                              Let's get started with the 14-day program!
+                              Let&apos;s get started with the 14-day program!
                             </p>
                           </div>
                         ) : (
