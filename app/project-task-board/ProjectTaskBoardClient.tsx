@@ -358,9 +358,12 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
     const { destination, source, draggableId } = result;
     if (!destination) return;
 
-    // For unpaid users, don't allow any drag operations
-    if (!isPremiumUser) {
-      toast.error('Upgrade to premium to move tasks between columns', {
+    const task = tasks.find((t) => t.id === draggableId);
+    if (!task || task.day_assigned > maxUnlockedDay) return;
+
+    // For unpaid users, only block premium task movements
+    if (!isPremiumUser && task.hasLimitedDetails) {
+      toast.error('Upgrade to premium to move this task', {
         position: "bottom-center",
         autoClose: 3000,
         hideProgressBar: true,
@@ -394,9 +397,6 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
       
       return;
     }
-
-    const task = tasks.find((t) => t.id === draggableId);
-    if (!task || task.day_assigned > maxUnlockedDay) return;
 
     const sourceStatus = source.droppableId as Task['status'];
     const destStatus = destination.droppableId as Task['status'];
@@ -443,9 +443,14 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
   };
 
   const handleSubtaskToggle = (taskId: string, subtaskId: string) => {
-    // For unpaid users, don't allow toggling subtasks
-    if (!isPremiumUser) {
-      toast.error('Upgrade to premium to complete tasks', {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task || task.day_assigned > maxUnlockedDay) {
+      return;
+    }
+
+    // For unpaid users, only block premium tasks
+    if (!isPremiumUser && task.hasLimitedDetails) {
+      toast.error('Upgrade to premium to complete this task', {
         position: "bottom-center",
         autoClose: 3000,
         hideProgressBar: true,
@@ -481,11 +486,6 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
     }
     
     // For paid users, follow the normal logic
-    const task = tasks.find(t => t.id === taskId);
-    if (!task || task.day_assigned > maxUnlockedDay) {
-      return;
-    }
-
     const updatedTasks = tasks.map(t => {
       if (t.id === taskId) {
         return {
