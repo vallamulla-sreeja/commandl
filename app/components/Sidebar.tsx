@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { FiHome, FiSettings, FiLogOut, FiMenu, FiChevronLeft, FiUser, FiGift } from 'react-icons/fi';
 // import { FiFolder } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
+import { getScores, ScoresResponse } from '../services/api';
 
 const clearAllCache = async () => {
   if (typeof caches !== 'undefined') {
@@ -23,6 +24,13 @@ export default function Sidebar({ isCollapsedCallback }: { isCollapsedCallback?:
   const [showLogout, setShowLogout] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [scores, setScores] = useState<ScoresResponse>({
+    points: 0,
+    streak: 0,
+    previous_streak: 0,
+    fifteen_minutes_challenge: false,
+    todayStreak: false
+  });
 
   const handleLogout = () => {
     clearAllCache();
@@ -43,6 +51,18 @@ export default function Sidebar({ isCollapsedCallback }: { isCollapsedCallback?:
     
     // Add resize listener
     window.addEventListener('resize', checkMobile);
+    
+    // Fetch scores
+    const fetchScores = async () => {
+      try {
+        const scoresData = await getScores();
+        setScores(scoresData);
+      } catch (error) {
+        console.error('Error fetching scores:', error);
+      }
+    };
+    
+    fetchScores();
     
     // Cleanup
     return () => window.removeEventListener('resize', checkMobile);
@@ -111,11 +131,11 @@ export default function Sidebar({ isCollapsedCallback }: { isCollapsedCallback?:
             <div className={`flex ${isCollapsed && !isMobile ? 'flex-col' : 'flex-row'} items-center gap-2 w-full`}>
               <div className={`flex items-center ${isCollapsed && !isMobile ? 'flex-col' : 'flex-row'} gap-2 px-3 py-2 rounded-lg`}>
                 <span className={`text-2xl ${isCollapsed && !isMobile ? 'text-xl' : 'text-2xl'}`}>🔥</span>
-                <span className="text-black font-bold text-lg">5</span>
+                <span className="text-black font-bold text-lg">{scores.streak}</span>
               </div>
               <div className={`flex items-center ${isCollapsed && !isMobile ? 'flex-col' : 'flex-row'} gap-2 px-3 py-2 rounded-lg`}>
                 <span className={`text-2xl ${isCollapsed && !isMobile ? 'text-xl' : 'text-2xl'}`}>⭐</span>
-                <span className="text-black font-bold text-lg">1235</span>
+                <span className="text-black font-bold text-lg">{scores.points}</span>
               </div>
             </div>
           </div>
