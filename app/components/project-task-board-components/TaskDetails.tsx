@@ -71,6 +71,10 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
     selectedTask.subtasks[0].title.includes("Premium Task - Upgrade to Unlock") &&
     selectedTask.day_assigned > maxUnlockedDay)); // This ensures it's actually locked due to premium status
 
+  // Check if the task has any CommandL-tagged subtasks
+  const hasCommandLSubtasks = selectedTask && 
+    selectedTask.subtasks.some(subtask => subtask.spark_studio === true);
+
   const validateUrl = (url: string, type: string): boolean => {
     if (!url) return false;
     
@@ -232,6 +236,18 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             <p className="text-[#4B4B4B] mb-8 text-xl leading-relaxed">
               {selectedTask.description}
             </p>
+
+            {/* Add CommandL note if the task has CommandL-tagged subtasks */}
+            {hasCommandLSubtasks && (
+              <div className="mb-8 p-4 bg-pink-50 border border-pink-200 rounded-lg">
+                <p className="text-pink-800 flex items-center">
+                  <span className="mr-2 px-2 py-1 text-xs font-semibold text-white bg-pink-500 rounded-full">
+                    CommandL
+                  </span>
+                  <span>This task has CommandL tag for one or more subtasks. You need to open CommandL IDE application for doing those tasks.</span>
+                </p>
+              </div>
+            )}
 
             <h3 className="text-2xl font-semibold text-[#4B4B4B] mb-6">
               Subtasks
