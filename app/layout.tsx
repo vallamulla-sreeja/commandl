@@ -1,12 +1,14 @@
-'use client';
-
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { Nunito } from 'next/font/google';
 import { Inter } from 'next/font/google';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import './globals.css';
-import { useEffect, useState } from 'react';
+import { metadata, viewport } from './metadata';
+import ClientLayout from './ClientLayout';
+
+// Export the metadata for Next.js to use
+export { metadata, viewport };
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -15,21 +17,6 @@ const nunito = Nunito({
   weight: ['200', '300', '400', '600', '700', '800'],
   variable: '--font-nunito',
 });
-
-// Client-side wrapper component
-function ClientWrapper({ children }: { children: React.ReactNode }) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  return (
-    <div suppressHydrationWarning>
-      {isMounted ? children : <div style={{ visibility: 'hidden' }}>{children}</div>}
-    </div>
-  );
-}
 
 export default function RootLayout({
   children,
@@ -44,11 +31,11 @@ export default function RootLayout({
       </head>
       <body className={`font-sans antialiased bg-white text-slate-900 ${inter.className}`} suppressHydrationWarning>
         <UserProvider>
-          <ClientWrapper>
+          <ClientLayout>
             {children}
             <SpeedInsights />
             <Analytics />
-          </ClientWrapper>
+          </ClientLayout>
         </UserProvider>
       </body>
     </html>
