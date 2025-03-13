@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Nunito } from 'next/font/google';
 import { ChevronDown, X, Check, AlertTriangle, Crown } from 'lucide-react';
 import SubTaskRenderer from './SubTaskRenderer';
 import { toast } from 'react-hot-toast';
+import { verifyUserInput } from '../../services/api';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -47,6 +48,24 @@ interface TaskDetailsProps {
   onClose: () => void;
   urlInputs: { [key: string]: string };
   handleUrlChange: (subtaskId: string, value: string) => void;
+  dbTables?: { [key: string]: string[] };
+  setDbTables?: (tables: { [key: string]: string[] }) => void;
+  codeFeedback?: { [key: string]: { 
+    message: string, 
+    feedback: string,
+    results?: Record<string, unknown>[],
+    ran_user_code?: boolean,
+    code_to_execute?: string | null 
+  } };
+  setCodeFeedback?: React.Dispatch<React.SetStateAction<{ 
+    [key: string]: { 
+      message: string, 
+      feedback: string,
+      results?: Record<string, unknown>[],
+      ran_user_code?: boolean,
+      code_to_execute?: string | null 
+    } 
+  }>>;
 }
 
 const TaskDetails: React.FC<TaskDetailsProps> = ({
@@ -58,7 +77,11 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   maxUnlockedDay,
   onClose,
   urlInputs,
-  handleUrlChange
+  handleUrlChange,
+  dbTables,
+  setDbTables,
+  codeFeedback,
+  setCodeFeedback
 }) => {
   const isVisible = !!selectedTask;
   
@@ -75,15 +98,168 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   const hasCommandLSubtasks = selectedTask && 
     selectedTask.subtasks.some(subtask => subtask.spark_studio === true);
 
-  const validateUrl = (url: string, type: string): boolean => {
+  // Track verification status for db_connection_string inputs
+  const [verificationStatus, setVerificationStatus] = useState<{ [key: string]: boolean }>({});
+  const [isVerifying, setIsVerifying] = useState<{ [key: string]: boolean }>({});
+
+  // Create a composite key using subtaskId and the input value
+  const getVerificationKey = (subtaskId: string, value: string) => `${subtaskId}:${value}`;
+
+  const validateUrl = (url: string, type: string, subtaskId: string): boolean => {
     if (!url) return false;
     
-    if (type === 'linkedin') {
-      return url.toLowerCase().includes('linkedin.com/');
-    } else if (type === 'github') {
-      return url.toLowerCase().includes('github.com/');
+    // For standard URLs, check for valid format
+    if (type === 'github' || type === 'linkedin' || type === 'twitter') {
+      const pattern = /^(https?:\/\/)[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+(\/[a-zA-Z0-9-_.]+)*\/?$/;
+      return pattern.test(url);
+    } else if (type === 'db_connection_string' || type === 'code_verify') {
+      // For DB connection strings and code verification, rely on the verification status
+      // Only return true if it has been verified (has a value in verificationStatus)
+      return verificationStatus.hasOwnProperty(getVerificationKey(subtaskId, url)) && verificationStatus[getVerificationKey(subtaskId, url)] === true;
     }
     return false;
+  };
+
+  // Handle verification of DB connection strings
+  const handleVerifyDbConnection = async (subtaskId: string, connectionString: string) => {
+    if (!connectionString) return;
+    
+    // Find the subtask to include context information
+    const subtask = selectedTask?.subtasks.find(st => st.id === subtaskId);
+    if (!subtask || !selectedTask) return;
+    
+    try {
+      // Set this specific input as verifying
+      setIsVerifying(prev => ({ ...prev, [subtaskId]: true }));
+      
+      // Call the API to verify the connection string with context
+      const response = await verifyUserInput('db_connection_string', connectionString, {
+        subtask_id: subtaskId,
+        task_id: selectedTask.id
+      });
+      
+      // Update verification status based on API response using composite key
+      setVerificationStatus(prev => ({ 
+        ...prev, 
+        [getVerificationKey(subtaskId, connectionString)]: response.success,
+        [connectionString]: response.success // Keep this for backward compatibility
+      }));
+      
+      // Store tables if available
+      if (response.success && response.tables && setDbTables) {
+        // Create a new object for the dbTables state
+        const updatedTables = dbTables ? { ...dbTables } : {};
+        updatedTables[connectionString] = response.tables || [];
+        // Update parent component's state
+        setDbTables(updatedTables);
+      }
+      
+      // Show appropriate toast message
+      if (response.success) {
+        toast.success('Connection string verified successfully!', {
+          duration: 3000,
+          position: 'top-center',
+        });
+      } else {
+        toast.error(response.message || 'Failed to verify connection string', {
+          duration: 3000,
+          position: 'top-center',
+        });
+      }
+    } catch (error) {
+      console.error('Error verifying connection string:', error);
+      toast.error('An error occurred during verification', {
+        duration: 3000,
+        position: 'top-center',
+      });
+      // Mark as not verified using composite key
+      setVerificationStatus(prev => ({ 
+        ...prev, 
+        [getVerificationKey(subtaskId, connectionString)]: false,
+        [connectionString]: false // Keep this for backward compatibility
+      }));
+    } finally {
+      // Clear the verifying state
+      setIsVerifying(prev => ({ ...prev, [subtaskId]: false }));
+    }
+  };
+
+  // Handle verification of code
+  const handleVerifyCode = async (subtaskId: string, code: string) => {
+    if (!code) return;
+    
+    // Find the subtask to get its title and description
+    const subtask = selectedTask?.subtasks.find(st => st.id === subtaskId);
+    if (!subtask || !selectedTask) return;
+    
+    try {
+      // Set this specific input as verifying
+      setIsVerifying(prev => ({ ...prev, [subtaskId]: true }));
+      
+      // Call the API to verify the code with additional context
+      const response = await verifyUserInput('code_verify', code, {
+        title: subtask.title,
+        description: subtask.description,
+        subtask_id: subtaskId,
+        task_id: selectedTask.id
+      });
+      
+      // Update verification status based on API response using composite key
+      setVerificationStatus(prev => ({ 
+        ...prev, 
+        [getVerificationKey(subtaskId, code)]: response.success,
+        [code]: response.success // Keep this for backward compatibility
+      }));
+      
+      // Store feedback messages using composite key
+      if (setCodeFeedback) {
+        setCodeFeedback(prev => ({ 
+          ...prev, 
+          [getVerificationKey(subtaskId, code)]: { 
+            message: response.message || '', 
+            feedback: response.feedback || '',
+            results: response.results,
+            ran_user_code: response.ran_user_code,
+            code_to_execute: response.code_to_execute
+          },
+          [code]: { // Keep this for backward compatibility
+            message: response.message || '', 
+            feedback: response.feedback || '',
+            results: response.results,
+            ran_user_code: response.ran_user_code,
+            code_to_execute: response.code_to_execute
+          } 
+        }));
+      }
+      
+      // Show appropriate toast message
+      if (response.success) {
+        toast.success(response.message || 'Code verified successfully!', {
+          duration: 3000,
+          position: 'top-center',
+        });
+      } else {
+        toast.error(response.message || 'Failed to verify code', {
+          duration: 3000,
+          position: 'top-center',
+        });
+      }
+    } catch (error) {
+      console.error('Error verifying code:', error);
+      toast.error('An error occurred during verification', {
+        duration: 3000,
+        position: 'top-center',
+      });
+      // Mark as not verified using composite key
+      setVerificationStatus(prev => ({ 
+        ...prev, 
+        [getVerificationKey(subtaskId, code)]: false,
+        [code]: false // Keep this for backward compatibility
+      }));
+    } finally {
+      // Clear the verifying state
+      setIsVerifying(prev => ({ ...prev, [subtaskId]: false }));
+    }
   };
 
   const handleSubtaskToggleWrapper = (taskId: string, subtask: Subtask) => {
@@ -116,7 +292,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
       const url = urlInputs[subtask.id] || '';
       const urlType = subtask.more_info.data.verify_field.type;
       
-      if (!validateUrl(url, urlType)) {
+      if (!validateUrl(url, urlType, subtask.id)) {
         toast.error(`Please enter a valid ${urlType} URL`, {
           duration: 3000,
           position: 'top-center',
@@ -134,6 +310,67 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
 
   const handlePanelClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+  };
+
+  // SQL Results Table Component
+  const SQLResultsTable = ({ results }: { results?: Record<string, unknown>[] }) => {
+    if (!results || results.length === 0) {
+      return <p className="text-sm text-gray-500 italic">No results returned</p>;
+    }
+
+    // Get all unique column names from the results
+    const columns = Array.from(
+      new Set(
+        results.flatMap(row => Object.keys(row))
+      )
+    );
+
+    // If there are no columns but we have results (empty objects), show a message
+    if (columns.length === 0 && results.length > 0) {
+      return (
+        <div className="mt-4">
+          <p className="text-sm text-gray-500">Query executed successfully but returned empty results</p>
+          <p className="text-xs text-gray-400">{results.length} row(s) affected</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="mt-4 overflow-x-auto">
+        <p className="text-sm text-gray-500 mb-2">Query Results:</p>
+        <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-md">
+          <thead className="bg-gray-50">
+            <tr>
+              {columns.map((column, i) => (
+                <th 
+                  key={i} 
+                  className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+                >
+                  {column}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {results.map((row, i) => (
+              <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                {columns.map((column, j) => (
+                  <td 
+                    key={j} 
+                    className="px-4 py-2 text-sm text-gray-500 border-r last:border-r-0"
+                  >
+                    {row[column] !== undefined && row[column] !== null 
+                      ? String(row[column]) 
+                      : <span className="text-gray-300">null</span>}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="text-xs text-gray-400 mt-1">{results.length} row(s) returned</p>
+      </div>
+    );
   };
 
   // For premium tasks (unpaid users), show a special UI
@@ -265,7 +502,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
 
                 const verifyField = subtask.more_info?.data?.verify_field;
                 const urlValue = urlInputs[subtask.id] || '';
-                const isUrlValid = verifyField ? validateUrl(urlValue, verifyField.type) : true;
+                const isUrlValid = verifyField ? validateUrl(urlValue, verifyField.type, subtask.id) : true;
 
                 // Check if this subtask can be completed (based on previous subtask)
                 const subtaskIndex = selectedTask.subtasks.findIndex(st => st.id === subtask.id);
@@ -385,30 +622,189 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                             <div className="mt-6 border-t border-gray-200 pt-4">
                               <div className="bg-white">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                  Enter your {subtask.more_info.data.verify_field.type} profile URL:
+                                  {subtask.more_info.data.verify_field.type === 'db_connection_string' 
+                                    ? 'Enter your database connection string:' 
+                                    : subtask.more_info.data.verify_field.type === 'code_verify'
+                                      ? 'Enter your code:' 
+                                      : `Enter your ${subtask.more_info.data.verify_field.type} profile URL:`}
                                 </label>
-                                <input
-                                  type="url"
-                                  value={urlValue}
-                                  onChange={(e) => handleUrlChange(subtask.id, e.target.value)}
-                                  placeholder={`https://${subtask.more_info.data.verify_field.type}.com/your-profile`}
-                                  className={`
-                                    w-full px-3 py-2 border rounded-md shadow-sm
-                                    focus:outline-none focus:ring-2 focus:ring-offset-2
-                                    ${urlValue && isUrlValid
-                                      ? 'border-green-300 focus:border-green-500 focus:ring-green-500'
-                                      : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
-                                    }
-                                  `}
-                                />
-                                {urlValue && !isUrlValid && (
-                                  <p className="mt-2 text-sm text-red-600">
-                                    Please enter a valid {subtask.more_info.data.verify_field.type} profile URL
-                                  </p>
+                                
+                                {subtask.more_info.data.verify_field.type === 'code_verify' ? (
+                                  <div>
+                                    <div className="flex flex-col gap-2">
+                                      <div className="rounded-md overflow-hidden">
+                                        <div className="bg-gray-800 px-4 py-2 text-xs text-gray-400 flex justify-between items-center border-b border-gray-700">
+                                          <span>SQL Query</span>
+                                          <span>Press Tab to indent</span>
+                                        </div>
+                                        <textarea
+                                          value={urlValue}
+                                          onChange={(e) => handleUrlChange(subtask.id, e.target.value)}
+                                          placeholder="-- Enter your SQL query here..."
+                                          className={`
+                                            w-full px-4 py-3 font-mono text-sm
+                                            min-h-[180px] resize-y
+                                            bg-gray-900 text-gray-100
+                                          `}
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Tab') {
+                                              e.preventDefault();
+                                              const target = e.target as HTMLTextAreaElement;
+                                              const start = target.selectionStart;
+                                              const end = target.selectionEnd;
+                                              
+                                              // Set updated text with tab
+                                              const newValue = urlValue.substring(0, start) + '  ' + urlValue.substring(end);
+                                              handleUrlChange(subtask.id, newValue);
+                                              
+                                              // Set cursor position after the tab
+                                              setTimeout(() => {
+                                                target.selectionStart = target.selectionEnd = start + 2;
+                                              }, 0);
+                                            }
+                                          }}
+                                        />
+                                      </div>
+                                      <button
+                                        onClick={() => handleVerifyCode(subtask.id, urlValue)}
+                                        disabled={!urlValue || isVerifying[subtask.id] || verificationStatus[getVerificationKey(subtask.id, urlValue)] === true}
+                                        className={`
+                                          self-end px-4 py-2 bg-blue-500 text-white rounded-md
+                                          ${!urlValue || isVerifying[subtask.id] || verificationStatus[getVerificationKey(subtask.id, urlValue)] === true ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}
+                                        `}
+                                      >
+                                        {isVerifying[subtask.id] ? 'Verifying...' : verificationStatus[getVerificationKey(subtask.id, urlValue)] === true ? 'Verified' : 'Verify'}
+                                      </button>
+                                    </div>
+                                    {/* Only show verification messages if verification has been attempted */}
+                                    {urlValue && verificationStatus.hasOwnProperty(getVerificationKey(subtask.id, urlValue)) && !isUrlValid && (
+                                      <p className="mt-2 text-sm text-red-600">
+                                        Please verify your query to proceed
+                                      </p>
+                                    )}
+                                    {urlValue && verificationStatus[getVerificationKey(subtask.id, urlValue)] === true && codeFeedback && codeFeedback[getVerificationKey(subtask.id, urlValue)] && (
+                                      <div>
+                                        <p className="mt-2 text-sm text-green-600">
+                                          Code verified successfully!
+                                        </p>
+                                        <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-md">
+                                          <p className="text-sm font-medium text-green-700">{codeFeedback[getVerificationKey(subtask.id, urlValue)].message}</p>
+                                          {codeFeedback[getVerificationKey(subtask.id, urlValue)].feedback && (
+                                            <p className="mt-1 text-sm text-green-600">{codeFeedback[getVerificationKey(subtask.id, urlValue)].feedback}</p>
+                                          )}
+                                          {codeFeedback[getVerificationKey(subtask.id, urlValue)].code_to_execute && (
+                                            <div className="mt-2 bg-green-100 p-2 rounded text-xs font-mono text-green-800">
+                                              {codeFeedback[getVerificationKey(subtask.id, urlValue)].code_to_execute}
+                                            </div>
+                                          )}
+                                        </div>
+                                        {codeFeedback[getVerificationKey(subtask.id, urlValue)].results && (
+                                          <SQLResultsTable results={codeFeedback[getVerificationKey(subtask.id, urlValue)].results} />
+                                        )}
+                                      </div>
+                                    )}
+                                    {urlValue && verificationStatus[getVerificationKey(subtask.id, urlValue)] === false && codeFeedback && codeFeedback[getVerificationKey(subtask.id, urlValue)] && (
+                                      <div>
+                                        <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-md">
+                                          <p className="text-sm font-medium text-red-700">{codeFeedback[getVerificationKey(subtask.id, urlValue)].message}</p>
+                                          {codeFeedback[getVerificationKey(subtask.id, urlValue)].feedback && (
+                                            <p className="mt-1 text-sm text-red-600">{codeFeedback[getVerificationKey(subtask.id, urlValue)].feedback}</p>
+                                          )}
+                                        </div>
+                                        {codeFeedback[getVerificationKey(subtask.id, urlValue)].results && (
+                                          <SQLResultsTable results={codeFeedback[getVerificationKey(subtask.id, urlValue)].results} />
+                                        )}
+                                      </div>
+                                    )}
+                                    <p className="mt-2 text-sm text-gray-500">
+                                      You must verify your query before marking this task as complete
+                                    </p>
+                                  </div>
+                                ) : subtask.more_info.data.verify_field.type === 'db_connection_string' ? (
+                                  <div>
+                                    <div className="flex gap-2">
+                                      <input
+                                        type="text"
+                                        value={urlValue}
+                                        onChange={(e) => handleUrlChange(subtask.id, e.target.value)}
+                                        placeholder="Enter your connection string"
+                                        className={`
+                                          flex-grow px-3 py-2 border rounded-md shadow-sm
+                                          focus:outline-none focus:ring-2 focus:ring-offset-2
+                                          ${urlValue && isUrlValid
+                                            ? 'border-green-300 focus:border-green-500 focus:ring-green-500'
+                                            : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
+                                          }
+                                        `}
+                                      />
+                                      <button
+                                        onClick={() => handleVerifyDbConnection(subtask.id, urlValue)}
+                                        disabled={!urlValue || isVerifying[subtask.id] || verificationStatus[getVerificationKey(subtask.id, urlValue)] === true}
+                                        className={`
+                                          px-4 py-2 bg-blue-500 text-white rounded-md
+                                          ${!urlValue || isVerifying[subtask.id] || verificationStatus[getVerificationKey(subtask.id, urlValue)] === true ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}
+                                        `}
+                                      >
+                                        {isVerifying[subtask.id] ? 'Verifying...' : verificationStatus[getVerificationKey(subtask.id, urlValue)] === true ? 'Verified' : 'Verify'}
+                                      </button>
+                                    </div>
+                                    {urlValue && verificationStatus.hasOwnProperty(getVerificationKey(subtask.id, urlValue)) && !isUrlValid && (
+                                      <p className="mt-2 text-sm text-red-600">
+                                        Please verify your connection string to proceed
+                                      </p>
+                                    )}
+                                    {urlValue && verificationStatus[getVerificationKey(subtask.id, urlValue)] === true && (
+                                      <div>
+                                        <p className="mt-2 text-sm text-green-600">
+                                          Connection string verified successfully!
+                                        </p>
+                                        {dbTables && dbTables[urlValue] && dbTables[urlValue].length > 0 && (
+                                          <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md">
+                                            <p className="text-sm font-medium text-gray-700">Tables found in your database:</p>
+                                            <ul className="mt-1 text-sm text-gray-600 list-disc pl-5">
+                                              {dbTables[urlValue].map((table, index) => (
+                                                <li key={index}>{table}</li>
+                                              ))}
+                                            </ul>
+                                          </div>
+                                        )}
+                                        {dbTables && dbTables[urlValue] && dbTables[urlValue].length === 0 && (
+                                          <p className="mt-2 text-sm text-gray-600">
+                                            Connection is valid but no tables were found in the public schema.
+                                          </p>
+                                        )}
+                                      </div>
+                                    )}
+                                    <p className="mt-2 text-sm text-gray-500">
+                                      You must provide a valid connection string and verify it before marking this task as complete
+                                    </p>
+                                  </div>
+                                ) : (
+                                  <div>
+                                    <input
+                                      type="url"
+                                      value={urlValue}
+                                      onChange={(e) => handleUrlChange(subtask.id, e.target.value)}
+                                      placeholder={`https://${subtask.more_info.data.verify_field.type}.com/your-profile`}
+                                      className={`
+                                        w-full px-3 py-2 border rounded-md shadow-sm
+                                        focus:outline-none focus:ring-2 focus:ring-offset-2
+                                        ${urlValue && isUrlValid
+                                          ? 'border-green-300 focus:border-green-500 focus:ring-green-500'
+                                          : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
+                                        }
+                                      `}
+                                    />
+                                    {urlValue && verificationStatus.hasOwnProperty(getVerificationKey(subtask.id, urlValue)) && !isUrlValid && (
+                                      <p className="mt-2 text-sm text-red-600">
+                                        Please enter a valid {subtask.more_info.data.verify_field.type} profile URL
+                                      </p>
+                                    )}
+                                    <p className="mt-2 text-sm text-gray-500">
+                                      You must provide a valid {subtask.more_info.data.verify_field.type} profile URL to mark this task as complete
+                                    </p>
+                                  </div>
                                 )}
-                                <p className="mt-2 text-sm text-gray-500">
-                                  You must provide a valid {subtask.more_info.data.verify_field.type} profile URL to mark this task as complete
-                                </p>
                               </div>
                             </div>
                           )}

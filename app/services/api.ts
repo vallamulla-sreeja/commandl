@@ -269,6 +269,62 @@ export const getScores = async (): Promise<ScoresResponse> => {
   }
 };
 
+export interface VerifyUserInputResponse {
+  success: boolean;
+  message?: string;
+  tables?: string[];
+  feedback?: string;
+  results?: Record<string, unknown>[];
+  ran_user_code?: boolean;
+  code_to_execute?: string | null;
+}
+
+export interface VerifyContextData {
+  title?: string;
+  description?: string;
+  [key: string]: string | undefined;
+}
+
+export const verifyUserInput = async (
+  inputType: string, 
+  inputValue: string, 
+  contextData?: VerifyContextData
+): Promise<VerifyUserInputResponse> => {
+  try {
+    const accessToken = await fetchAccessToken();
+    const response = await api.post('/verify-user-input', 
+      { 
+        type: inputType,
+        value: inputValue,
+        contextData
+      }, 
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error verifying user input:', error);
+    if (error instanceof Error && error.message === 'Unauthorized') {
+      await handleLogout();
+      throw error;
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      return {
+        success: false,
+        message: error.response.data.error || 'Verification failed'
+      };
+    }
+    return {
+      success: false,
+      message: 'Verification failed'
+    };
+  }
+};
+
 // Error handling middleware
 api.interceptors.response.use(
   (response) => response,
