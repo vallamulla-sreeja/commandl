@@ -17,15 +17,19 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <>
+    <div className="overflow-x-hidden">
       <Navbar />
-      <main className="pt-[72px]">
-        <Hero />
-        <FeatureCards />
-        <Testimonials />
-        <CallToAction />
+      <main className="pt-[72px] relative">
+        {/* Subtle gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-purple-50/30 to-green-50/30 pointer-events-none" />
+        <div className="relative z-10">
+          <Hero />
+          <FeatureCards />
+          <Testimonials />
+          <CallToAction />
+        </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
