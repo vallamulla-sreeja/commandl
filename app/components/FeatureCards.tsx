@@ -33,28 +33,23 @@ const steps: Step[] = [
 export default function HowItWorksSection() {
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-b from-white via-gray-50/30 to-white relative overflow-hidden">
-      {/* Enhanced background decoration with moving gradients */}
+      {/* Subtle background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Existing static gradients */}
-        <div className="absolute top-1/4 -left-64 w-96 h-96 bg-gradient-to-r from-purple-100/50 to-green-100/50 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 -right-64 w-96 h-96 bg-gradient-to-r from-green-100/50 to-blue-100/50 rounded-full blur-3xl"></div>
+        {/* Main gradient orbs - positioned to stay within bounds */}
+        <div className="absolute top-32 left-16 w-64 h-64 bg-gradient-to-r from-purple-100/25 to-pink-100/25 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
+        <div className="absolute top-1/2 right-16 w-72 h-72 bg-gradient-to-r from-green-100/25 to-teal-100/25 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style={{ animationDelay: '3s' }}></div>
+        <div className="absolute bottom-32 left-1/3 w-56 h-56 bg-gradient-to-r from-blue-100/20 to-indigo-100/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style={{ animationDelay: '6s' }}></div>
         
-        {/* New moving gradient orbs */}
-        <div className="absolute top-16 left-1/4 w-80 h-80 bg-gradient-to-r from-purple-200/40 to-pink-200/40 rounded-full mix-blend-multiply filter blur-2xl animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/5 w-64 h-64 bg-gradient-to-r from-green-200/40 to-teal-200/40 rounded-full mix-blend-multiply filter blur-2xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-1/3 left-1/6 w-72 h-72 bg-gradient-to-r from-blue-200/40 to-indigo-200/40 rounded-full mix-blend-multiply filter blur-2xl animate-pulse" style={{ animationDelay: '4s' }}></div>
-        <div className="absolute bottom-16 right-1/3 w-56 h-56 bg-gradient-to-r from-yellow-200/30 to-orange-200/30 rounded-full mix-blend-multiply filter blur-2xl animate-pulse" style={{ animationDelay: '6s' }}></div>
-        
-        {/* Floating particles */}
-        {[...Array(8)].map((_, i) => (
+        {/* Subtle floating particles - reduced count */}
+        {[...Array(4)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-2 h-2 bg-gradient-to-r from-purple-300/50 to-green-300/50 rounded-full animate-bounce opacity-30"
+            className="absolute w-1 h-1 bg-gradient-to-r from-purple-200/40 to-green-200/40 rounded-full animate-bounce opacity-20"
             style={{
-              left: `${20 + Math.random() * 60}%`,
-              top: `${20 + Math.random() * 60}%`,
+              left: `${30 + Math.random() * 40}%`,
+              top: `${30 + Math.random() * 40}%`,
               animationDelay: `${Math.random() * 8}s`,
-              animationDuration: `${4 + Math.random() * 4}s`
+              animationDuration: `${5 + Math.random() * 3}s`
             }}
           />
         ))}

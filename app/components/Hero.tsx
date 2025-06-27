@@ -39,11 +39,11 @@ export default function Hero() {
 
   return (
     <section className="flex flex-col items-center text-center py-4 md:py-8 px-4 max-w-[1000px] mx-auto relative">
-      {/* Floating background elements */}
+      {/* Subtle floating background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200/30 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-green-200/30 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-blue-200/30 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute top-24 left-16 w-64 h-64 bg-purple-100/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
+        <div className="absolute top-32 right-16 w-72 h-72 bg-green-100/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style={{ animationDelay: '3s' }}></div>
+        <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 w-56 h-56 bg-blue-100/15 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style={{ animationDelay: '6s' }}></div>
       </div>
 
       {/* Text Content */}

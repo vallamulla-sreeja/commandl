@@ -10,44 +10,43 @@ const CallToAction = () => {
 
   return (
     <section className="relative text-black flex items-center justify-center overflow-hidden py-24 min-h-[60vh] bg-gradient-to-br from-red-50 via-orange-50 to-red-100">
-      {/* Enhanced animated background particles */}
+      {/* Subtle animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Existing particles */}
-        {[...Array(20)].map((_, i) => (
+        {/* Reduced particle count with subtle colors */}
+        {[...Array(12)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-2 h-2 bg-gradient-to-r from-red-300 to-orange-300 rounded-full animate-bounce opacity-20"
+            className="absolute w-1.5 h-1.5 bg-gradient-to-r from-red-200/30 to-orange-200/30 rounded-full animate-bounce opacity-15"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${3 + Math.random() * 4}s`
+              animationDelay: `${Math.random() * 6}s`,
+              animationDuration: `${4 + Math.random() * 3}s`
             }}
           />
         ))}
         
-        {/* New floating gradient shapes */}
-        {[...Array(10)].map((_, i) => (
+        {/* Subtle gradient shapes - reduced count */}
+        {[...Array(5)].map((_, i) => (
           <div
             key={`shape-${i}`}
-            className="absolute bg-gradient-to-r from-orange-300/30 to-red-300/30 rounded-full animate-pulse blur-xl"
+            className="absolute bg-gradient-to-r from-orange-200/15 to-red-200/15 rounded-full animate-pulse blur-2xl"
             style={{
-              width: `${60 + Math.random() * 80}px`,
-              height: `${60 + Math.random() * 80}px`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              width: `${80 + Math.random() * 60}px`,
+              height: `${80 + Math.random() * 60}px`,
+              left: `${15 + Math.random() * 70}%`,
+              top: `${15 + Math.random() * 70}%`,
               animationDelay: `${Math.random() * 8}s`,
-              animationDuration: `${4 + Math.random() * 6}s`
+              animationDuration: `${5 + Math.random() * 4}s`
             }}
           />
         ))}
       </div>
 
-      {/* Enhanced gradient orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-red-200/30 to-orange-200/30 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-orange-200/30 to-yellow-200/30 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-      <div className="absolute top-1/2 left-1/6 w-80 h-80 bg-gradient-to-r from-pink-200/30 to-red-200/30 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ animationDelay: '4s' }}></div>
-      <div className="absolute bottom-1/6 right-1/6 w-72 h-72 bg-gradient-to-r from-yellow-200/30 to-orange-200/30 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ animationDelay: '6s' }}></div>
+      {/* Clean gradient orbs - well positioned */}
+      <div className="absolute top-20 left-16 w-80 h-80 bg-gradient-to-r from-red-100/20 to-orange-100/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-20 right-16 w-72 h-72 bg-gradient-to-r from-orange-100/20 to-yellow-100/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-pink-100/15 to-red-100/15 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style={{ animationDelay: '8s' }}></div>
 
       <div className="container mx-auto px-4 text-center relative z-10">
         <div className={`transform transition-all duration-1000 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
