@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const team = [
   {
-    name: "Sai Masetti",
+    name: "Sai Masetty",
     image: "/images/sai_v.jpg",
     title: "CEO",
     description: "5+ yrs of experience, created a recognized health-tech app"
