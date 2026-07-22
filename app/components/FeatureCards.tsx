@@ -1,10 +1,13 @@
 'use client';
 
-import React, { JSX } from 'react';
+import React, { JSX, Suspense } from 'react';
 import Image from 'next/image';
 import { List, ListItem, ListItemIcon } from '@mui/material';
 import { CheckCircle, Cancel } from '@mui/icons-material';
-import Lottie from 'lottie-react';
+import dynamic from 'next/dynamic';
+
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
+
 import codingHandsOn from '../../public/lottie/coding_hands_on.json';
 import allInOne from '../../public/lottie/all_in_one.json';
 import clearPath from '../../public/lottie/clear_path.json';
@@ -138,49 +141,44 @@ function StepSection({ step, index }: { step: Step; index: number }) {
   const { title, description, image, points } = step;
 
   const renderMedia = () => {
+    const lottieProps = {
+      loop: true,
+      className: "w-full h-auto max-w-[450px] mx-auto"
+    };
+
     if (image === '/lottie/coding_hands_on.json') {
       return (
-        <Lottie
-          animationData={codingHandsOn}
-          loop={true}
-          className="w-full h-auto max-w-[450px] mx-auto"
-        />
+        <Suspense fallback={<div className="w-full h-[450px] bg-gray-100 animate-pulse rounded-lg" />}>
+          <Lottie animationData={codingHandsOn} {...lottieProps} />
+        </Suspense>
       );
     }
     if (image === '/lottie/all_in_one.json') {
       return (
-        <Lottie
-          animationData={allInOne}
-          loop={true}
-          className="w-full h-auto max-w-[450px] mx-auto"
-        />
+        <Suspense fallback={<div className="w-full h-[450px] bg-gray-100 animate-pulse rounded-lg" />}>
+          <Lottie animationData={allInOne} {...lottieProps} />
+        </Suspense>
       );
     }
     if (image === '/lottie/clear_path.json') {
       return (
-        <Lottie
-          animationData={clearPath}
-          loop={true}
-          className="w-full h-auto max-w-[400px] mx-auto"
-        />
+        <Suspense fallback={<div className="w-full h-[400px] bg-gray-100 animate-pulse rounded-lg" />}>
+          <Lottie animationData={clearPath} {...lottieProps} className="w-full h-auto max-w-[400px] mx-auto" />
+        </Suspense>
       );
     }
     if (image === '/lottie/jira_board.json') {
       return (
-        <Lottie
-          animationData={jiraBoard}
-          loop={true}
-          className="w-full h-auto max-w-[450px] mx-auto"
-        />
+        <Suspense fallback={<div className="w-full h-[450px] bg-gray-100 animate-pulse rounded-lg" />}>
+          <Lottie animationData={jiraBoard} {...lottieProps} />
+        </Suspense>
       );
     }
     if (image === '/lottie/rewards.json') {
       return (
-        <Lottie
-          animationData={rewards}
-          loop={true}
-          className="w-full h-auto max-w-[400px] mx-auto"
-        />
+        <Suspense fallback={<div className="w-full h-[400px] bg-gray-100 animate-pulse rounded-lg" />}>
+          <Lottie animationData={rewards} {...lottieProps} className="w-full h-auto max-w-[400px] mx-auto" />
+        </Suspense>
       );
     }
     return (
