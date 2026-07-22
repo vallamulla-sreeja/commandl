@@ -10,7 +10,14 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center gap-4 py-3 px-4 md:px-8 border-b border-gray-200 bg-white">
       <div className="max-w-7xl w-full mx-auto flex items-center gap-4">
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src="/images/commandl_logo.png"
+            alt="CommandL Icon"
+            width={35}
+            height={35}
+            priority
+          />
           <Image
             src="/images/logo.png"
             alt="CommandL Logo"
