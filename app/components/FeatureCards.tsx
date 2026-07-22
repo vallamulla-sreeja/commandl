@@ -4,6 +4,12 @@ import React, { JSX } from 'react';
 import Image from 'next/image';
 import { List, ListItem, ListItemIcon } from '@mui/material';
 import { CheckCircle, Cancel } from '@mui/icons-material';
+import Lottie from 'lottie-react';
+import codingHandsOn from '../../public/lottie/coding_hands_on.json';
+import allInOne from '../../public/lottie/all_in_one.json';
+import clearPath from '../../public/lottie/clear_path.json';
+import jiraBoard from '../../public/lottie/jira_board.json';
+import rewards from '../../public/lottie/rewards.json';
 
 interface Step {
   title: string;
@@ -17,21 +23,21 @@ interface Step {
 
 const steps: Step[] = [
   {
-    title: 'One Unified Environment',
+    title: 'Your All-in-One Coding Solution',
     description: `
       No more juggling multiple tabs or tools. 
       <b><span style="color:#1cb0f6">CommandL</span></b> puts tutorials, 
       coding, and resources in a single workspace—so you focus on learning, 
       not setup hassles.
     `,
-    image: '/images/unified_platform.png',
+    image: '/lottie/all_in_one.json',
     points: [
       {
-        icon: <CheckCircle className="text-[#58cc02]" />, // Green tick
+        icon: <CheckCircle className="text-[#58cc02]" />,
         text: 'Everything in one place for a streamlined experience.',
       },
       {
-        icon: <Cancel className="text-[#FF0000]" />, // Red cross
+        icon: <Cancel className="text-[#FF0000]" />,
         text: 'No more constant tab-switching or tool overload.',
       },
     ],
@@ -39,11 +45,11 @@ const steps: Step[] = [
   {
     title: 'Hands-On from Day One',
     description: `
-      Don’t just watch—code right away. 
+      Don't just watch—code right away. 
       Every concept comes with an immediate practice session, 
       ensuring you <b>learn by doing</b> at every step.
     `,
-    image: '/images/hands_on.png',
+    image: '/lottie/coding_hands_on.json',
     points: [
       {
         icon: <CheckCircle className="text-[#58cc02]" />,
@@ -51,7 +57,7 @@ const steps: Step[] = [
       },
       {
         icon: <Cancel className="text-[#FF0000]" />,
-        text: 'No more passive “watch-only” tutorials.',
+        text: 'No more passive "watch-only" tutorials.',
       },
     ],
   },
@@ -63,7 +69,7 @@ const steps: Step[] = [
       step-by-step roadmap from basics to advanced projects. 
       You always know your next move.
     `,
-    image: '/images/structured_path.png',
+    image: '/lottie/clear_path.json',
     points: [
       {
         icon: <CheckCircle className="text-[#58cc02]" />,
@@ -71,7 +77,7 @@ const steps: Step[] = [
       },
       {
         icon: <Cancel className="text-[#FF0000]" />,
-        text: 'No more “What’s next?” confusion.',
+        text: 'No more "What\'s next?" confusion.',
       },
     ],
   },
@@ -83,7 +89,7 @@ const steps: Step[] = [
       mirroring how modern companies organize projects —
       without the complexity of corporate tools.
     `,
-    image: '/images/task_mgmt.png',
+    image: '/lottie/jira_board.json',
     points: [
       {
         icon: <CheckCircle className="text-[#58cc02]" />,
@@ -102,7 +108,7 @@ const steps: Step[] = [
       on every task you complete. 
       <b>Watch your progress grow</b> while leveling up your skills.
     `,
-    image: '/images/gamified_rewards.png',
+    image: '/lottie/rewards.json',
     points: [
       {
         icon: <CheckCircle className="text-[#58cc02]" />,
@@ -118,8 +124,8 @@ const steps: Step[] = [
 
 export default function HowItWorksSection() {
   return (
-    <section className="py-8 bg-white">
-      <div className="container mx-auto space-y-8">
+    <section className="py-12 md:py-16 lg:py-20 bg-white">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl space-y-16 md:space-y-24 lg:space-y-32">
         {steps.map((step, index) => (
           <StepSection key={index} step={step} index={index} />
         ))}
@@ -131,41 +137,92 @@ export default function HowItWorksSection() {
 function StepSection({ step, index }: { step: Step; index: number }) {
   const { title, description, image, points } = step;
 
+  const renderMedia = () => {
+    if (image === '/lottie/coding_hands_on.json') {
+      return (
+        <Lottie
+          animationData={codingHandsOn}
+          loop={true}
+          className="w-full h-auto max-w-[450px] mx-auto"
+        />
+      );
+    }
+    if (image === '/lottie/all_in_one.json') {
+      return (
+        <Lottie
+          animationData={allInOne}
+          loop={true}
+          className="w-full h-auto max-w-[450px] mx-auto"
+        />
+      );
+    }
+    if (image === '/lottie/clear_path.json') {
+      return (
+        <Lottie
+          animationData={clearPath}
+          loop={true}
+          className="w-full h-auto max-w-[400px] mx-auto"
+        />
+      );
+    }
+    if (image === '/lottie/jira_board.json') {
+      return (
+        <Lottie
+          animationData={jiraBoard}
+          loop={true}
+          className="w-full h-auto max-w-[450px] mx-auto"
+        />
+      );
+    }
+    if (image === '/lottie/rewards.json') {
+      return (
+        <Lottie
+          animationData={rewards}
+          loop={true}
+          className="w-full h-auto max-w-[400px] mx-auto"
+        />
+      );
+    }
+    return (
+      <Image
+        src={image}
+        alt={title}
+        width={500}
+        height={312}
+        className="rounded-lg w-full h-auto object-cover"
+      />
+    );
+  };
+
   return (
-    <div className="overflow-hidden py-4">
+    <div className="overflow-hidden">
       <div
         className={`flex flex-col ${
-          index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-        } items-center gap-8`}
+          index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
+        } items-center gap-6 md:gap-8 lg:gap-12`}
       >
-        {/* Image Section */}
-        <div className="md:w-1/2 flex justify-center">
-          <Image
-            src={image}
-            alt={title}
-            width={500}
-            height={312}
-            className="rounded-lg shadow-md"
-          />
+        <div className="lg:w-1/2 w-full flex justify-center px-4">
+          <div className="relative w-full max-w-[500px]">
+            {renderMedia()}
+          </div>
         </div>
-
-        {/* Text & Checkpoints Section */}
-        <div className="md:w-1/2 p-4 flex flex-col justify-center">
+        
+        <div className="lg:w-1/2 w-full px-4 md:px-6 flex flex-col justify-center">
           <h3
-            className="text-3xl font-bold mb-4 text-center md:text-left"
-            style={{ color: '#58cc02' }} // Green heading
+            className="text-2xl md:text-3xl font-bold mb-4 text-center lg:text-left"
+            style={{ color: '#58cc02' }}
           >
             {title}
           </h3>
           <p
-            className="text-xl mb-4 text-gray-700"
+            className="text-lg md:text-xl mb-6 text-gray-700 text-center lg:text-left"
             dangerouslySetInnerHTML={{ __html: description }}
           />
-          <List>
+          <List className="space-y-3">
             {points.map((point, i) => (
-              <ListItem key={i}>
-                <ListItemIcon>{point.icon}</ListItemIcon>
-                <p className="text-xl">{point.text}</p>
+              <ListItem key={i} className="px-0">
+                <ListItemIcon className="min-w-[40px]">{point.icon}</ListItemIcon>
+                <p className="text-base md:text-lg text-gray-800">{point.text}</p>
               </ListItem>
             ))}
           </List>
