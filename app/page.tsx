@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import Features from './components/Features';
+// import Features from './components/Features';
 import FeatureCards from './components/FeatureCards';
 import Testimonials from './components/Testimonials';
 
@@ -20,7 +20,7 @@ export default function Home() {
       <Navbar />
       <main className="pt-[72px]">
         <Hero />
-        <Features />
+        {/* <Features /> */}
         <FeatureCards />
         <Testimonials />
       </main>
