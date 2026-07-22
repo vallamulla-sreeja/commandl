@@ -1,6 +1,13 @@
 # Allow all crawlers
 User-agent: *
 Allow: /
+Allow: /about
+Allow: /updates
+Allow: /faq
+Allow: /security
+Allow: /privacy
+Allow: /terms-of-service
+
 
 # Sitemap location
 Sitemap: https://www.commandl.com/sitemap.xml 
