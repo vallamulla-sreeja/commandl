@@ -34,8 +34,8 @@ export default function Hero() {
 
         {/* Buttons */}
         <div className="flex gap-3 justify-center w-full sm:w-auto flex-col sm:flex-row mt-6">
-          <a href="https://platform.vedaverse.io/" target="_blank" rel="noopener noreferrer" className="buttonPrimary font-bold w-full sm:w-auto">
-            GET STARTED
+          <a href="https://forms.gle/Hxukr6goWjztYtyW8" target="_blank" rel="noopener noreferrer" className="buttonPrimary font-bold w-full sm:w-auto">
+            Join Waitlist
           </a>
           <a href="https://www.vedaverse.io/" target="_blank" rel="noopener noreferrer" className="buttonSecondary font-bold w-full sm:w-auto">
             WATCH DEMO

@@ -36,7 +36,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-6 ml-auto">
           <Link href="/updates" className="text-base font-medium text-gray-800 hover:text-[#0066b8] transition-colors">Updates</Link>
           <Link href="/faq" className="text-base font-medium text-gray-800 hover:text-[#0066b8] transition-colors">FAQ</Link>
-          <Link href="/download" className="buttonPrimary">Download</Link>
+          <Link href="https://forms.gle/Hxukr6goWjztYtyW8" target="_blank" rel="noopener noreferrer" className="buttonPrimary">Join Waitlist</Link>
         </div>
 
         {/* Mobile Menu Button */}
