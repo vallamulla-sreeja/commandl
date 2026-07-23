@@ -15,6 +15,15 @@ export default {
       fontFamily: {
         sans: ['Nunito', 'sans-serif'],
       },
+      keyframes: {
+        scroll: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(calc(-200%/3))' },
+        }
+      },
+      animation: {
+        scroll: 'scroll 10s linear infinite',
+      },
     },
   },
   plugins: [],
