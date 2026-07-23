@@ -8,25 +8,27 @@ interface UseInfiniteScrollProps<T> {
 }
 
 export function useInfiniteScroll<T>({ items, speed = 1, itemWidth }: UseInfiniteScrollProps<T>) {
-  const [displayItems, setDisplayItems] = useState<T[]>(items);
+  // Create a duplicated array of items to ensure smooth looping
+  const duplicatedItems = [...items, ...items];
+  const [displayItems, setDisplayItems] = useState<T[]>(duplicatedItems);
   const [translateX, setTranslateX] = useState(0);
 
   const rafId = useRef<number | null>(null);
+
+  // Reset when original items change
+  useEffect(() => {
+    setDisplayItems([...items, ...items]);
+  }, [items]);
 
   // Animate
   useEffect(() => {
     function tick() {
       setTranslateX(prev => {
         const next = prev - speed;
-        // If the first item has scrolled out of view:
-        if (Math.abs(next) >= itemWidth) {
-          // Move the first item to the end
-          setDisplayItems(prevItems => {
-            const [first, ...rest] = prevItems;
-            return [...rest, first];
-          });
-          // Adjust offset by +itemWidth to “cancel out” that shift
-          return next + itemWidth;
+        // If we've scrolled past half of the items (original set)
+        if (Math.abs(next) >= (items.length * itemWidth)) {
+          // Reset position to start
+          return 0;
         }
         return next;
       });
@@ -37,7 +39,7 @@ export function useInfiniteScroll<T>({ items, speed = 1, itemWidth }: UseInfinit
     return () => {
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
-  }, [speed, itemWidth]);
+  }, [speed, itemWidth, items.length]);
 
   return { displayItems, translateX };
 }

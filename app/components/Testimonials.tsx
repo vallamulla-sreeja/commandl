@@ -9,57 +9,60 @@ const testimonials = [
     name: "Sarah Chen",
     role: "CS Major",
     image: "/images/Sarah_Chen.png",
-    type: 'image' as const,
-    quote: "CommandL completely changed how I learn to code. I love that I don't have to juggle multiple tutorial videos and an IDE, it's all right here in one place. The built-in tutorials and tasks on the sidebar keep me focused, and the rewards push me to keep going. It really feels like having a mentor guide me step-by-step.",
+    type: "image" as const,
+    quote: "CommandL changed how I learn code. Everything is in one place and the rewards keep me going."
   },
   {
-    name: "Marcus Rodriguez", 
+    name: "Marcus Rodriguez",
     role: "Electronics Major",
     image: "/images/Marcus_Rodriguez.png",
-    type: 'image' as const,
-    quote: "I used to struggle finding the right resources when I wanted to learn coding alongside my electronics projects. With CommandL, everything is organized in one spot, and the real-time feedback is super helpful. The tasks, tutorials, and rewards keep me motivated and I can actually see my progress after each milestone!",
+    type: "image" as const,
+    quote: "Having everything in a single spot makes it so much easier. The real-time feedback really helps me see my progress."
   },
   {
     name: "Emily Thompson",
-    role: "Computer Science Major", 
+    role: "Computer Science Major",
     image: "/images/Emily_Thompson.png",
-    type: 'image' as const,
-    quote: "What I love most about CommandL is how intuitive it is. The tutorials pop up right when I need them, and I get instant feedback on my code. Having the tasks laid out in the sidebar makes it a breeze to stay on track instead of juggling a bunch of different resources. It's like having everything you need to learn programming right at your fingertips!",
+    type: "image" as const,
+    quote: "It's intuitive and the AI feedback is instant. I can focus on coding instead of juggling different resources."
   },
   {
     name: "Alex Rivera",
     role: "Software Engineering Student",
-    image: "/images/alex-rivera.png", 
-    type: 'image' as const,
-    quote: "Honestly, I was skeptical at first, but wow - CommandL is a game-changer! No more jumping between YouTube tutorials and Stack Overflow. The way it breaks down complex topics into bite-sized pieces is exactly what I needed. Plus, the instant feedback when I'm coding? That's pure gold! 🚀",
+    image: "/images/alex-rivera.png",
+    type: "image" as const,
+    quote: "I was unsure at first but it's been a big help. Complex topics are broken down and I get feedback right away."
   },
   {
     name: "James Wilson",
     role: "Data Science Enthusiast",
     image: "/images/Marcus_Rodriguez.png",
-    type: 'image' as const,
-    quote: "Been trying to learn Python for months using random tutorials, but nothing really stuck until CommandL. The step-by-step guidance is perfect for beginners like me. Love how it feels like having a personal coding buddy who's always there to help when I get stuck!",
+    type: "image" as const,
+    quote: "I tried random tutorials for months but nothing stuck until CommandL. It feels like having a personal coding buddy."
   },
   {
     name: "Lisa Chang",
     role: "Web Development Student",
-    type: 'icon' as const,
-    quote: "Started my coding journey last month and I'm already building real projects! The way CommandL structures the learning path is brilliant - you actually remember what you learn. No more copy-pasting code without understanding. Finally found my groove with coding! 💻",
+    image: "/images/Lisa_Chang.png",
+    type: "image" as const,
+    quote: "I started coding last month and I'm already building real projects. The structured path helps me truly understand what I'm doing."
   },
   {
     name: "David Park",
     role: "Game Development Enthusiast",
-    type: 'icon' as const,
-    quote: "Hey future coders! If you're stuck in tutorial hell like I was, try CommandL! Been using it for 2 months and already made my first game. The way they explain complex stuff is just *chef's kiss*. Plus, the community here is super supportive! 🎮",
+    image: "/images/David_Park.png",
+    type: "image" as const,
+    quote: "I was stuck in tutorial loops but in two weeks I made my first game. Their explanations are clear and easy to follow."
   },
   {
     name: "Nina Patel",
     role: "AI/ML Student",
-    image: "/images/Sarah_Chen.png",
-    type: 'image' as const,
-    quote: "Finally found the perfect learning platform! As someone diving into AI/ML, I needed something that could handle both basic programming and advanced concepts. CommandL nails it with the perfect balance. The interactive exercises are a total game-changer!",
+    image: "/images/Nina_Patel.png",
+    type: "image" as const,
+    quote: "I needed help with both basic coding and advanced AI topics and CommandL nails it. The interactive exercises keep me engaged."
   }
 ];
+
 
 export default function Testimonials() {
   const { displayItems, translateX } = useInfiniteScroll({
@@ -88,14 +91,14 @@ export default function Testimonials() {
           
           {/* Inner "track" that we move using translateX */}
           <div
-            className="flex items-center"
+            className="flex items-center transition-transform duration-[0ms]"
             style={{ transform: `translateX(${translateX}px)` }}
           >
             {displayItems.map((t, idx) => (
               <div
-                key={idx}
+                key={`${t.name}-${idx}`}
                 className="flex-none w-[400px] mr-4 bg-white p-8 rounded-xl border border-gray-100
-                           hover:shadow-lg transition-shadow duration-300"
+                         hover:shadow-lg transition-shadow duration-300"
               >
                 <CardContent testimonial={t} />
               </div>
@@ -139,7 +142,7 @@ function CardContent({ testimonial }: { testimonial: Testimonial }) {
         </div>
       </div>
       <blockquote>
-        <p className="text-gray-700 italic">&ldquo;{testimonial.quote}&rdquo;</p>
+        <p className="text-gray-700 italic">{testimonial.quote}</p>
       </blockquote>
     </>
   );
