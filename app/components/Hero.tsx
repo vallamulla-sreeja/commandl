@@ -1,6 +1,33 @@
+'use client';
+
 import Image from 'next/image';
+import { Stream } from "@cloudflare/stream-react";
+import { Suspense, useState } from 'react';
+
+const VideoPlayer = ({ muted = true }) => {
+  return (
+    <div className="relative w-full">
+      <div className="aspect-video">
+        <Stream
+          controls
+          src="7a10f78b0774c40e401aa2547845cbbb"
+          height="100%"
+          width="100%"
+          responsive={true}
+          className="rounded-lg md:rounded-xl"
+          autoplay={true}
+          muted={muted}
+          preload="auto"
+          primaryColor="#EFCCFF"
+        />
+      </div>
+    </div>
+  );
+};
 
 export default function Hero() {
+  const [showVideo, setShowVideo] = useState(false);
+
   return (
     <section className="flex flex-col items-center text-center py-4 md:py-8 px-4 max-w-[1000px] mx-auto">
       {/* Text Content */}
@@ -16,44 +43,41 @@ export default function Hero() {
           The fun &amp; effective way to learn programming
         </p>
 
-        {/* Feature Points with Checkmarks */}
-        {/* <div className="flex justify-center gap-6 mt-4 mb-6">
-          <div className="flex items-center gap-2">
-            <Image src="/images/check.png" alt="Checkmark" width={16} height={16} className="text-green-600" />
-            <span>Structured Path to <strong>Mastery</strong></span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Image src="/images/check.png" alt="Checkmark" width={16} height={16} className="text-green-600" />
-            <span>No More <strong>Switching Between Tools</strong></span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Image src="/images/check.png" alt="Checkmark" width={16} height={16} className="text-green-600" />
-            <span>From <strong>Confusion</strong> to <strong>Clarity</strong></span>
-          </div>
-        </div> */}
-
         {/* Buttons */}
         <div className="flex gap-3 justify-center w-full sm:w-auto flex-col sm:flex-row mt-6">
           <a href="https://forms.gle/Hxukr6goWjztYtyW8" target="_blank" rel="noopener noreferrer" className="buttonPrimary font-bold w-full sm:w-auto">
-            Join Waitlist
+            JOIN WAITLIST
           </a>
-          <a href="https://www.vedaverse.io/" target="_blank" rel="noopener noreferrer" className="buttonSecondary font-bold w-full sm:w-auto">
+          <button 
+            onClick={() => setShowVideo(true)} 
+            className="buttonSecondary font-bold w-full sm:w-auto"
+          >
             WATCH DEMO
-          </a>
+          </button>
         </div>
       </div>
 
-      {/* Editor Screenshot */}
+      {/* Screenshot or Video */}
       <div className="w-full max-w-[1000px] mx-auto px-2 sm:px-4">
-        <Image
-          src="/images/hero_image.png"
-          alt="Screenshot of CommandL Code Editor"
-          width={1000}
-          height={625}
-          priority
-          quality={100}
-          className="w-full h-auto rounded-lg md:rounded-xl"
-        />
+        {showVideo ? (
+          <Suspense fallback={
+            <div className="w-full aspect-video bg-gray-100 animate-pulse rounded-lg md:rounded-xl flex items-center justify-center">
+              <p className="text-gray-500">Loading video...</p>
+            </div>
+          }>
+            <VideoPlayer muted={false} />
+          </Suspense>
+        ) : (
+          <Image
+            src="/images/hero_image.png"
+            alt="Screenshot of CommandL Code Editor"
+            width={1000}
+            height={625}
+            priority
+            quality={100}
+            className="w-full h-auto rounded-lg md:rounded-xl"
+          />
+        )}
       </div>
     </section>
   );

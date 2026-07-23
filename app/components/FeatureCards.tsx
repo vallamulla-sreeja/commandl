@@ -30,8 +30,7 @@ const steps: Step[] = [
     description: `
       No more juggling multiple tabs or tools. 
       <b><span style="color:#1cb0f6">CommandL</span></b> puts tutorials, 
-      coding, and resources in a single workspace—so you focus on learning, 
-      not setup hassles.
+      coding, and resources in a single workspace—so you focus on learning.
     `,
     image: '/lottie/all_in_one.json',
     points: [
@@ -48,7 +47,7 @@ const steps: Step[] = [
   {
     title: 'Hands-On from Day One',
     description: `
-      Don't just watch—code right away. 
+      Code right away. 
       Every concept comes with an immediate practice session, 
       ensuring you <b>learn by doing</b> at every step.
     `,
@@ -67,7 +66,6 @@ const steps: Step[] = [
   {
     title: 'Clear, Structured Path',
     description: `
-      Wondering what to learn next? 
       <b><span style="color:#1cb0f6">CommandL</span></b> offers a 
       step-by-step roadmap from basics to advanced projects. 
       You always know your next move.
