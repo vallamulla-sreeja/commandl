@@ -17,12 +17,12 @@ export default {
       },
       keyframes: {
         scroll: {
-          '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(calc(-200%/3))' },
-        }
+          '0%':   { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
       },
       animation: {
-        scroll: 'scroll 10s linear infinite',
+        scroll: 'scroll 20s linear infinite',
       },
     },
   },
