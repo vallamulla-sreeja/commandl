@@ -33,14 +33,14 @@ export default function Hero() {
       {/* Text Content */}
       <div className="flex flex-col items-center gap-3 md:gap-5 mb-6 md:mb-8">
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#1e1e1e] tracking-tight max-w-[800px] leading-tight">
-          <span className="relative z-10 block mb-4">Code Editor Designed</span>
+          <span className="relative z-10 block mb-4">Code Editor for</span>
           <span className="relative inline-block">
-            <span className="relative z-10">for Students</span>
+            <span className="relative z-10">Students</span>
             <span className="absolute inset-x-[-1rem] inset-y-[-0.5rem] bg-[#EFCCFF] -rotate-0 rounded-lg -z-0"></span>
           </span>
         </h1>
         <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-600 font-bold mt-2 max-w-[600px]">
-          The fun &amp; effective way to build projects end-to-end
+          The fun &amp; effective way to build complete projects
         </p>
 
         {/* Buttons */}
