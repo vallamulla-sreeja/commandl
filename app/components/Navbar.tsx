@@ -3,9 +3,21 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, isLoading } = useUser();
+  const router = useRouter();
+
+  const handleAuth = () => {
+    if (user) {
+      window.location.href = '/api/auth/logout';
+    } else {
+      window.location.href = '/api/auth/login';
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center gap-4 py-3 px-4 md:px-8 border-b border-gray-200 bg-white">
@@ -36,7 +48,12 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-6 ml-auto">
           <Link href="/updates" className="text-base font-medium text-gray-800 hover:text-[#0066b8] transition-colors">Updates</Link>
           <Link href="/faq" className="text-base font-medium text-gray-800 hover:text-[#0066b8] transition-colors">FAQ</Link>
-          <Link href="https://forms.gle/Hxukr6goWjztYtyW8" target="_blank" rel="noopener noreferrer" className="buttonPrimary">Join Waitlist</Link>
+          <button 
+            onClick={handleAuth}
+            className="buttonPrimary"
+          >
+            {isLoading ? 'Loading...' : user ? 'Logout' : 'Login / Signup'}
+          </button>
         </div>
 
         {/* Mobile Menu Button */}
@@ -68,6 +85,12 @@ export default function Navbar() {
             <div className="flex flex-col p-4 gap-4">
               <Link href="/updates" className="text-sm text-gray-600 hover:text-[#0066b8] transition-colors">Updates</Link>
               <Link href="/faq" className="text-sm text-gray-600 hover:text-[#0066b8] transition-colors">FAQ</Link>
+              <button 
+                onClick={handleAuth}
+                className="text-sm text-gray-600 hover:text-[#0066b8] transition-colors"
+              >
+                {isLoading ? 'Loading...' : user ? 'Logout' : 'Login / Signup'}
+              </button>
             </div>
           </div>
         )}
