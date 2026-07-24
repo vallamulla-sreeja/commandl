@@ -1,7 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['vedaversetopicvideos.blob.core.windows.net'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'vedaversetopicvideos.blob.core.windows.net',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
   // Add other Next.js config options here
 };
