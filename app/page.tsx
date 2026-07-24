@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-// import Features from './components/Features';
 import FeatureCards from './components/FeatureCards';
 import Testimonials from './components/Testimonials';
+import CallToAction from './components/CallToAction';
+import Footer from './components/Footer';
 
 export const metadata: Metadata = {
   title: 'CommandL - Best Code Editor for Students | Learn Programming with AI',
@@ -20,10 +21,11 @@ export default function Home() {
       <Navbar />
       <main className="pt-[72px]">
         <Hero />
-        {/* <Features /> */}
         <FeatureCards />
         <Testimonials />
+        <CallToAction />
       </main>
+      <Footer />
     </>
   );
 }

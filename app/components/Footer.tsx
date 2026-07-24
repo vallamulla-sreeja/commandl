@@ -27,7 +27,7 @@ const Footer = () => {
             {/* <p className="mt-4 text-base text-white font-medium">
               Your code editor redefined with AI superpowers. Built for the next generation of developers.
             </p> */}
-            <p className="mt-2 text-lg text-white font-black font-medium">
+            <p className="mt-2 text-lg text-white font-medium">
               Made by{' '}
               <a 
                 href="https://www.vedaverse.io" 
@@ -42,7 +42,7 @@ const Footer = () => {
 
           {/* Company */}
           <div>
-            <h3 className="text-xl font-black text-white tracking-wider uppercase font-[1000]">Company</h3>
+            <h3 className="text-xl text-white tracking-wider uppercase font-[1000]">Company</h3>
             <ul className="mt-4 space-y-3">
               <li>
                 <Link href="/about" className="text-lg font-semibold text-white hover:text-white/90 transition-colors">
@@ -59,7 +59,7 @@ const Footer = () => {
 
           {/* Legal */}
           <div>
-            <h3 className="text-xl font-black text-white tracking-wider uppercase font-[1000]">Legal</h3>
+            <h3 className="text-xl text-white tracking-wider uppercase font-[1000]">Legal</h3>
             <ul className="mt-4 space-y-3">
               <li>
                 <Link href="/terms-of-service" className="text-lg font-semibold text-white hover:text-white/90 transition-colors">
@@ -81,7 +81,7 @@ const Footer = () => {
 
           {/* Connect */}
           <div>
-            <h3 className="text-xl font-black text-white tracking-wider uppercase font-[1000]">Connect</h3>
+            <h3 className="text-xl text-white tracking-wider uppercase font-[1000]">Connect</h3>
             <ul className="mt-4 space-y-3">
               <li>
                 <a 
@@ -122,7 +122,7 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="mt-12 border-t border-white/20 pt-8">
           <div className="flex justify-center items-center">
-            <p className="text-base font-medium text-white font-bold">
+            <p className="text-base text-white font-bold">
               &copy; {new Date().getFullYear()} VedaVerse. All rights reserved.
             </p>
           </div>
