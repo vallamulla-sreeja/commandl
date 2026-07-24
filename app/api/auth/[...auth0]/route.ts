@@ -22,18 +22,17 @@ const handler = handleAuth({
     })
 });
 
+export type AuthParams = { params: { auth0: string[] } };
+
 export async function GET(
     request: NextRequest,
-    context: { params: { auth0: string[] } }
+    context: AuthParams
 ): Promise<Response> {
     try {
-        const resolvedContext = {
-            ...context,
-            params: await Promise.resolve(context.params)
-        };
-        return await handler(request, resolvedContext);
+        const params = await Promise.resolve(context.params);
+        return await handler(request, { params });
     } catch (error) {
         console.error('Auth error:', error);
-        return new Response('Auth error', { status: 500 });
+        return new Response('Internal Server Error', { status: 500 });
     }
 }
