@@ -44,9 +44,9 @@ export default function Navbar() {
         
         {/* Desktop Right Side Navigation */}
         <div className="hidden md:flex items-center gap-6 ml-auto">
-          <Link href="/projects" className="text-base font-medium text-gray-800 hover:text-[#58CC02] transition-colors">Projects</Link>
-          <Link href="/updates" className="text-base font-medium text-gray-800 hover:text-[#0066b8] transition-colors">Updates</Link>
-          <Link href="/faq" className="text-base font-medium text-gray-800 hover:text-[#0066b8] transition-colors">FAQ</Link>
+          <Link href="/projects" className="text-base font-medium text-gray-600 hover:text-gray-900 transition-colors">Projects</Link>
+          <Link href="/updates" className="text-base font-medium text-gray-600 hover:text-gray-900 transition-colors">Updates</Link>
+          <Link href="/faq" className="text-base font-medium text-gray-600 hover:text-gray-900 transition-colors">FAQ</Link>
           <button 
             onClick={handleAuth}
             className="buttonPrimary"
@@ -82,9 +82,9 @@ export default function Navbar() {
         {isMenuOpen && (
           <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-200 md:hidden min-h-[calc(100vh-4rem)] shadow-lg">
             <div className="flex flex-col p-6 gap-6">
-              <Link href="/projects" className="text-base font-medium text-gray-800 hover:text-[#58CC02] transition-colors">Projects</Link>
-              <Link href="/updates" className="text-base font-medium text-gray-800 hover:text-[#0066b8] transition-colors">Updates</Link>
-              <Link href="/faq" className="text-base font-medium text-gray-800 hover:text-[#0066b8] transition-colors">FAQ</Link>
+              <Link href="/projects" className="text-base font-medium text-gray-600 hover:text-gray-900 transition-colors">Projects</Link>
+              <Link href="/updates" className="text-base font-medium text-gray-600 hover:text-gray-900 transition-colors">Updates</Link>
+              <Link href="/faq" className="text-base font-medium text-gray-600 hover:text-gray-900 transition-colors">FAQ</Link>
               <button 
                 onClick={handleAuth}
                 className="buttonPrimary"
