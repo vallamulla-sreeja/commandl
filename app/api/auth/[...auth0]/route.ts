@@ -22,14 +22,5 @@ const handler = handleAuth({
     })
 });
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: { auth0: string[] } }
-): Promise<Response> {
-    try {
-        return await handler(request, { params });
-    } catch (error) {
-        console.error('Auth error:', error);
-        return new Response('Internal Server Error', { status: 500 });
-    }
-}
+// Using the correct type for Next.js App Router
+export const GET = handler;
