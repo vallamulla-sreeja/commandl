@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-// import Features from './components/Features';
 import FeatureCards from './components/FeatureCards';
 import Testimonials from './components/Testimonials';
 import Footer from './components/Footer';
@@ -21,7 +20,6 @@ export default function Home() {
       <Navbar />
       <main className="pt-[72px]">
         <Hero />
-        {/* <Features /> */}
         <FeatureCards />
         <Testimonials />
       </main>
