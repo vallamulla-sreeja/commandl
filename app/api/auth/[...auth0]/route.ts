@@ -24,13 +24,10 @@ const handler = handleAuth({
 
 export async function GET(
     request: NextRequest,
-    ctx: { params: { auth0: string[] } }
+    { params }: { params: { auth0: string[] } }
 ): Promise<Response> {
     try {
-        const resolvedCtx = {
-            params: await Promise.resolve(ctx.params)
-        };
-        return await handler(request, resolvedCtx);
+        return await handler(request, { params });
     } catch (error) {
         console.error('Auth error:', error);
         return new Response('Internal Server Error', { status: 500 });
