@@ -1,5 +1,4 @@
 import { handleAuth, handleLogin, handleLogout } from '@auth0/nextjs-auth0';
-import { type NextRequest } from 'next/server';
 
 const handler = handleAuth({
     login: handleLogin({
