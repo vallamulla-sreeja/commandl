@@ -2,15 +2,14 @@
 
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
-import Image from 'next/image';
 import { ArrowDownCircleIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 
 export default function Dashboard() {
   const { user, isLoading, error } = useUser();
   const router = useRouter();
-  const [accessToken, setAccessToken] = useState<string>('');
+  // const [accessToken, setAccessToken] = useState<string>('');
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -18,21 +17,21 @@ export default function Dashboard() {
     }
   }, [user, isLoading, router]);
 
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        const response = await fetch('/api/auth/token');
-        const data = await response.json();
-        setAccessToken(data.accessToken || '');
-      } catch (err) {
-        console.error('Error fetching token:', err);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchToken = async () => {
+  //     try {
+  //       const response = await fetch('/api/auth/token');
+  //       const data = await response.json();
+  //       // setAccessToken(data.accessToken || '');
+  //     } catch (err) {
+  //       console.error('Error fetching token:', err);
+  //     }
+  //   };
 
-    if (user) {
-      fetchToken();
-    }
-  }, [user]);
+  //   if (user) {
+  //     fetchToken();
+  //   }
+  // }, [user]);
 
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
