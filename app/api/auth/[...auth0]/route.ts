@@ -24,11 +24,14 @@ const handler = handleAuth({
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { auth0: string[] } }
+    context: { params: { auth0: string[] } }
 ): Promise<Response> {
     try {
-        const resolvedParams = await Promise.resolve(params);
-        return await handler(request, { params: resolvedParams });
+        const resolvedContext = {
+            ...context,
+            params: await Promise.resolve(context.params)
+        };
+        return await handler(request, resolvedContext);
     } catch (error) {
         console.error('Auth error:', error);
         return new Response('Auth error', { status: 500 });
