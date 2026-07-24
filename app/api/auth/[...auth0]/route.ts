@@ -1,6 +1,8 @@
 import { handleAuth, handleLogin, handleLogout } from '@auth0/nextjs-auth0';
+import { NextRequest } from 'next/server';
+import { IncomingMessage } from 'http';
 
-export async function GET(req: Request, context: { params: { auth0: string[] } }) {
+export async function GET(req: NextRequest, context: { params: { auth0: string[] } }) {
     // Await the params before using them
     const params = await Promise.resolve(context.params);
     
@@ -25,5 +27,5 @@ export async function GET(req: Request, context: { params: { auth0: string[] } }
         })
     });
     
-    return auth(req, { params });
+    return auth(req as unknown as IncomingMessage, { params });
 }
