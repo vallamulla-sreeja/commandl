@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { profileApi, uploadToAzure } from '../services/api';
 import type { Profile } from '../services/api';
 import Image from 'next/image';
-import { FiEdit2, FiGithub, FiLinkedin, FiGlobe, FiPhone, FiCalendar } from 'react-icons/fi';
+import { FiEdit2, FiPhone, FiCalendar } from 'react-icons/fi';
 import { FaCamera } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -528,7 +528,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* Social Links */}
+            {/* Social Links
             {(profile.github_url || profile.linkedin_url || profile.portfolio_url) && (
               <div className="space-y-6">
                 <h2 className="text-lg font-semibold text-gray-900">Connect</h2>
@@ -554,8 +554,8 @@ export default function ProfilePage() {
                       <FiLinkedin className="w-5 h-5" />
                       <span>{profile.linkedin_username || 'LinkedIn'}</span>
                     </a>
-                  )}
-                  {profile.portfolio_url && (
+                  )} */}
+                  {/* {profile.portfolio_url && (
                     <a
                       href={profile.portfolio_url}
                       target="_blank"
@@ -565,10 +565,10 @@ export default function ProfilePage() {
                       <FiGlobe className="w-5 h-5" />
                       <span>Portfolio</span>
                     </a>
-                  )}
-                </div>
+                  )} */}
+                {/* </div>
               </div>
-            )}
+            )} */}
 
             {/* About */}
             {(profile.bio || profile.fun_fact) && (

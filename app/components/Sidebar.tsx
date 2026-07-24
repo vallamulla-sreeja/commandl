@@ -4,13 +4,33 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { FiHome, FiSettings, FiLogOut, FiMenu, FiChevronLeft, FiFolder, FiUser } from 'react-icons/fi';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+const clearAllCache = async () => {
+  if (typeof caches !== 'undefined') {
+    const cacheKeys = await caches.keys();
+    await Promise.all(cacheKeys.map(key => caches.delete(key)));
+  }
+  localStorage.clear();
+  sessionStorage.clear();
+};
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  const handleLogout = () => {
+    clearAllCache();
+    setIsMobileMenuOpen(false);
+    window.location.href = '/api/auth/logout';
+  };
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const isActive = (path: string) => pathname === path;
 
@@ -113,16 +133,16 @@ export default function Sidebar() {
                         )}
                       </Link>
                     )}
-                    {item.name === 'Settings' && showLogout && (
-                      <Link
-                        href="/api/auth/logout"
+                    {isMounted && item.name === 'Settings' && showLogout && (
+                      <button
+                        onClick={handleLogout}
                         className={`absolute top-full left-0 w-full flex items-center ${isCollapsed ? 'justify-center' : ''} gap-4 px-5 py-3.5 text-gray-700 hover:bg-gray-50 hover:text-[#58cc02] rounded-lg transition-all duration-200 bg-white shadow-md z-10`}
                       >
                         <FiLogOut className="w-5 h-5" />
                         {!isCollapsed && (
                           <span className="font-medium text-[15px]">Logout</span>
                         )}
-                      </Link>
+                      </button>
                     )}
                   </li>
                 );
