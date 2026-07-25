@@ -18,7 +18,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Nunito', 'sans-serif'],
+        nunito: ['var(--font-nunito)', 'sans-serif'],
+        sans: ['var(--font-nunito)', 'sans-serif'],
       },
       keyframes: {
         scroll: {
