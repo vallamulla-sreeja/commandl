@@ -10,30 +10,23 @@ export default function Dashboard() {
       <main className="flex-1 py-10 lg:pl-72">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto text-center">
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] mb-6">
               Welcome to CommandL
             </h1>
-            {/* <p className="text-xl text-gray-600 mb-8">
-              Your journey to becoming a skilled developer starts here. With built-in tutorials, 
-              guided paths, hints, and real-time feedback—plus fun reward points—you&apos;ll have 
-              the support you need at every step of your coding journey.
-            </p> */}
-            <div className="p-8 rounded-2xl">
+            <div className="p-8 rounded-2xl bg-gray-50">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Ready to Start Building?
               </h2>
               <p className="text-lg text-gray-600 mb-6">
-                Fill out our quick form to join the waitlist and be among the first to explore 
-                all that CommandL has to offer!
+                We're excited to have you on board. We're currently putting the finishing touches on 
+                CommandL and will notify you as soon as we're ready to launch. In the meantime, 
+                stay tuned for updates and early access opportunities!
               </p>
-              <a
-                href="https://forms.gle/HadSaA64CD9UyoJE6"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-primary text-white text-xl font-medium py-4 px-8 rounded-lg hover:bg-primary-hover transition-colors duration-200"
-              >
-                Join the Waitlist
-              </a>
+              <div className="inline-flex items-center justify-center space-x-2 bg-primary/10 text-primary font-medium py-3 px-6 rounded-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span>You're on our waitlist</span>
+              </div>
             </div>
           </div>
         </div>
