@@ -22,8 +22,8 @@ export default function Home() {
       <Navbar />
       <main className="pt-[72px]">
         <Hero />
-        <PricingSection />
         <FeatureCards />
+        <PricingSection />
         <Testimonials />
         <CallToAction />
       </main>
