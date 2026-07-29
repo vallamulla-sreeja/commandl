@@ -123,7 +123,7 @@ const Footer = () => {
         <div className="mt-12 border-t border-white/20 pt-8">
           <div className="flex justify-center items-center">
             <p className="text-base text-white font-bold">
-              &copy; {new Date().getFullYear()} VedaVerse. All rights reserved.
+            &copy; {new Date().getFullYear()} commandL. All rights reserved.
             </p>
           </div>
         </div>
