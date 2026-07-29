@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Nunito } from 'next/font/google';
 import {
   DragDropContext,
-  Droppable,
   Draggable,
   DropResult,
+  DroppableProvided,
+  DroppableStateSnapshot,
 } from 'react-beautiful-dnd';
+import { StrictModeDroppable } from './StrictModeDroppable';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -45,13 +47,28 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
   getTaskProgress,
   getStatusIcon,
 }) => {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const animation = requestAnimationFrame(() => {
+      setEnabled(true);
+    });
+
+    return () => {
+      cancelAnimationFrame(animation);
+    };
+  }, []);
+
+  if (!enabled) {
+    return null;
+  }
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className={`grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto ${nunito.className}`}>
         {['To Do', 'In Progress', 'Done'].map((status) => (
-          <Droppable droppableId={status} key={status}>
-            {(provided, snapshot) => (
+          <StrictModeDroppable droppableId={status} key={status}>
+            {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
@@ -97,11 +114,12 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
                               bg-white border border-[#E5E5E5] rounded-xl p-5
                               hover:shadow-md hover:border-[#58CC02]
                               ${snapshot.isDragging ? 'shadow-lg border-[#58CC02] bg-[#F7F7F7]' : ''}
-                              transition-all duration-200 cursor-pointer
+                              transition-all duration-200 cursor-grab active:cursor-grabbing
+                              group
                             `}
                           >
                             <div className="flex items-center justify-between mb-3">
-                              <h3 className="text-md font-semibold text-[#4B4B4B]">
+                              <h3 className="text-md font-semibold text-[#4B4B4B] group-hover:text-[#58CC02] transition-colors">
                                 {task.title}
                               </h3>
                             </div>
@@ -110,7 +128,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
                                 <div
                                   className="bg-[#58CC02] h-2.5 rounded-full transition-all duration-300 ease-in-out"
                                   style={{
-                                    width: `${getTaskProgress(task)}%`,
+                                    width: `${getTaskProgress(task)}%`
                                   }}
                                 ></div>
                               </div>
@@ -130,7 +148,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
                 </div>
               </div>
             )}
-          </Droppable>
+          </StrictModeDroppable>
         ))}
       </div>
     </DragDropContext>
