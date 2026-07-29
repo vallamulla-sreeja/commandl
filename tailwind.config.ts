@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-import forms from '@tailwindcss/forms';
 
 export default {
   content: [
@@ -12,14 +11,9 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        primary: {
-          DEFAULT: '#58CC02',
-          hover: '#50b802',
-        },
       },
       fontFamily: {
-        nunito: ['var(--font-nunito)', 'sans-serif'],
-        sans: ['var(--font-nunito)', 'sans-serif'],
+        sans: ['Nunito', 'sans-serif'],
       },
       keyframes: {
         scroll: {
@@ -32,5 +26,5 @@ export default {
       },
     },
   },
-  plugins: [forms],
+  plugins: [],
 } satisfies Config;

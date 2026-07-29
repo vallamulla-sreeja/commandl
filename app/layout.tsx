@@ -1,8 +1,12 @@
+'use client';
+
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { Nunito } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
-import { metadata, viewport } from './metadata';
-import ClientLayout from './ClientLayout';
+import { useEffect, useState } from 'react';
+
+const inter = Inter({ subsets: ['latin'] });
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -10,7 +14,20 @@ const nunito = Nunito({
   variable: '--font-nunito',
 });
 
-export { metadata, viewport };
+// Client-side wrapper component
+function ClientWrapper({ children }: { children: React.ReactNode }) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  return (
+    <div suppressHydrationWarning>
+      {isMounted ? children : <div style={{ visibility: 'hidden' }}>{children}</div>}
+    </div>
+  );
+}
 
 export default function RootLayout({
   children,
@@ -18,12 +35,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={nunito.variable}>
-      <body className={`font-nunito antialiased bg-white text-slate-900`} suppressHydrationWarning>
+    <html lang="en" className={`${nunito.variable}`}>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+      </head>
+      <body className={`font-sans antialiased bg-white text-slate-900 ${inter.className}`} suppressHydrationWarning>
         <UserProvider>
-          <ClientLayout>
+          <ClientWrapper>
             {children}
-          </ClientLayout>
+          </ClientWrapper>
         </UserProvider>
       </body>
     </html>

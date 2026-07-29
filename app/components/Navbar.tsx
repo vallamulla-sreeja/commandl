@@ -7,7 +7,7 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
 
   const handleAuth = () => {
     if (user) {
@@ -51,7 +51,7 @@ export default function Navbar() {
             onClick={handleAuth}
             className="buttonPrimary"
           >
-            {user ? 'Logout' : 'Login'}
+            {isLoading ? 'Loading...' : user ? 'Logout' : 'Login'}
           </button>
         </div>
 
@@ -89,7 +89,7 @@ export default function Navbar() {
                 onClick={handleAuth}
                 className="buttonPrimary"
               >
-                {user ? 'Logout' : 'Login'}
+                {isLoading ? 'Loading...' : user ? 'Logout' : 'Login'}
               </button>
             </div>
           </div>

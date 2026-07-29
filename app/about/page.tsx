@@ -24,7 +24,7 @@ const team = [
     name: "Bob Karr",
     image: "/images/bob.jpeg",
     title: "CSO",
-    description: "25+ yrs entrepreneur, helped many startups with strategies"
+    description: "25+ yrs entrepreneur, knows how to scale early ventures"
   },
   {
     name: "Kunal Kushwaha",
@@ -43,7 +43,7 @@ export default function AboutPage() {
           <section className="mb-12 flex flex-col items-center text-center">
             <h1 className="text-4xl font-bold text-[#58cc02] mb-4">About</h1>
             <p className="text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto">
-            CommandL is an AI IDE, designed for people who are learning to write code. Our mission is to make programming education accessible, engaging, and impactful for learners of all backgrounds. By merging real-time coding with fun, project-based tasks, we empower everyone to build practical skills and confidently shape the future of technology.</p>
+            CommandL is an AI IDE, designed for people who are learning to write code. Think about it like Cursor meets Duolingo. Our mission is to make programming education accessible, engaging, and impactful for learners of all backgrounds. By merging real-time coding with fun, project-based tasks, we empower everyone to build practical skills and confidently shape the future of technology.</p>
           </section>
 
           <section className="text-center">

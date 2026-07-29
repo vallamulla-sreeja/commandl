@@ -93,76 +93,36 @@ const EditProfileForm = ({
   const validateForm = (): boolean => {
     const errors: { [key: string]: string } = {};
 
-    // Match backend validations exactly
     if (!formData.name || formData.name.trim().length < 2) {
-      errors.name = 'Name must be at least 2 characters long';
+      errors.name = 'Name must be at least 2 characters';
     }
-
-    if (!formData.date_of_birth || !validateDate(formData.date_of_birth)) {
-      errors.date_of_birth = 'Invalid date of birth';
-    }
-
     if (!formData.email || !validateEmail(formData.email)) {
-      errors.email = 'Invalid email format';
+      errors.email = 'Please provide a valid email address';
     }
-
-    if (!formData.college || formData.college.trim().length < 2) {
-      errors.college = 'College name must be at least 2 characters long';
+    if (formData.date_of_birth && !validateDate(formData.date_of_birth)) {
+      errors.date_of_birth = 'Please provide a valid date in YYYY-MM-DD format';
     }
-
     if (formData.mobile && !validateMobile(formData.mobile)) {
-      errors.mobile = 'Invalid mobile number format';
+      errors.mobile = 'Please provide a valid mobile number (digits only)';
     }
-
-    if (!formData.linkedin || !validateURL(formData.linkedin)) {
-      errors.linkedin = 'Invalid LinkedIn URL';
+    if (formData.linkedin && !validateURL(formData.linkedin)) {
+      errors.linkedin = 'Please provide a valid LinkedIn URL';
     }
-
     if (formData.github && !validateURL(formData.github)) {
-      errors.github = 'Invalid GitHub URL';
-    }
-
-    if (!formData.profile_picture || !validateURL(formData.profile_picture)) {
-      errors.profile_picture = 'Invalid profile picture URL';
-    }
-
-    if (!formData.fun_fact || formData.fun_fact.trim().length < 2) {
-      errors.fun_fact = 'Fun fact must be at least 2 characters long';
-    }
-
-    if (!formData.majors || formData.majors.trim().length < 2) {
-      errors.majors = 'Majors must be at least 2 characters long';
-    }
-
-    if (!formData.college_year || !['1', '2', '3', '4', '5'].includes(formData.college_year.toString())) {
-      errors.college_year = 'Invalid college year';
+      errors.github = 'Please provide a valid GitHub URL';
     }
 
     setFormErrors(errors);
-    
-    if (Object.keys(errors).length > 0) {
-      // Scroll to the first error
-      const firstErrorField = document.querySelector('[data-error="true"]');
-      if (firstErrorField) {
-        firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      
-      // Show validation summary
-      const errorCount = Object.keys(errors).length;
-      toast.error(`Please fix ${errorCount} validation ${errorCount === 1 ? 'error' : 'errors'}`, {
-        position: 'bottom-center',
-        autoClose: 5000,
-      });
-    }
-
     return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Frontend validation first
     if (!validateForm()) {
+      toast.error('Please fix the form errors', {
+        position: 'bottom-center',
+        autoClose: 3000,
+      });
       return;
     }
 
@@ -194,48 +154,12 @@ const EditProfileForm = ({
         position: 'bottom-center',
         autoClose: 3000,
       });
-    } catch (error: unknown) {
-      // Keep the existing error handling for any backend errors that might still occur
-      if (
-        error && 
-        typeof error === 'object' && 
-        'response' in error && 
-        error.response && 
-        typeof error.response === 'object' && 
-        'status' in error.response && 
-        'data' in error.response && 
-        error.response.data && 
-        typeof error.response.data === 'object' && 
-        'details' in error.response.data && 
-        Array.isArray(error.response.data.details)
-      ) {
-        const validationErrors = error.response.data.details;
-        const newErrors: { [key: string]: string } = {};
-        validationErrors.forEach((error: string) => {
-          if (error.toLowerCase().includes('name')) newErrors.name = error;
-          if (error.toLowerCase().includes('date of birth')) newErrors.date_of_birth = error;
-          if (error.toLowerCase().includes('email')) newErrors.email = error;
-          if (error.toLowerCase().includes('mobile')) newErrors.mobile = error;
-          if (error.toLowerCase().includes('college name')) newErrors.college = error;
-          if (error.toLowerCase().includes('linkedin')) newErrors.linkedin = error;
-          if (error.toLowerCase().includes('github')) newErrors.github = error;
-          if (error.toLowerCase().includes('profile picture')) newErrors.profile_picture = error;
-          if (error.toLowerCase().includes('fun fact')) newErrors.fun_fact = error;
-          if (error.toLowerCase().includes('majors')) newErrors.majors = error;
-          if (error.toLowerCase().includes('college year')) newErrors.college_year = error;
-        });
-        setFormErrors(newErrors);
-        toast.error('Please fix the highlighted fields', {
-          position: 'bottom-center',
-          autoClose: 5000,
-        });
-      } else {
-        toast.error('Failed to update profile. Please try again later.', {
-          position: 'bottom-center',
-          autoClose: 3000,
-        });
-        console.error('Error updating profile:', error);
-      }
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      toast.error('Failed to update profile', {
+        position: 'bottom-center',
+        autoClose: 3000,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -253,10 +177,6 @@ const EditProfileForm = ({
                 alt="Profile"
                 fill
                 className="object-cover"
-                onError={(e) => {
-                  // When image fails to load, remove the src to trigger fallback
-                  e.currentTarget.src = '';
-                }}
               />
             ) : (
               <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -292,7 +212,6 @@ const EditProfileForm = ({
             value={formData.name}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#58cc02] focus:outline-none focus:ring-1 focus:ring-[#58cc02]"
-            data-error={!!formErrors.name}
           />
           {formErrors.name && <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>}
         </div>
@@ -305,7 +224,6 @@ const EditProfileForm = ({
             value={formData.email}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#58cc02] focus:outline-none focus:ring-1 focus:ring-[#58cc02]"
-            data-error={!!formErrors.email}
           />
           {formErrors.email && <p className="mt-1 text-sm text-red-600">{formErrors.email}</p>}
         </div>
@@ -318,7 +236,6 @@ const EditProfileForm = ({
             value={formData.date_of_birth}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#58cc02] focus:outline-none focus:ring-1 focus:ring-[#58cc02]"
-            data-error={!!formErrors.date_of_birth}
           />
           {formErrors.date_of_birth && <p className="mt-1 text-sm text-red-600">{formErrors.date_of_birth}</p>}
         </div>
@@ -331,7 +248,6 @@ const EditProfileForm = ({
             value={formData.mobile}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#58cc02] focus:outline-none focus:ring-1 focus:ring-[#58cc02]"
-            data-error={!!formErrors.mobile}
           />
           {formErrors.mobile && <p className="mt-1 text-sm text-red-600">{formErrors.mobile}</p>}
         </div>
@@ -355,9 +271,7 @@ const EditProfileForm = ({
             value={formData.college}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#58cc02] focus:outline-none focus:ring-1 focus:ring-[#58cc02]"
-            data-error={!!formErrors.college}
           />
-          {formErrors.college && <p className="mt-1 text-sm text-red-600">{formErrors.college}</p>}
         </div>
 
         <div>
@@ -368,9 +282,7 @@ const EditProfileForm = ({
             value={formData.majors}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#58cc02] focus:outline-none focus:ring-1 focus:ring-[#58cc02]"
-            data-error={!!formErrors.majors}
           />
-          {formErrors.majors && <p className="mt-1 text-sm text-red-600">{formErrors.majors}</p>}
         </div>
 
         <div>
@@ -381,9 +293,7 @@ const EditProfileForm = ({
             value={formData.college_year}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#58cc02] focus:outline-none focus:ring-1 focus:ring-[#58cc02]"
-            data-error={!!formErrors.college_year}
           />
-          {formErrors.college_year && <p className="mt-1 text-sm text-red-600">{formErrors.college_year}</p>}
         </div>
 
         <div>
@@ -394,7 +304,6 @@ const EditProfileForm = ({
             value={formData.linkedin}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#58cc02] focus:outline-none focus:ring-1 focus:ring-[#58cc02]"
-            data-error={!!formErrors.linkedin}
           />
           {formErrors.linkedin && <p className="mt-1 text-sm text-red-600">{formErrors.linkedin}</p>}
         </div>
@@ -407,7 +316,6 @@ const EditProfileForm = ({
             value={formData.github}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#58cc02] focus:outline-none focus:ring-1 focus:ring-[#58cc02]"
-            data-error={!!formErrors.github}
           />
           {formErrors.github && <p className="mt-1 text-sm text-red-600">{formErrors.github}</p>}
         </div>
@@ -431,9 +339,7 @@ const EditProfileForm = ({
             onChange={handleChange}
             rows={2}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#58cc02] focus:outline-none focus:ring-1 focus:ring-[#58cc02]"
-            data-error={!!formErrors.fun_fact}
           />
-          {formErrors.fun_fact && <p className="mt-1 text-sm text-red-600">{formErrors.fun_fact}</p>}
         </div>
       </div>
 
@@ -548,10 +454,6 @@ export default function ProfilePage() {
                   alt={profile.name}
                   fill
                   className="object-cover"
-                  onError={(e) => {
-                    // When image fails to load, remove the src to trigger fallback
-                    e.currentTarget.src = '';
-                  }}
                 />
               ) : (
                 <div className="w-full h-full bg-gray-200 flex items-center justify-center">
