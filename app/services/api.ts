@@ -139,6 +139,26 @@ export const uploadToAzure = async (file: File): Promise<string> => {
   return data.url;
 };
 
+interface PaymentStatusResponse {
+  status: string;
+  extra: string;
+}
+
+export const checkUserStatusAPI = async (): Promise<PaymentStatusResponse> => {
+  try {
+    const accessToken = await fetchAccessToken();
+    const response = await api.post('/check-user-status', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error checking user status:', error);
+    throw error;
+  }
+};
+
 // Error handling middleware
 api.interceptors.response.use(
   (response) => response,
