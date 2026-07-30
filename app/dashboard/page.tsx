@@ -10,6 +10,8 @@ import ResumeUpload from '../components/dashboard/ResumeUpload';
 import ProjectSelection from '../components/dashboard/ProjectSelection';
 import Enrollment from '../components/dashboard/Enrollment';
 import { checkUserStatusAPI } from '../services/api';
+import { fetchAccessToken } from '../services/api';
+import { BASE_URL } from '../services/api';
 
 type UserStatus = {
   isPaid: boolean;
@@ -27,24 +29,24 @@ type Project = {
 const PROJECTS: Project[] = [
   {
     id: '1',
-    title: 'AI-Powered Task Management System',
-    description: 'Build a smart task management system with AI-driven task prioritization and time estimation.',
+    title: 'Virtual chatbot',
+    description: 'Build a virtual chatbot that can answer questions and help users with their queries.',
     image: '/images/frontend_development.png',
     color: 'bg-[#ffffff]',
     techStack: ['React', 'Node.js', 'OpenAI API', 'MongoDB']
   },
   {
     id: '2',
-    title: 'Real-time Collaboration Platform',
-    description: 'Create a collaborative workspace with real-time document editing and team communication.',
+    title: 'Flashcard Study Tool',
+    description: 'Create a flashcard study tool that can help users study for their exams.',
     image: '/images/backend_development.png',
     color: 'bg-[#ffffff]',
     techStack: ['Next.js', 'Socket.io', 'PostgreSQL', 'Redis']
   },
   {
     id: '3',
-    title: 'E-learning Management System',
-    description: 'Develop a comprehensive e-learning platform with interactive courses and progress tracking.',
+    title: 'Blog Manager',
+    description: 'Develop a blog manager that can help users manage their blog posts.',
     image: '/images/software_development.png',
     color: 'bg-[#ffffff]',
     techStack: ['React', 'Django', 'AWS', 'PostgreSQL']
@@ -104,11 +106,33 @@ export default function Dashboard() {
 
     setIsEnrolling(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Get the selected project details
+      const project = PROJECTS.find(p => p.id === selectedProject);
+      if (!project) throw new Error('Project not found');
+      const accessToken = await fetchAccessToken();
+
+      // Make API call to generate project tasks
+      const response = await fetch(`${BASE_URL}/generate-14-day-project-tasks`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          project_name: project.title.toLowerCase().replace(/\s+/g, '_'),
+          project_description: project.description
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate project tasks');
+      }
+
+      // await response.json(); // Wait for the response
       setEnrollmentSuccess(true);
     } catch (error) {
       console.error('Error enrolling in project:', error);
+      // You might want to show an error message to the user here
     } finally {
       setIsEnrolling(false);
     }
@@ -226,7 +250,10 @@ export default function Dashboard() {
                       You&apos;ve successfully enrolled in the project. Get ready to start your development journey!
                     </p>
                     <div className="flex justify-center">
-                      <button className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-[#58CC02] text-white rounded-lg sm:rounded-xl font-semibold hover:bg-[#58CC02]/90 transition-colors text-sm sm:text-base">
+                      <button 
+                        onClick={() => router.push('/project-task-board')}
+                        className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-[#58CC02] text-white rounded-lg sm:rounded-xl font-semibold hover:bg-[#58CC02]/90 transition-colors text-sm sm:text-base"
+                      >
                         Go to Project Dashboard
                       </button>
                     </div>
