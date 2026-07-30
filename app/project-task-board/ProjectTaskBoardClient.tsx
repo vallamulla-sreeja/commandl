@@ -22,12 +22,21 @@ const nunito = Nunito({
   display: 'swap',
 });
 
+interface MoreInfo {
+  data: {
+    verify_field: {
+      type: string;
+    };
+  };
+}
+
 interface ApiSubtask {
   id: string;
   title: string;
   description?: string;
   completed?: boolean;
   spark_studio?: boolean;
+  more_info?: MoreInfo | null;
 }
 
 interface ApiTask {
@@ -45,6 +54,7 @@ interface Subtask {
   description: string;
   completed: boolean;
   spark_studio?: boolean;
+  more_info?: MoreInfo | null;
 }
 
 interface Task {
@@ -104,6 +114,10 @@ const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
 
   const [maxUnlockedDay, setMaxUnlockedDay] = useState<number>(1);
 
+  const [currentUnlockedTaskId, setCurrentUnlockedTaskId] = useState<string | null>(null);
+
+  const [urlInputs, setUrlInputs] = useState<{ [key: string]: string }>({});
+
   const selectedTask = tasks.find((task) => task.id === selectedTaskId);
 
   const fetchData = async () => {
@@ -146,6 +160,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
             description: st.description || '',
             completed: st.completed || false,
             spark_studio: st.spark_studio || false,
+            more_info: st.more_info || null,
           }))
           .sort((a: { id: string; }, b: { id: string; }) => parseInt(a.id) - parseInt(b.id));
 
@@ -265,7 +280,8 @@ const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
               status: task.status,
               subtasks: task.subtasks.map((st) => ({
                 id: st.id,
-                completed: st.completed
+                completed: st.completed,
+                input: st.more_info?.data?.verify_field ? urlInputs[st.id] || '' : undefined
               }))
             })),
           }),
@@ -297,7 +313,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
         });
       }
     }, 1000),
-    []
+    [urlInputs]
   );
 
   const handleSaveProgress = useCallback((updatedTasks: Task[]) => {
@@ -381,8 +397,30 @@ const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
     handleSaveProgress(updatedTasks);
   };
 
+  const isTaskLocked = (task: Task): boolean => {
+    if (!currentUnlockedTaskId) return task.id !== tasks[0]?.id;
+    
+    const taskIndex = tasks.findIndex(t => t.id === task.id);
+    if (taskIndex === 0) return false;
+    
+    const previousTask = tasks[taskIndex - 1];
+    return !previousTask.subtasks.every(st => st.completed);
+  };
+
   const handleTaskClick = (task: Task) => {
-    if (task.day_assigned > maxUnlockedDay) return;
+    if (isTaskLocked(task)) {
+      toast.warning('Please complete the previous task before proceeding to this one.', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        transition: Slide,
+      });
+      return;
+    }
     setSelectedTaskId(task.id);
   };
 
@@ -427,6 +465,30 @@ const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
   const isDayCompleted = useCallback((day: number) => {
     return completedDaysMap.get(day) || false;
   }, [completedDaysMap]);
+
+  useEffect(() => {
+    if (tasks.length === 0) {
+      setCurrentUnlockedTaskId(null);
+      return;
+    }
+
+    let unlockedTaskId = tasks[0].id;
+    for (let i = 0; i < tasks.length; i++) {
+      if (i === 0 || tasks[i - 1].subtasks.every(st => st.completed)) {
+        unlockedTaskId = tasks[i].id;
+      } else {
+        break;
+      }
+    }
+    setCurrentUnlockedTaskId(unlockedTaskId);
+  }, [tasks]);
+
+  const handleUrlChange = (subtaskId: string, value: string) => {
+    setUrlInputs(prev => ({
+      ...prev,
+      [subtaskId]: value
+    }));
+  };
 
   if (isLoading) {
     return (
@@ -504,6 +566,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
         handleTaskClick={handleTaskClick}
         getTaskProgress={getTaskProgress}
         getStatusIcon={getStatusIcon}
+        isTaskLocked={isTaskLocked}
       />
 
       <TaskDetails
@@ -515,6 +578,8 @@ const AssignmentPage: React.FC<AssignmentPageProps> = ({ params }) => {
         selectedDay={selectedDay}
         maxUnlockedDay={maxUnlockedDay}
         onClose={closeTaskDetails}
+        urlInputs={urlInputs}
+        handleUrlChange={handleUrlChange}
       />
 
       {selectedDay > maxUnlockedDay && (

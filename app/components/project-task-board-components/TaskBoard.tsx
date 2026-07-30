@@ -8,6 +8,7 @@ import {
   DroppableStateSnapshot,
 } from 'react-beautiful-dnd';
 import { StrictModeDroppable } from './StrictModeDroppable';
+import { Lock, Unlock } from 'lucide-react';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -38,6 +39,7 @@ interface TaskBoardProps {
   handleTaskClick: (task: Task) => void;
   getTaskProgress: (task: Task) => number;
   getStatusIcon: (status: string) => JSX.Element | null;
+  isTaskLocked: (task: Task) => boolean;
 }
 
 const TaskBoard: React.FC<TaskBoardProps> = ({
@@ -46,6 +48,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
   handleTaskClick,
   getTaskProgress,
   getStatusIcon,
+  isTaskLocked,
 }) => {
   const [enabled, setEnabled] = useState(false);
 
@@ -98,52 +101,64 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
                 <div className="space-y-4">
                   {tasks
                     .filter((t) => t.status === status)
-                    .map((task, index) => (
-                      <Draggable
-                        key={task.id}
-                        draggableId={task.id}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            onClick={() => handleTaskClick(task)}
-                            className={`
-                              bg-white border border-[#E5E5E5] rounded-xl p-5
-                              hover:shadow-md hover:border-[#58CC02]
-                              ${snapshot.isDragging ? 'shadow-lg border-[#58CC02] bg-[#F7F7F7]' : ''}
-                              transition-all duration-200 cursor-grab active:cursor-grabbing
-                              group
-                            `}
-                          >
-                            <div className="flex items-center justify-between mb-3">
-                              <h3 className="text-md font-semibold text-[#4B4B4B] group-hover:text-[#58CC02] transition-colors">
-                                {task.title}
-                              </h3>
-                            </div>
-                            <div className="mt-3">
-                              <div className="w-full bg-[#F7F7F7] rounded-full h-2.5">
-                                <div
-                                  className="bg-[#58CC02] h-2.5 rounded-full transition-all duration-300 ease-in-out"
-                                  style={{
-                                    width: `${getTaskProgress(task)}%`
-                                  }}
-                                ></div>
+                    .map((task, index) => {
+                      const locked = isTaskLocked(task);
+                      return (
+                        <Draggable
+                          key={task.id}
+                          draggableId={task.id}
+                          index={index}
+                          isDragDisabled={locked}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              onClick={() => handleTaskClick(task)}
+                              className={`
+                                bg-white border border-[#E5E5E5] rounded-xl p-5
+                                ${locked ? 'opacity-75 cursor-not-allowed' : 'hover:shadow-md hover:border-[#58CC02]'}
+                                ${snapshot.isDragging ? 'shadow-lg border-[#58CC02] bg-[#F7F7F7]' : ''}
+                                transition-all duration-200 
+                                ${locked ? '' : 'cursor-grab active:cursor-grabbing'}
+                                group relative
+                              `}
+                            >
+                              <div className="flex items-center justify-between mb-3">
+                                <h3 className={`text-md font-semibold ${locked ? 'text-gray-500' : 'text-[#4B4B4B] group-hover:text-[#58CC02]'} transition-colors`}>
+                                  {task.title}
+                                </h3>
+                                {locked ? (
+                                  <Lock className="w-4 h-4 text-gray-400" />
+                                ) : (
+                                  <Unlock className="w-4 h-4 text-[#58CC02]" />
+                                )}
                               </div>
-                              <div className="flex justify-between text-xs text-[#4B4B4B] mt-2.5">
-                                <span>
-                                  {task.subtasks.filter((st) => st.completed).length}
-                                  /{task.subtasks.length} subtasks
-                                </span>
-                                <span className="font-medium">{getTaskProgress(task)}%</span>
+                              <div className="mt-3">
+                                <div className="w-full bg-[#F7F7F7] rounded-full h-2.5">
+                                  <div
+                                    className={`h-2.5 rounded-full transition-all duration-300 ease-in-out ${
+                                      locked ? 'bg-gray-300' : 'bg-[#58CC02]'
+                                    }`}
+                                    style={{
+                                      width: `${getTaskProgress(task)}%`
+                                    }}
+                                  ></div>
+                                </div>
+                                <div className="flex justify-between text-xs text-[#4B4B4B] mt-2.5">
+                                  <span>
+                                    {task.subtasks.filter((st) => st.completed).length}
+                                    /{task.subtasks.length} subtasks
+                                  </span>
+                                  <span className="font-medium">{getTaskProgress(task)}%</span>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
+                          )}
+                        </Draggable>
+                      );
+                    })}
                   {provided.placeholder}
                 </div>
               </div>
