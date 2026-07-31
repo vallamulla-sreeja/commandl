@@ -1,5 +1,3 @@
-// components/SubTaskRenderer.tsx
-
 'use client';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -25,6 +23,37 @@ interface SubTaskRendererProps {
   more_info?: MoreInfo | null;
 }
 
+interface CodeProps {
+  inline?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+}
+
+interface HeadingProps {
+  children?: React.ReactNode;
+}
+
+interface ListProps {
+  children?: React.ReactNode;
+}
+
+interface AnchorProps {
+  href?: string;
+  children?: React.ReactNode;
+}
+
+interface StrongProps {
+  children?: React.ReactNode;
+}
+
+interface EmphasizeProps {
+  children?: React.ReactNode;
+}
+
+interface BlockquoteProps {
+  children?: React.ReactNode;
+}
+
 const SubTaskRenderer: React.FC<SubTaskRendererProps> = ({ 
   subtask,
   completed = false,
@@ -32,7 +61,7 @@ const SubTaskRenderer: React.FC<SubTaskRendererProps> = ({
 }) => {
 
   const components: Partial<Components> = {
-    code({ inline, className, children, ...props }: any) {
+    code({ inline, className, children, ...props }: CodeProps) {
       const match = /language-(\w+)/.exec(className || '');
       if (!inline && match) {
         return (
@@ -52,14 +81,13 @@ const SubTaskRenderer: React.FC<SubTaskRendererProps> = ({
         </code>
       );
     },
-    // Add custom renderers for other markdown elements
-    h1: ({ children }: any) => <h1 className="text-2xl font-bold">{children}</h1>,
-    h2: ({ children }: any) => <h2 className="text-xl font-bold">{children}</h2>,
-    h3: ({ children }: any) => <h3 className="text-lg font-bold">{children}</h3>,
-    ul: ({ children }: any) => <ul className="list-disc list-outside">{children}</ul>,
-    ol: ({ children }: any) => <ol className="list-decimal list-outside">{children}</ol>,
-    li: ({ children }: any) => <li className="ml-4">{children}</li>,
-    a: ({ href, children }: any) => (
+    h1: ({ children }: HeadingProps) => <h1 className="text-2xl font-bold">{children}</h1>,
+    h2: ({ children }: HeadingProps) => <h2 className="text-xl font-bold">{children}</h2>,
+    h3: ({ children }: HeadingProps) => <h3 className="text-lg font-bold">{children}</h3>,
+    ul: ({ children }: ListProps) => <ul className="list-disc list-outside">{children}</ul>,
+    ol: ({ children }: ListProps) => <ol className="list-decimal list-outside">{children}</ol>,
+    li: ({ children }: ListProps) => <li className="ml-4">{children}</li>,
+    a: ({ href, children }: AnchorProps) => (
       <a 
         href={href}
         target="_blank"
@@ -69,9 +97,9 @@ const SubTaskRenderer: React.FC<SubTaskRendererProps> = ({
         {children}
       </a>
     ),
-    strong: ({ children }: any) => <strong className="font-semibold">{children}</strong>,
-    em: ({ children }: any) => <em className="italic text-gray-700">{children}</em>,
-    blockquote: ({ children }: any) => (
+    strong: ({ children }: StrongProps) => <strong className="font-semibold">{children}</strong>,
+    em: ({ children }: EmphasizeProps) => <em className="italic text-gray-700">{children}</em>,
+    blockquote: ({ children }: BlockquoteProps) => (
       <blockquote className="border-l-4 border-gray-300 pl-4 italic">{children}</blockquote>
     ),
   };
