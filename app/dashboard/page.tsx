@@ -54,7 +54,7 @@ const PROJECTS: Project[] = [
 ];
 
 export default function Dashboard() {
-  const { user, isLoading, error } = useUser();
+  const { user, isLoading: isUserLoading, error } = useUser();
   const router = useRouter();
   const [userStatus, setUserStatus] = useState<UserStatus | null>(null);
   const [selectedProject, setSelectedProject] = useState<string>('');
@@ -62,33 +62,54 @@ export default function Dashboard() {
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [enrollmentSuccess, setEnrollmentSuccess] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [isCheckingStatus, setIsCheckingStatus] = useState(false);
+  const [isCheckingStatus, setIsCheckingStatus] = useState(true);
 
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (!isUserLoading && !user) {
       router.push('/api/auth/login');
     }
-  }, [user, isLoading, router]);
+  }, [user, isUserLoading, router]);
 
   useEffect(() => {
+    let isMounted = true;
+
     const checkUserStatus = async () => {
-      setIsCheckingStatus(true);
+      if (!user) return;
+
       try {
         const response = await checkUserStatusAPI();
+        if (!isMounted) return;
+
         const isPaid = response.extra === 'paid';
         setUserStatus({ isPaid });
+        
+        // Check if user is enrolled in a project and redirect if true
+        if (response.project_enrolled === 'yes') {
+          router.replace('/project-task-board');
+          return;
+        }
       } catch (error) {
         console.error('Error checking user status:', error);
-        setUserStatus({ isPaid: false });
+        if (isMounted) {
+          setUserStatus({ isPaid: false });
+        }
       } finally {
-        setIsCheckingStatus(false);
+        if (isMounted) {
+          setIsCheckingStatus(false);
+        }
       }
     };
 
     if (user) {
       checkUserStatus();
+    } else if (!isUserLoading) {
+      setIsCheckingStatus(false);
     }
-  }, [user]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user, isUserLoading, router]);
 
   const handleResumeUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -171,8 +192,12 @@ export default function Dashboard() {
     }
   };
 
-  if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (isUserLoading || isCheckingStatus) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-t-2 border-b-2 border-[#58cc02]"></div>
+      </div>
+    );
   }
 
   if (error) {
@@ -183,17 +208,39 @@ export default function Dashboard() {
     return null;
   }
 
+  // Only render the main content when we're sure about the user's status
+  if (!userStatus) {
+    return null;
+  }
+
   return (
     <div className="flex min-h-screen bg-white">
       <Sidebar />
       <main className="flex-1 lg:ml-72 transition-all duration-300">
         <div className="min-h-screen p-4 sm:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
-            {isCheckingStatus ? (
-              <div className="min-h-[50vh] flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-t-2 border-b-2 border-[#58cc02]"></div>
+            {!userStatus.isPaid ? (
+              <div className="text-center p-8">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+                <div className="text-center">
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] mb-6 sm:mb-8">
+                    Welcome to CommandL
+                  </h1>
+                  <div className="rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-12">
+                    {/* <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8">
+                      We&apos;re excited to have you on board.
+                    </p> */}
+                    <div className="inline-flex items-center justify-center space-x-2 bg-[#58CC02]/10 text-[#58CC02] font-medium py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      <span>You&apos;re on our waitlist</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            ) : userStatus?.isPaid ? (
+              </div>
+            ) : (
               <>
                 {!enrollmentSuccess ? (
                   <div className="space-y-6 sm:space-y-8 max-w-4xl mx-auto">
@@ -260,25 +307,6 @@ export default function Dashboard() {
                   </motion.div>
                 )}
               </>
-            ) : (
-              <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-                <div className="text-center">
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] mb-6 sm:mb-8">
-                    Welcome to CommandL
-                  </h1>
-                  <div className="rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-12">
-                    {/* <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8">
-                      We&apos;re excited to have you on board.
-                    </p> */}
-                    <div className="inline-flex items-center justify-center space-x-2 bg-[#58CC02]/10 text-[#58CC02] font-medium py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      <span>You&apos;re on our waitlist</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
             )}
           </div>
         </div>

@@ -286,9 +286,13 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                             </div>
                           )}
                           <style>{markdownLinkStyles}</style>
-                          <SubTaskRenderer subtask={subtask.description} />
+                          <SubTaskRenderer 
+                            subtask={subtask.description} 
+                            completed={subtask.completed}
+                            more_info={subtask.more_info}
+                          />
 
-                          {!isSubtaskSparkStudio && subtask.more_info?.data?.verify_field && (
+                          {!isSubtaskSparkStudio && subtask.more_info?.data?.verify_field && !subtask.completed && (
                             <div className="mt-6 border-t border-gray-200 pt-4">
                               <div className="bg-white">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">

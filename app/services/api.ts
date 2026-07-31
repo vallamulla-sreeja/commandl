@@ -214,9 +214,10 @@ export const uploadToAzure = async (file: File): Promise<string> => {
   return data.url;
 };
 
-interface PaymentStatusResponse {
+export interface PaymentStatusResponse {
   status: string;
   extra: string;
+  project_enrolled: string;
 }
 
 export const checkUserStatusAPI = async (): Promise<PaymentStatusResponse> => {

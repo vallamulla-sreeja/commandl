@@ -1,7 +1,7 @@
 import { NextConfig } from 'next';
 
 const config: NextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   swcMinify: true,
   images: {
     formats: ['image/avif', 'image/webp'],
