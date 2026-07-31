@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { EyeIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface Project {
   id: number;
@@ -88,6 +89,12 @@ const dummyProjects: Project[] = [
 ];
 
 export default function Projects() {
+  const router = useRouter();
+
+  const handleStartProject = () => {
+    router.push('/join');
+  };
+
   return (
     <>
       <Navbar />
@@ -97,7 +104,10 @@ export default function Projects() {
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-8 font-nunito">
             Real Projects Built by Our Students in 2 Weeks
           </h1>
-          <button className="bg-[#58CC02] hover:bg-[#4CAF02] text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-all font-nunito">
+          <button 
+            onClick={handleStartProject}
+            className="bg-[#58CC02] hover:bg-[#4CAF02] text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-all font-nunito"
+          >
             START YOUR PROJECT
           </button>
         </div>
