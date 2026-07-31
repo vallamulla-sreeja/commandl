@@ -8,10 +8,13 @@ import Sidebar from '../components/Sidebar';
 import { motion } from 'framer-motion';
 import ResumeUpload from '../components/dashboard/ResumeUpload';
 import ProjectSelection from '../components/dashboard/ProjectSelection';
-import Enrollment from '../components/dashboard/Enrollment';
+import AboutSection from '../components/dashboard/AboutSection';
+import GoalsSection from '../components/dashboard/GoalsSection';
+import EnrollmentSummary from '../components/dashboard/EnrollmentSummary';
 import { checkUserStatusAPI } from '../services/api';
 import { fetchAccessToken } from '../services/api';
 import { BASE_URL } from '../services/api';
+import { toast } from 'react-hot-toast';
 
 type UserStatus = {
   isPaid: boolean;
@@ -23,7 +26,6 @@ type Project = {
   description: string;
   image: string;
   color: string;
-  techStack: string[];
 };
 
 const PROJECTS: Project[] = [
@@ -32,24 +34,21 @@ const PROJECTS: Project[] = [
     title: 'Virtual chatbot',
     description: 'Build a virtual chatbot that can answer questions and help users with their queries.',
     image: '/images/frontend_development.png',
-    color: 'bg-[#ffffff]',
-    techStack: ['React', 'Node.js', 'OpenAI API', 'MongoDB']
+    color: 'bg-[#ffffff]'
   },
   {
     id: '2',
     title: 'Flashcard Study Tool',
     description: 'Create a flashcard study tool that can help users study for their exams.',
     image: '/images/backend_development.png',
-    color: 'bg-[#ffffff]',
-    techStack: ['Next.js', 'Socket.io', 'PostgreSQL', 'Redis']
+    color: 'bg-[#ffffff]'
   },
   {
     id: '3',
     title: 'Blog Manager',
     description: 'Develop a blog manager that can help users manage their blog posts.',
     image: '/images/software_development.png',
-    color: 'bg-[#ffffff]',
-    techStack: ['React', 'Django', 'AWS', 'PostgreSQL']
+    color: 'bg-[#ffffff]'
   }
 ];
 
@@ -59,6 +58,8 @@ export default function Dashboard() {
   const [userStatus, setUserStatus] = useState<UserStatus | null>(null);
   const [selectedProject, setSelectedProject] = useState<string>('');
   const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [about, setAbout] = useState('');
+  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [enrollmentSuccess, setEnrollmentSuccess] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -77,6 +78,24 @@ export default function Dashboard() {
       if (!user) return;
 
       try {
+        // First check if user profile exists
+        try {
+          const response = await fetch(`${BASE_URL}/profile`, {
+            headers: {
+              'Authorization': `Bearer ${await fetchAccessToken()}`
+            }
+          });
+          
+          if (response.status === 404 || response.status === 400) {
+            // User not found, redirect to registration
+            router.replace('/registration');
+            return;
+          }
+        } catch (error) {
+          console.error('Error checking user profile:', error);
+          // If there's an error checking profile, we'll continue with status check
+        }
+
         const response = await checkUserStatusAPI();
         if (!isMounted) return;
 
@@ -122,17 +141,45 @@ export default function Dashboard() {
     setSelectedProject(projectId);
   };
 
-  const handleProjectEnrollment = async () => {
-    if (!selectedProject || !resumeFile) return;
+  const handleGoalToggle = (goalId: string) => {
+    setSelectedGoals(prev => {
+      if (prev.includes(goalId)) {
+        return prev.filter(id => id !== goalId);
+      }
+      return [...prev, goalId];
+    });
+  };
 
+  const handleSubmit = async () => {
+    if (isEnrolling) return; // Prevent multiple submissions
     setIsEnrolling(true);
+    
     try {
       // Get the selected project details
       const project = PROJECTS.find(p => p.id === selectedProject);
       if (!project) throw new Error('Project not found');
-      const accessToken = await fetchAccessToken();
+      
+      // First upload the resume and get the URL
+      let resumeUrl = null;
+      if (resumeFile) {
+        const formData = new FormData();
+        formData.append('file', resumeFile);
+        
+        const resumeResponse = await fetch('/api/upload-resume', {
+          method: 'POST',
+          body: formData,
+        });
 
-      // Make API call to generate project tasks
+        if (!resumeResponse.ok) {
+          throw new Error('Failed to upload resume');
+        }
+
+        const resumeData = await resumeResponse.json();
+        resumeUrl = resumeData.url;
+      }
+
+      // Now make the API call to generate project tasks with the resume URL
+      const accessToken = await fetchAccessToken();
       const response = await fetch(`${BASE_URL}/generate-14-day-project-tasks`, {
         method: 'POST',
         headers: {
@@ -141,7 +188,10 @@ export default function Dashboard() {
         },
         body: JSON.stringify({
           project_name: project.title.toLowerCase().replace(/\s+/g, '_'),
-          project_description: project.description
+          project_description: project.description,
+          resume_url: resumeUrl,
+          about: about,
+          goals: selectedGoals
         })
       });
 
@@ -149,12 +199,22 @@ export default function Dashboard() {
         throw new Error('Failed to generate project tasks');
       }
 
-      // await response.json(); // Wait for the response
-      setEnrollmentSuccess(true);
+      const data = await response.json();
+      if (data.message === 'Tasks and subtasks stored successfully') {
+        // First set enrollment success
+        setEnrollmentSuccess(true);
+        // Then reset loading state
+        setIsEnrolling(false);
+        // Finally redirect after a short delay
+        setTimeout(() => {
+          router.push('/project-task-board');
+        }, 1500);
+      } else {
+        throw new Error('Failed to generate project tasks');
+      }
     } catch (error) {
-      console.error('Error enrolling in project:', error);
-      // You might want to show an error message to the user here
-    } finally {
+      console.error('Error during project enrollment:', error);
+      toast.error('Failed to enroll in project. Please try again.');
       setIsEnrolling(false);
     }
   };
@@ -171,20 +231,44 @@ export default function Dashboard() {
         );
       case 2:
         return (
-          <ProjectSelection
-            projects={PROJECTS}
-            selectedProject={selectedProject}
-            onProjectSelect={handleProjectSelection}
-            onContinue={() => selectedProject && setCurrentStep(3)}
+          <AboutSection
+            about={about}
+            onAboutChange={setAbout}
+            onContinue={() => about.trim() && setCurrentStep(3)}
+            onBack={() => setCurrentStep(1)}
           />
         );
       case 3:
         return (
-          <Enrollment
+          <GoalsSection
+            selectedGoals={selectedGoals}
+            onGoalToggle={handleGoalToggle}
+            onContinue={() => selectedGoals.length >= 3 && setCurrentStep(4)}
+            onBack={() => setCurrentStep(2)}
+          />
+        );
+      case 4:
+        return (
+          <ProjectSelection
             projects={PROJECTS}
             selectedProject={selectedProject}
+            onProjectSelect={handleProjectSelection}
+            onContinue={() => selectedProject && setCurrentStep(5)}
+            onBack={() => setCurrentStep(3)}
+          />
+        );
+      case 5:
+        const project = PROJECTS.find(p => p.id === selectedProject);
+        if (!project || !resumeFile) return null;
+        return (
+          <EnrollmentSummary
+            resumeFile={resumeFile}
+            about={about}
+            selectedGoals={selectedGoals}
+            selectedProject={project}
+            onBack={() => setCurrentStep(4)}
+            onEnroll={handleSubmit}
             isEnrolling={isEnrolling}
-            onEnroll={handleProjectEnrollment}
           />
         );
       default:
@@ -240,73 +324,69 @@ export default function Dashboard() {
                 </div>
               </div>
               </div>
-            ) : (
-              <>
-                {!enrollmentSuccess ? (
-                  <div className="space-y-6 sm:space-y-8 max-w-4xl mx-auto">
-                    <div className="text-center">
-                      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                        <span className="bg-[#efccff] text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-md inline-block">
-                          Project Enrollment
-                        </span>
-                      </h1>
-                    </div>
-                    <div className="flex justify-center mb-6 sm:mb-8">
-                      <div className="flex items-center space-x-2 sm:space-x-4">
-                        {[1, 2, 3].map((step) => (
-                          <div key={step} className="flex items-center">
-                            <div
-                              className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-sm sm:text-base ${
-                                step === currentStep
-                                  ? 'bg-[#58CC02] text-white'
-                                  : step < currentStep
-                                  ? 'bg-[#58CC02]/20 text-[#58CC02]'
-                                  : 'bg-gray-200 text-gray-400'
-                              }`}
-                            >
-                              {step}
-                            </div>
-                            {step < 3 && (
-                              <div
-                                className={`w-8 sm:w-16 h-0.5 ${
-                                  step < currentStep ? 'bg-[#58CC02]' : 'bg-gray-200'
-                                }`}
-                              />
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="px-4 sm:px-6 lg:px-8">
-                      {renderStep()}
-                    </div>
-                  </div>
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="bg-white rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-12 text-center max-w-2xl mx-auto shadow-sm"
+            ) : enrollmentSuccess ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-white rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-12 text-center max-w-2xl mx-auto shadow-sm"
+              >
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#58CC02] bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <svg className="w-8 h-8 sm:w-10 sm:h-10 text-[#58CC02]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Welcome Aboard!</h2>
+                <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8">
+                  You&apos;ve successfully enrolled in the project. Get ready to start your development journey!
+                </p>
+                <div className="flex justify-center">
+                  <button 
+                    onClick={() => router.push('/project-task-board')}
+                    className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-[#58CC02] text-white rounded-lg sm:rounded-xl font-semibold hover:bg-[#58CC02]/90 transition-colors text-sm sm:text-base"
                   >
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#58CC02] bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                      <svg className="w-8 h-8 sm:w-10 sm:h-10 text-[#58CC02]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Welcome Aboard!</h2>
-                    <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8">
-                      You&apos;ve successfully enrolled in the project. Get ready to start your development journey!
-                    </p>
-                    <div className="flex justify-center">
-                      <button 
-                        onClick={() => router.push('/project-task-board')}
-                        className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-[#58CC02] text-white rounded-lg sm:rounded-xl font-semibold hover:bg-[#58CC02]/90 transition-colors text-sm sm:text-base"
-                      >
-                        Go to Project Dashboard
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </>
+                    Go to Project Dashboard
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              <div className="space-y-6 sm:space-y-8 max-w-4xl mx-auto">
+                <div className="text-center">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                    <span className="bg-[#efccff] text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-md inline-block">
+                      Project Enrollment
+                    </span>
+                  </h1>
+                </div>
+                <div className="flex justify-center mb-6 sm:mb-8">
+                  <div className="flex items-center space-x-2 sm:space-x-4">
+                    {[1, 2, 3, 4, 5].map((step) => (
+                      <div key={step} className="flex items-center">
+                        <div
+                          className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-sm sm:text-base ${
+                            step === currentStep
+                              ? 'bg-[#58CC02] text-white'
+                              : step < currentStep
+                              ? 'bg-[#58CC02]/20 text-[#58CC02]'
+                              : 'bg-gray-200 text-gray-400'
+                          }`}
+                        >
+                          {step}
+                        </div>
+                        {step < 5 && (
+                          <div
+                            className={`w-8 sm:w-16 h-0.5 ${
+                              step < currentStep ? 'bg-[#58CC02]' : 'bg-gray-200'
+                            }`}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="px-4 sm:px-6 lg:px-8">
+                  {renderStep()}
+                </div>
+              </div>
             )}
           </div>
         </div>
