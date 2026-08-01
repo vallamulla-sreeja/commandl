@@ -1,7 +1,7 @@
 'use client';
 
 import { Stream } from "@cloudflare/stream-react";
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
@@ -22,6 +22,44 @@ const VideoPlayer = () => {
           primaryColor="#EFCCFF"
         />
       </div>
+    </div>
+  );
+};
+
+const CountdownTimer = () => {
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  });
+
+  useEffect(() => {
+    const targetDate = new Date('2025-02-14T23:59:00-05:00'); // EST time
+
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const difference = targetDate.getTime() - now.getTime();
+
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((difference / 1000 / 60) % 60);
+        const seconds = Math.floor((difference / 1000) % 60);
+
+        setTimeLeft({ days, hours, minutes, seconds });
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="font-mono text-base text-[#4b4b4b] mt-2 font-semibold">
+      {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s left to enroll
     </div>
   );
 };
@@ -140,11 +178,9 @@ export default function JoinPage() {
                 <span className="text-3xl md:text-4xl font-black line-through text-gray-400">$200</span>
                 <span className="text-3xl md:text-4xl font-black text-[#4b4b4b]">$149</span>
               </div>
-              <p className="text-base text-[#4b4b4b] mt-2 font-semibold">
-                if enrolled by Feb 14th, 11:59 PM EST
-              </p>
+              <CountdownTimer />
             </div>
-            <p className="text-lg text-[#FF4B4B] mb-6 font-extrabold">
+            <p className="text-lg text-[#FF4B4B] mb-2 font-extrabold">
               100% Money-Back Guarantee
             </p>
             <a
