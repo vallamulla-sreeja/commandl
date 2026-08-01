@@ -13,6 +13,7 @@ import GoalsSection from '../components/dashboard/GoalsSection';
 import EnrollmentSummary from '../components/dashboard/EnrollmentSummary';
 import { checkUserStatusAPI } from '../services/api';
 import { fetchAccessToken } from '../services/api';
+import { handleLogout } from '../services/api';
 import { BASE_URL } from '../services/api';
 import { toast } from 'react-hot-toast';
 
@@ -86,6 +87,12 @@ export default function Dashboard() {
             }
           });
           
+          if (response.status === 401) {
+            // Token expired or invalid, redirect to logout
+            await handleLogout();
+            return;
+          }
+          
           if (response.status === 404 || response.status === 400) {
             // User not found, redirect to registration
             router.replace('/registration');
@@ -93,6 +100,10 @@ export default function Dashboard() {
           }
         } catch (error) {
           console.error('Error checking user profile:', error);
+          if (error instanceof Error && error.message === 'Unauthorized') {
+            await handleLogout();
+            return;
+          }
           // If there's an error checking profile, we'll continue with status check
         }
 
@@ -109,6 +120,10 @@ export default function Dashboard() {
         }
       } catch (error) {
         console.error('Error checking user status:', error);
+        if (error instanceof Error && error.message === 'Unauthorized') {
+          await handleLogout();
+          return;
+        }
         if (isMounted) {
           setUserStatus({ isPaid: false });
         }
