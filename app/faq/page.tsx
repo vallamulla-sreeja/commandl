@@ -10,35 +10,64 @@ interface FAQItem {
 const faqs: FAQItem[] = [
   {
     question: "What is CommandL?",
-    answer: "CommandL is an innovative code editor that integrates with the VedaVerse platform to provide a hands-on learning experience. It combines a powerful code editor with task tracking capabilities, making it easier for you to learn programming through practical exercises."
+    answer: `
+  CommandL is a learning platform that combines a Jira-like dashboard with an AI-powered code editor. It's designed to help you build real projects in just 14 days.
+    `.trim()
   },
   {
-    question: "How do I get started with CommandL?",
-    answer: "Getting started is a simple 3-step process: 1) First, sign up on the VedaVerse platform at https://platform.vedaverse.io/ 2) Download and install the CommandL editor from our website 3) Set up your development environment following our setup guide."
+    question: "How does the website work?",
+    answer: `
+  Our website features a daily task dashboard, similar to Jira. Each day, you’ll see a list of tasks to complete, keeping your learning on track.
+    `.trim()
   },
   {
-    question: "How does the task management work?",
-    answer: "After signing up on the VedaVerse platform, you'll select a project or programming language you want to learn. This creates a task board similar to an agile scrum board. You can move tasks to 'In Progress' when you're ready to work on them, and they'll automatically appear in your CommandL editor's sidebar."
+    question: "What about the code editor?",
+    answer: `
+    The CommandL code editor comes with task board, AI mentor, tutorials plus streaks and points. The more tasks you finish, the more points you earn, boosting motivation and progress.
+    `.trim()
   },
   {
-    question: "How do I access my learning tasks in CommandL?",
-    answer: "Once you move a task to 'In Progress' on the VedaVerse platform (https://platform.vedaverse.io/), it will automatically appear in the CommandL editor's sidebar. You can then follow the instructions and complete the hands-on coding exercises directly in the editor."
+    question: "How does the resume builder works?",
+    answer: `
+    Using our resume builder you will be able to create a personalized resume that for every job in less than 5 seconds, this resume lands you in top 1% of the jobs you apply.
+    `.trim()
   },
   {
-    question: "What programming languages and projects are available?",
-    answer: "You can choose from a variety of programming languages and projects on the VedaVerse platform. Simply browse through the available options after signing up and select what interests you most. The corresponding tasks and learning materials will be created automatically."
+    question: "Do I need coding experience?",
+    answer: `
+No. The 14-day bootcamp is beginner-friendly. Many students start with zero coding background and still build complete projects by the end.
+    `.trim()
   },
   {
-    question: "Is there a cost to use CommandL and VedaVerse?",
-    answer: "Please visit the VedaVerse platform (https://platform.vedaverse.io/) for current pricing information and available plans. You'll need both platform access and the CommandL editor to get the complete learning experience."
+    question: "What is the 14-day bootcamp?",
+    answer: `
+It’s an intensive program where you tackle daily tasks, build full projects, and gain real-world coding skills, most importantly applying to jobs using our personalized resume builder for every job all within two weeks.
+    `.trim()
   },
   {
-    question: "Can I work on multiple projects simultaneously?",
-    answer: "Yes! You can select multiple projects or languages on the VedaVerse platform and manage different task boards. All your in-progress tasks will be accessible through the CommandL editor's sidebar."
+    question: "How does it help with interviews?",
+    answer: `
+Graduates see a 60% increase in interview invites and a 90%+ chance of landing a job within three months after completing the bootcamp.
+    `.trim()
+  },
+  
+  {
+    question: "How much time do I have to spend each day?",
+    answer: `
+You will have to spend at least 2 hours a day for 14 dyas at your convinient time.
+    `.trim()
   },
   {
-    question: "What if I need help while working on a task?",
-    answer: "CommandL provides built-in assistance while you're working on your tasks. If you need additional help, you can access resources and community support through the VedaVerse platform."
+    question: "How do I track my progress?",
+    answer: `
+Your daily tasks, streaks, and points are all visible in your dashboard and the editor. You can see exactly how far you’ve come.
+    `.trim()
+  },
+  {
+    question: "How do I join?",
+    answer: `
+Simply sign up on our website. Once enrolled, you’ll get immediate access to the dashboard and code editor to start your 14-day journey.
+    `.trim()
   }
 ];
 
@@ -56,8 +85,12 @@ export default function FAQPage() {
                 key={index}
                 className="bg-white rounded-xl border border-gray-200 p-6"
               >
-                <h2 className="text-lg font-bold text-gray-900 mb-4">{faq.question}</h2>
-                <p className="text-sm text-gray-700 leading-relaxed">{faq.answer}</p>
+                <h2 className="text-lg font-bold text-gray-900 mb-4">
+                  {faq.question}
+                </h2>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  {faq.answer}
+                </p>
               </div>
             ))}
           </div>
@@ -65,4 +98,4 @@ export default function FAQPage() {
       </div>
     </>
   );
-} 
+}
