@@ -10,9 +10,15 @@ interface VerifyField {
   type: string;
 }
 
+interface Asset {
+  type: 'video' | 'image';
+  asset_url: string;
+}
+
 interface MoreInfo {
   data: {
-    verify_field: VerifyField;
+    verify_field?: VerifyField;
+    asset?: Asset;
   };
   user_input?: string;
 }
@@ -113,6 +119,25 @@ const SubTaskRenderer: React.FC<SubTaskRendererProps> = ({
               <ReactMarkdown components={components}>
                 {subtask}
               </ReactMarkdown>
+              
+              {more_info?.data?.asset && (
+                <div className="mt-6 border-t border-gray-200 pt-4">
+                  <div className="bg-white">
+                    {more_info.data.asset.type === 'video' && (
+                      <div className="relative pt-[56.25%] rounded-lg overflow-hidden">
+                        <video
+                          className="absolute top-0 left-0 w-full h-full object-cover"
+                          controls
+                          preload="metadata"
+                        >
+                          <source src={more_info.data.asset.asset_url} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               
               {completed && more_info?.data?.verify_field && more_info.user_input && (
                 <div className="mt-6 border-t border-gray-200 pt-4">
