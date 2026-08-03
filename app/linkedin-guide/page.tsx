@@ -19,6 +19,7 @@ export default function LinkedInGuide() {
           <video 
             className="w-full h-full rounded-lg shadow-lg"
             controls
+            controlsList="nodownload"
             preload="metadata"
           >
             <source 

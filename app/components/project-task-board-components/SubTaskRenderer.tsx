@@ -128,6 +128,7 @@ const SubTaskRenderer: React.FC<SubTaskRendererProps> = ({
                         <video
                           className="absolute top-0 left-0 w-full h-full object-cover"
                           controls
+                          controlsList="nodownload"
                           preload="metadata"
                         >
                           <source src={more_info.data.asset.asset_url} type="video/mp4" />
