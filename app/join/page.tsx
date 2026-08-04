@@ -1,7 +1,7 @@
 'use client';
 
 import { Stream } from "@cloudflare/stream-react";
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
