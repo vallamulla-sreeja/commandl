@@ -284,12 +284,13 @@ const ProjectDashboard = () => {
                                     cursor-pointer
                                 `}
                             >
-                                <div className="relative w-full aspect-[4/3]">
+                                <div className="w-full flex justify-center items-center p-4">
                                     <Image
                                         src={type.image}
                                         alt={type.title}
-                                        fill
-                                        className="object-contain"
+                                        width={300}
+                                        height={200}
+                                        style={{ objectFit: 'contain' }}
                                         priority
                                     />
                                 </div>
@@ -348,12 +349,13 @@ const ProjectDashboard = () => {
                                         cursor-pointer
                                     `}
                                 >
-                                    <div className="relative w-full aspect-[4/3]">
+                                    <div className="w-full flex justify-center items-center p-4">
                                         <Image
                                             src={card.image}
                                             alt={card.title}
-                                            fill
-                                            className="object-contain"
+                                            width={300}
+                                            height={200}
+                                            style={{ objectFit: 'contain' }}
                                             priority
                                         />
                                     </div>
