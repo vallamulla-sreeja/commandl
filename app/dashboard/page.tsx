@@ -65,6 +65,7 @@ export default function Dashboard() {
   const [enrollmentSuccess, setEnrollmentSuccess] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
+  const [isProjectEnrolled, setIsProjectEnrolled] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -95,7 +96,10 @@ export default function Dashboard() {
           
           if (response.status === 404 || response.status === 400) {
             // User not found, redirect to registration
-            router.replace('/registration');
+            if (isMounted) {
+              setIsProjectEnrolled(false);
+              router.replace('/registration');
+            }
             return;
           }
         } catch (error) {
@@ -104,7 +108,6 @@ export default function Dashboard() {
             await handleLogout();
             return;
           }
-          // If there's an error checking profile, we'll continue with status check
         }
 
         const response = await checkUserStatusAPI();
@@ -113,10 +116,12 @@ export default function Dashboard() {
         const isPaid = response.extra === 'paid';
         setUserStatus({ isPaid });
         
-        // Check if user is enrolled in a project and redirect if true
-        if (response.project_enrolled === 'yes') {
+        // Check if user is enrolled in a project
+        const isEnrolled = response.project_enrolled === 'yes';
+        setIsProjectEnrolled(isEnrolled);
+        
+        if (isEnrolled) {
           router.replace('/project-task-board');
-          return;
         }
       } catch (error) {
         console.error('Error checking user status:', error);
@@ -126,6 +131,7 @@ export default function Dashboard() {
         }
         if (isMounted) {
           setUserStatus({ isPaid: false });
+          setIsProjectEnrolled(false);
         }
       } finally {
         if (isMounted) {
@@ -138,6 +144,7 @@ export default function Dashboard() {
       checkUserStatus();
     } else if (!isUserLoading) {
       setIsCheckingStatus(false);
+      setIsProjectEnrolled(false);
     }
 
     return () => {
@@ -291,7 +298,7 @@ export default function Dashboard() {
     }
   };
 
-  if (isUserLoading || isCheckingStatus) {
+  if (isUserLoading || isCheckingStatus || isProjectEnrolled === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-t-2 border-b-2 border-[#58cc02]"></div>
@@ -310,6 +317,11 @@ export default function Dashboard() {
   // Only render the main content when we're sure about the user's status
   if (!userStatus) {
     return null;
+  }
+
+  // Only render the dashboard content if we're sure the user is not enrolled in a project
+  if (isProjectEnrolled) {
+    return null; // The router.replace will handle the navigation
   }
 
   return (
