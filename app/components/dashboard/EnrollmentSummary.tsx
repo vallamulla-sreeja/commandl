@@ -10,8 +10,8 @@ interface Project {
 }
 
 interface EnrollmentSummaryProps {
-  resumeFile: File;
-  about: string;
+  resumeFile?: File | null;
+  about?: string;
   selectedGoals: string[];
   selectedProject: Project;
   onBack: () => void;
@@ -52,22 +52,26 @@ export default function EnrollmentSummary({
           </div>
         </div>
 
-        {/* Resume */}
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Resume</h3>
-          <div className="bg-gray-50 rounded-xl p-4 flex items-center">
-            <DocumentArrowUpIcon className="w-6 h-6 text-gray-400 mr-3" />
-            <span className="text-gray-600">{resumeFile.name}</span>
+        {/* Resume - Only show if resumeFile exists */}
+        {resumeFile && (
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Resume</h3>
+            <div className="bg-gray-50 rounded-xl p-4 flex items-center">
+              <DocumentArrowUpIcon className="w-6 h-6 text-gray-400 mr-3" />
+              <span className="text-gray-600">{resumeFile.name}</span>
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* About */}
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">About You</h3>
-          <div className="bg-gray-50 rounded-xl p-4">
-            <p className="text-gray-600">{about}</p>
+        {/* About - Only show if about exists and is not empty */}
+        {about && about.trim() !== '' && (
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">About You</h3>
+            <div className="bg-gray-50 rounded-xl p-4">
+              <p className="text-gray-600">{about}</p>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Goals */}
         <div>

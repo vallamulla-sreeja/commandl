@@ -30,7 +30,7 @@ export default function Enrollment({ projects, selectedProject, isEnrolling, onE
         <h2 className="text-3xl font-bold text-gray-900 mb-6">Ready to Begin?</h2>
         <div className="space-y-4 mb-8">
           <p className="text-xl text-gray-600">
-            You&apos;ve uploaded your resume and selected a project. Click below to start your journey!
+            You&apos;ve selected a project. Click below to start your journey!
           </p>
           {project && (
             <div className="bg-gray-50 p-6 rounded-xl">

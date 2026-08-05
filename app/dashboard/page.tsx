@@ -6,9 +6,10 @@ import { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 // import { ArrowDownCircleIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import ResumeUpload from '../components/dashboard/ResumeUpload';
+// Commented out unused components
+// import ResumeUpload from '../components/dashboard/ResumeUpload';
 import ProjectSelection from '../components/dashboard/ProjectSelection';
-import AboutSection from '../components/dashboard/AboutSection';
+// import AboutSection from '../components/dashboard/AboutSection';
 import GoalsSection from '../components/dashboard/GoalsSection';
 import EnrollmentSummary from '../components/dashboard/EnrollmentSummary';
 import { checkUserStatusAPI } from '../services/api';
@@ -58,12 +59,18 @@ export default function Dashboard() {
   const router = useRouter();
   const [userStatus, setUserStatus] = useState<UserStatus | null>(null);
   const [selectedProject, setSelectedProject] = useState<string>('');
+  
+  // These state variables are kept for future use and compatibility with the EnrollmentSummary component
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [resumeFile, setResumeFile] = useState<File | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [about, setAbout] = useState('');
+  
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [enrollmentSuccess, setEnrollmentSuccess] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
+  // Start with GoalsSection (step 3) instead of ResumeUpload (step 1)
+  const [currentStep, setCurrentStep] = useState(3);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
   const [isProjectEnrolled, setIsProjectEnrolled] = useState<boolean | null>(null);
 
@@ -152,12 +159,15 @@ export default function Dashboard() {
     };
   }, [user, isUserLoading, router]);
 
+  // Commented out as it's no longer needed
+  /*
   const handleResumeUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setResumeFile(file);
     }
   };
+  */
 
   const handleProjectSelection = (projectId: string) => {
     setSelectedProject(projectId);
@@ -181,25 +191,6 @@ export default function Dashboard() {
       const project = PROJECTS.find(p => p.id === selectedProject);
       if (!project) throw new Error('Project not found');
       
-      // First upload the resume and get the URL
-      let resumeUrl = null;
-      if (resumeFile) {
-        const formData = new FormData();
-        formData.append('file', resumeFile);
-        
-        const resumeResponse = await fetch('/api/upload-resume', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!resumeResponse.ok) {
-          throw new Error('Failed to upload resume');
-        }
-
-        const resumeData = await resumeResponse.json();
-        resumeUrl = resumeData.url;
-      }
-
       // Now make the API call to generate project tasks with the resume URL
       const accessToken = await fetchAccessToken();
       const response = await fetch(`${BASE_URL}/generate-14-day-project-tasks`, {
@@ -211,8 +202,6 @@ export default function Dashboard() {
         body: JSON.stringify({
           project_name: project.title.toLowerCase().replace(/\s+/g, '_'),
           project_description: project.description,
-          resume_url: resumeUrl,
-          about: about,
           goals: selectedGoals
         })
       });
@@ -243,30 +232,13 @@ export default function Dashboard() {
 
   const renderStep = () => {
     switch (currentStep) {
-      case 1:
-        return (
-          <ResumeUpload
-            resumeFile={resumeFile}
-            onFileChange={handleResumeUpload}
-            onContinue={() => resumeFile && setCurrentStep(2)}
-          />
-        );
-      case 2:
-        return (
-          <AboutSection
-            about={about}
-            onAboutChange={setAbout}
-            onContinue={() => about.trim() && setCurrentStep(3)}
-            onBack={() => setCurrentStep(1)}
-          />
-        );
       case 3:
         return (
           <GoalsSection
             selectedGoals={selectedGoals}
             onGoalToggle={handleGoalToggle}
             onContinue={() => selectedGoals.length >= 3 && setCurrentStep(4)}
-            onBack={() => setCurrentStep(2)}
+            onBack={() => {}}
           />
         );
       case 4:
@@ -281,7 +253,7 @@ export default function Dashboard() {
         );
       case 5:
         const project = PROJECTS.find(p => p.id === selectedProject);
-        if (!project || !resumeFile) return null;
+        if (!project) return null;
         return (
           <EnrollmentSummary
             resumeFile={resumeFile}
@@ -386,7 +358,7 @@ export default function Dashboard() {
                 </div>
                 <div className="flex justify-center mb-6 sm:mb-8">
                   <div className="flex items-center space-x-2 sm:space-x-4">
-                    {[1, 2, 3, 4, 5].map((step) => (
+                    {[3, 4, 5].map((step, index) => (
                       <div key={step} className="flex items-center">
                         <div
                           className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-sm sm:text-base ${
@@ -397,7 +369,7 @@ export default function Dashboard() {
                               : 'bg-gray-200 text-gray-400'
                           }`}
                         >
-                          {step}
+                          {index + 1}
                         </div>
                         {step < 5 && (
                           <div
