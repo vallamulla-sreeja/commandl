@@ -12,6 +12,7 @@ export default function BenefitsPage() {
   const { user, isLoading: isUserLoading } = useUser();
   const [isPaid, setIsPaid] = useState<boolean | null>(null);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Define the common problems array from bootcamp/join pages
   const commonProblems = [
@@ -59,7 +60,7 @@ export default function BenefitsPage() {
       
       try {
         const response = await checkUserStatusAPI();
-        if (response && response.status === 'paid') {
+        if (response && response.extra === 'paid') {
           setIsPaid(true);
         } else {
           setIsPaid(false);
@@ -82,8 +83,8 @@ export default function BenefitsPage() {
 
   return (
     <>
-      <Sidebar />
-      <main className="lg:ml-72 pt-[72px] min-h-screen bg-white">
+      <Sidebar isCollapsedCallback={setIsSidebarCollapsed} />
+      <main className={`transition-all duration-300 ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-72'} pt-[72px] min-h-screen bg-white`}>
         <div className="max-w-[1200px] mx-auto px-4 py-8">
           {/* Header Section */}
           <div className="text-center mb-12 mt-4 md:mt-8">

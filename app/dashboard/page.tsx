@@ -73,6 +73,8 @@ export default function Dashboard() {
   const [currentStep, setCurrentStep] = useState(3);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
   const [isProjectEnrolled, setIsProjectEnrolled] = useState<boolean | null>(null);
+  // Add state for sidebar collapsed status
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -302,8 +304,8 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-white">
-      <Sidebar />
-      <main className="flex-1 lg:ml-72 transition-all duration-300">
+      <Sidebar isCollapsedCallback={setIsSidebarCollapsed} />
+      <main className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-72'}`}>
         <div className="min-h-screen p-4 sm:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
             {isCheckingStatus ? (
