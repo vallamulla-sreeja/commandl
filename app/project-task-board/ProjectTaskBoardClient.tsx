@@ -65,6 +65,7 @@ interface Task {
   status: 'To Do' | 'In Progress' | 'Done';
   completed?: boolean;
   day_assigned: number;
+  hasLimitedDetails?: boolean;
 }
 
 interface Assignment {
@@ -128,195 +129,13 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
           }
         });
 
-        if (response.status === 403) {
-          // Handle unpaid user case
-          const errorData = await response.json();
-          if (errorData.message === "User not paid") {
-            // Create mock project with locked tasks
-            const mockAssignment: Assignment = {
-              id: "mock-project",
-              title: "Your Learning Path",
-              description: "Complete these tasks to build your foundation. Upgrade to unlock all tasks and track your progress."
-            };
-
-            // Create mock tasks with premium indicators
-            const mockTasks: Task[] = [
-              {
-                id: "task-1",
-                title: "LinkedIn Setup",
-                description: "Set up your professional LinkedIn profile",
-                status: "In Progress",
-                day_assigned: 1,
-                subtasks: [
-                  {
-                    id: "subtask-1-1",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  },
-                  {
-                    id: "subtask-1-2",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  }
-                ]
-              },
-              {
-                id: "task-2",
-                title: "GitHub Setup",
-                description: "Set up your GitHub profile and repositories",
-                status: "To Do",
-                day_assigned: 1,
-                subtasks: [
-                  {
-                    id: "subtask-2-1",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  },
-                  {
-                    id: "subtask-2-2",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  }
-                ]
-              },
-              {
-                id: "task-3",
-                title: "CommandL Installation",
-                description: "Install and set up CommandL for your development environment",
-                status: "To Do",
-                day_assigned: 1,
-                subtasks: [
-                  {
-                    id: "subtask-3-1",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: true
-                  }
-                ]
-              },
-              {
-                id: "task-4",
-                title: "Understanding Document Structure & Basic Syntax in HTML",
-                description: "Learn the fundamentals of HTML",
-                status: "To Do",
-                day_assigned: 1,
-                subtasks: [
-                  {
-                    id: "subtask-4-1",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  }
-                ]
-              },
-              {
-                id: "task-5",
-                title: "Core HTML Elements for Web Applications – Content & Navigation",
-                description: "Learn the core elements of HTML for web applications",
-                status: "To Do",
-                day_assigned: 1,
-                subtasks: [
-                  {
-                    id: "subtask-5-1",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  },
-                  {
-                    id: "subtask-5-2",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  },
-                  {
-                    id: "subtask-5-3",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  },
-                  {
-                    id: "subtask-5-4",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  }
-                ]
-              },
-              {
-                id: "task-6",
-                title: "Core HTML Elements for Web Applications – Forms & Semantic HTML",
-                description: "Learn the core elements like forms and semantic HTML for web applications",
-                status: "To Do",
-                day_assigned: 1,
-                subtasks: [
-                  {
-                    id: "subtask-6-1",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  },
-                  {
-                    id: "subtask-6-2",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  },
-                  {
-                    id: "subtask-6-3",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  },
-                  {
-                    id: "subtask-6-4",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  },
-                  {
-                    id: "subtask-6-5",
-                    title: "Premium Task - Upgrade to Unlock",
-                    description: "This task is only available for premium users. Upgrade now to access this content.",
-                    completed: false,
-                    spark_studio: false
-                  }
-                ]
-              },
-            ];
-
-            setAssignment(mockAssignment);
-            setTasks(mockTasks);
-            setIsPremiumUser(false);
-            setIsInitialized(true);
-            setIsLoading(false);
-            return;
-          }
-        }
-
         if (!response.ok) {
           throw new Error('Failed to fetch project data');
         }
 
         const data = await response.json();
         const projects = data.projects || [];
+        const isPaid = data.isPaid !== false;
 
         if (projects.length === 0) {
           setAssignment(null);
@@ -335,6 +154,11 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
         };
 
         const newTasks: Task[] = (project.tasks as ApiTask[] || []).map((task: ApiTask) => {
+          // Check if this task has limited details (minimal subtasks data)
+          const hasLimitedDetails = task.subtasks?.some(st => 
+            !st.description || st.description.trim() === ''
+          ) || false;
+
           const subtasks = (task.subtasks || [])
             .map((st: ApiSubtask) => ({
               id: st.id,
@@ -353,11 +177,13 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
             status: task.status || 'To Do',
             subtasks: subtasks,
             day_assigned: task.day_assigned,
+            hasLimitedDetails: hasLimitedDetails
           };
         });
 
         setAssignment(newAssignment);
         setTasks(newTasks);
+        setIsPremiumUser(isPaid);
         setIsInitialized(true);
         setIsLoading(false);
 
@@ -441,8 +267,8 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
   };
 
   const isTaskLocked = (task: Task): boolean => {
-    // For unpaid users, all tasks are locked
-    if (!isPremiumUser) {
+    // For unpaid users with limited details tasks
+    if (!isPremiumUser && task.hasLimitedDetails) {
       return true;
     }
     
@@ -675,8 +501,8 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
   };
 
   const handleTaskClick = (task: Task) => {
-    // For unpaid users, always show the task details with premium content
-    if (!isPremiumUser) {
+    // For unpaid users with limited details tasks
+    if (!isPremiumUser && task.hasLimitedDetails) {
       setSelectedTaskId(task.id);
       return;
     }
