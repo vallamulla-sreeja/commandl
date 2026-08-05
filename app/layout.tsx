@@ -4,6 +4,7 @@ import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { Nunito } from 'next/font/google';
 import { Inter } from 'next/font/google';
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 import './globals.css';
 import { useEffect, useState } from 'react';
 
@@ -46,6 +47,7 @@ export default function RootLayout({
           <ClientWrapper>
             {children}
             <SpeedInsights />
+            <Analytics />
           </ClientWrapper>
         </UserProvider>
       </body>
