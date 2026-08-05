@@ -33,6 +33,7 @@ interface Task {
   subtasks: Subtask[];
   status: 'To Do' | 'In Progress' | 'Done';
   day_assigned: number;
+  hasLimitedDetails?: boolean;
 }
 
 interface TaskDetailsProps {
@@ -65,9 +66,10 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   // We need to check if the task is specifically a premium task for unpaid users
   // not just any locked task for paid users
   const isPremiumTask = selectedTask && 
-    selectedTask.subtasks.length === 1 && 
+    ((selectedTask.hasLimitedDetails) ||
+    (selectedTask.subtasks.length === 1 && 
     selectedTask.subtasks[0].title.includes("Premium Task - Upgrade to Unlock") &&
-    selectedTask.day_assigned > maxUnlockedDay; // This ensures it's actually locked due to premium status
+    selectedTask.day_assigned > maxUnlockedDay)); // This ensures it's actually locked due to premium status
 
   const validateUrl = (url: string, type: string): boolean => {
     if (!url) return false;
@@ -170,7 +172,10 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                 <h3 className="text-xl font-bold text-amber-700">Premium Content</h3>
               </div>
               <p className="text-center text-amber-700 mb-6">
-                This task is only available for premium users. Upgrade now to access all tasks and track your progress.
+                {selectedTask?.hasLimitedDetails 
+                  ? "This task requires a premium subscription to view all details. Upgrade now to access the full content and complete this task."
+                  : "This task is only available for premium users. Upgrade now to access all tasks and track your progress."
+                }
               </p>
               <button 
                 className="w-full py-3 px-4 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg transition-colors"
