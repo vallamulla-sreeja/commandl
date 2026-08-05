@@ -48,21 +48,21 @@ export default function BootcampPage() {
   // Define the 3 common problems array
   const commonProblems = [
     {
-      title: "1. I'm new to coding—where do I even begin?",
+      title: "1. I&apos;m new to coding—where do I even begin?",
       problem:
-        "Students with little or no coding experience often feel overwhelmed by terms like HTML, CSS, React, Node.js, MongoDB—and how they fit together. They're also worried about asking basic questions and looking lost.",
+        "Students with little or no coding experience often feel overwhelmed by terms like HTML, CSS, React, Node.js, MongoDB—and how they fit together. They&apos;re also worried about asking basic questions and looking lost.",
       solution:
         "Our 2-week program is beginner-friendly. We guide you step by step through each tool and show exactly how they work together to build a real project from scratch."
     },
     {
       title: "2. I have no idea how to actually land a job—my resume is weak.",
       problem:
-        "Without a strong resume or industry connections, job applications often go unanswered. Beginners don't know what hiring managers really look for.",
+        "Without a strong resume or industry connections, job applications often go unanswered. Beginners don&apos;t know what hiring managers really look for.",
       solution:
-        "Our advanced resume tool tailors your skills to each job posting, putting you in the top 1% of applicants. Plus, we'll show you proven tactics to network directly with recruiters."
+        "Our advanced resume tool tailors your skills to each job posting, putting you in the top 1% of applicants. Plus, we&apos;ll show you proven tactics to network directly with recruiters."
     },
     { 
-      title: "3. I don't have the time or money for a long, expensive bootcamp.",
+      title: "3. I don&apos;t have the time or money for a long, expensive bootcamp.",
       problem:
         "Traditional bootcamps can take months and cost thousands—impossible for most students or those on tight budgets.",
       solution:
