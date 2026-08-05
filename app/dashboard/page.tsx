@@ -127,13 +127,9 @@ export default function Dashboard() {
         const isEnrolled = response.project_enrolled === 'yes';
         setIsProjectEnrolled(isEnrolled);
         
-        // Redirect both paid and unpaid users to project-task-board
-        // This ensures unpaid users also see the project board with premium content
+        // Only redirect to project-task-board if the user is already enrolled in a project
+        // This ensures both paid and unpaid users go through the enrollment process first
         if (isEnrolled) {
-          router.replace('/project-task-board');
-        } else if (!isPaid) {
-          // For unpaid users who aren't enrolled yet, also redirect to project-task-board
-          // They will see the premium content UI there
           router.replace('/project-task-board');
         }
       } catch (error) {
@@ -145,8 +141,8 @@ export default function Dashboard() {
         if (isMounted) {
           setUserStatus({ isPaid: false });
           setIsProjectEnrolled(false);
-          // Redirect unpaid users to project-task-board even if there was an error
-          router.replace('/project-task-board');
+          // Remove the automatic redirect for unpaid users on error
+          // Let them go through the enrollment process
         }
       } finally {
         if (isMounted) {
@@ -329,9 +325,39 @@ export default function Dashboard() {
                 <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8">
                   You&apos;ve successfully enrolled in the project. Get ready to start your development journey!
                 </p>
+                <div className="flex justify-center">
+                  <button 
+                    onClick={() => router.push('/project-task-board')}
+                    className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-[#58CC02] text-white rounded-lg sm:rounded-xl font-semibold hover:bg-[#58CC02]/90 transition-colors text-sm sm:text-base"
+                  >
+                    Go to Project Dashboard
+                  </button>
+                </div>
               </motion.div>
             ) : (
               <div className="space-y-8">
+                {!userStatus.isPaid && (
+                  <div className="text-center p-4 mb-8">
+                    <div className="max-w-4xl mx-auto">
+                      <div className="text-center">
+                        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#4b4b4b] mb-6">
+                          Welcome to CommandL
+                        </h1>
+                        {/* <div className="rounded-xl p-4 mb-6">
+                          <div className="inline-flex items-center justify-center space-x-2 bg-[#58CC02]/10 text-[#58CC02] font-medium py-2.5 px-4 rounded-lg text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            <span>You&apos;re on our waitlist</span>
+                          </div>
+                        </div>
+                        <p className="text-lg text-gray-600 mb-6">
+                          While you&apos;re waiting, you can start the enrollment process to get ready for your project.
+                        </p> */}
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {renderStep()}
               </div>
             )}
