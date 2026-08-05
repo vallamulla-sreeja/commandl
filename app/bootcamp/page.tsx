@@ -4,6 +4,7 @@ import { Stream } from "@cloudflare/stream-react";
 import { Suspense } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import Navbar from '../components/Navbar';
+import Link from 'next/link';
 
 // const CountdownTimer = () => {
 //   const [timeLeft, setTimeLeft] = useState({
@@ -105,12 +106,12 @@ export default function BootcampPage() {
               Become a software developer in 2 weeks and get a job
             </p>
             <div className="flex justify-center">
-              <a
+              <Link
                 href="/api/auth/login?screen_hint=signup"
                 className="buttonPrimary text-2xl px-8 py-4 font-bold"
               >
                 Register for Free
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -208,12 +209,12 @@ export default function BootcampPage() {
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
               Transform your career in just 14 days with hands-on training, real-world projects, and direct mentorship from industry experts.
             </p>
-            <a
+            <Link
               href="/api/auth/signup"
               className="buttonPrimary inline-block font-bold text-2xl px-8 py-4"
             >
               Sign Up Now
-            </a>
+            </Link>
             <p className="text-lg text-[#4b4b4b] mt-6 font-semibold">
               Your career starts in just 14 days.
             </p>
