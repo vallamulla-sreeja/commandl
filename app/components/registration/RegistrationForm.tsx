@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { signup, getCollegeSuggestions } from '../../services/api';
+import { signup } from '../../services/api';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { subYears } from 'date-fns';
-import AutocompleteInput from './AutocompleteInput';
 import { motion } from "framer-motion";
 
 interface FormData {
@@ -41,7 +40,7 @@ const QUESTIONS = [
   {
     id: 'college',
     question: "Where did you learn to be so awesome? (your school or college)",
-    inputType: 'autocomplete',
+    inputType: 'text',
   },
 ];
 
@@ -216,6 +215,44 @@ const Registration: React.FC = () => {
 
   const maxDate = subYears(new Date(), 18).toISOString().split('T')[0];
 
+  const renderProgressSteps = () => {
+    return (
+      <div className="flex items-center justify-center w-full mb-6 sm:mb-8">
+        {QUESTIONS.map((_, index) => (
+          <div key={index} className="flex items-center">
+            {/* Step circle */}
+            <div 
+              className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 transition-colors ${
+                index === currentQuestionIndex 
+                  ? "border-[#61dd01] bg-[#61dd01] text-white" 
+                  : index < currentQuestionIndex 
+                    ? "border-[#61dd01] bg-white text-[#61dd01]" 
+                    : "border-gray-300 bg-white text-gray-400"
+              }`}
+            >
+              {index < currentQuestionIndex ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              ) : (
+                <span className="text-xs sm:text-sm font-medium">{index + 1}</span>
+              )}
+            </div>
+            
+            {/* Connector line */}
+            {index < QUESTIONS.length - 1 && (
+              <div 
+                className={`flex-1 h-1 sm:h-1.5 w-12 sm:w-16 mx-1 sm:mx-2 ${
+                  index < currentQuestionIndex ? "bg-[#61dd01]" : "bg-gray-300"
+                }`}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <section
       aria-label="Registration Form Section"
@@ -233,6 +270,9 @@ const Registration: React.FC = () => {
       </div>
 
       <div className="container mx-auto px-3 sm:px-4 mt-3 sm:mt-4 md:mt-8 w-full">
+        {/* Progress Indicator */}
+        {renderProgressSteps()}
+      
         {/* Top Bubble (Question) */}
         <div className="relative mx-auto max-w-sm mb-3 sm:mb-4 md:mb-8 md:ml-10 w-full px-2 sm:px-0">
           <div className="relative bg-white border border-gray-300 rounded-2xl px-3 sm:px-6 py-2 sm:py-4 inline-block w-full">
@@ -264,7 +304,7 @@ const Registration: React.FC = () => {
           <div className="w-full md:w-1/2 max-w-md mx-auto flex flex-col items-start justify-center px-2 sm:px-0">
             <div className="w-full">
               {/* Render input based on inputType */}
-              {currentQuestion.inputType === 'text' && (
+              {(currentQuestion.inputType === 'text' || currentQuestion.inputType === 'autocomplete') && (
                 <div className="flex flex-col mb-3 sm:mb-4 w-full">
                   <input
                     type="text"
@@ -291,25 +331,6 @@ const Registration: React.FC = () => {
                     onChange={(e) => handleInputChange(currentQuestion.id as keyof FormData, e.target.value)}
                     className="w-full py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-gray-300 rounded-xl focus:border-[#61dd01] focus:ring-1 focus:ring-[#61dd01] outline-none transition-colors text-sm sm:text-base"
                     max={maxDate}
-                  />
-                  {validationErrors[currentQuestion.id] && (
-                    <span className="text-red-500 text-xs sm:text-sm mt-1">
-                      {validationErrors[currentQuestion.id]}
-                    </span>
-                  )}
-                </div>
-              )}
-
-              {currentQuestion.inputType === 'autocomplete' && (
-                <div className="flex flex-col mb-3 sm:mb-4 w-full">
-                  <AutocompleteInput
-                    name="college"
-                    value={formData.college}
-                    onChange={(name, value) => handleInputChange(name as keyof FormData, value)}
-                    onFocus={() => {}}
-                    onBlur={() => {}}
-                    placeholder="Enter your college name"
-                    fetchSuggestions={getCollegeSuggestions}
                   />
                   {validationErrors[currentQuestion.id] && (
                     <span className="text-red-500 text-xs sm:text-sm mt-1">
