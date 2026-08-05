@@ -48,21 +48,21 @@ export default function BootcampPage() {
   // Define the 3 common problems array
   const commonProblems = [
     {
-      title: "1. I&apos;m new to coding—where do I even begin?",
+      title: "1. I'm new to coding—where do I even begin?",
       problem:
-        "Students with little or no coding experience often feel overwhelmed by terms like HTML, CSS, React, Node.js, MongoDB—and how they fit together. They&apos;re also worried about asking basic questions and looking lost.",
+        "Students with little or no coding experience often feel overwhelmed by terms like HTML, CSS, React, Node.js, MongoDB—and how they fit together. They're also worried about asking basic questions and looking lost.",
       solution:
         "Our 2-week program is beginner-friendly. We guide you step by step through each tool and show exactly how they work together to build a real project from scratch."
     },
     {
       title: "2. I have no idea how to actually land a job—my resume is weak.",
       problem:
-        "Without a strong resume or industry connections, job applications often go unanswered. Beginners don&apos;t know what hiring managers really look for.",
+        "Without a strong resume or industry connections, job applications often go unanswered. Beginners don't know what hiring managers really look for.",
       solution:
-        "Our advanced resume tool tailors your skills to each job posting, putting you in the top 1% of applicants. Plus, we&apos;ll show you proven tactics to network directly with recruiters."
+        "Our advanced resume tool tailors your skills to each job posting, putting you in the top 1% of applicants. Plus, we'll show you proven tactics to network directly with recruiters."
     },
     { 
-      title: "3. I don&apos;t have the time or money for a long, expensive bootcamp.",
+      title: "3. I don't have the time or money for a long, expensive bootcamp.",
       problem:
         "Traditional bootcamps can take months and cost thousands—impossible for most students or those on tight budgets.",
       solution:
@@ -78,14 +78,9 @@ export default function BootcampPage() {
       description: "Learn about our 14-day program and how it will transform your coding skills."
     },
     {
-      id: "aafc2832a7f9e35f7c4f9df27bc34e0c", // Using same video ID for demo purposes
-      title: "Building Your First Full-Stack Application",
-      description: "Watch how we build a complete web application from scratch using modern technologies."
-    },
-    {
-      id: "aafc2832a7f9e35f7c4f9df27bc34e0c", // Using same video ID for demo purposes
-      title: "Job-Ready Skills Workshop",
-      description: "Discover the essential skills employers are looking for and how to showcase them."
+      id: "https://bypr8o9pz5zjf5of.public.blob.vercel-storage.com/careerfornia-captions-compressed-F3ixwJI67gGJ9KmMVuhiLZ8HUMfsAC.mp4",
+      title: "Powerful AI Resume Tool",
+      description: "Generate best resume for each role with a single click and be in top 1% of all the candidates that apply to the position. Get interview calls in 2 weeks."
     }
   ];
 
@@ -120,7 +115,7 @@ export default function BootcampPage() {
             <h2 className="text-3xl sm:text-4xl font-extrabold mb-8 text-center text-black font-nunito">
               Watch Demo Videos
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="flex flex-col gap-12 max-w-3xl mx-auto">
               {demoVideos.map((video, index) => (
                 <div key={index} className="flex flex-col">
                   <div className="relative w-full mb-4 overflow-hidden rounded-2xl shadow-lg">
@@ -132,18 +127,34 @@ export default function BootcampPage() {
                           </div>
                         }
                       >
-                        <Stream
-                          controls
-                          src={video.id}
-                          height="100%"
-                          width="100%"
-                          responsive={true}
-                          className="rounded-2xl"
-                          autoplay={false}
-                          muted={false}
-                          preload="auto"
-                          primaryColor="#EFCCFF"
-                        />
+                        {video.id.includes('http') ? (
+                          <video
+                            controls
+                            className="w-full h-full rounded-2xl"
+                            preload="auto"
+                            autoPlay
+                            muted
+                            loop
+                            controlsList="nodownload"
+                          >
+                            <source src={video.id} type="video/mp4" />
+                            Your browser does not support the video tag.
+                          </video>
+                        ) : (
+                          <Stream
+                            controls
+                            src={video.id}
+                            height="100%"
+                            width="100%"
+                            responsive={true}
+                            className="rounded-2xl"
+                            autoplay={true}
+                            muted={true}
+                            loop={true}
+                            preload="auto"
+                            primaryColor="#EFCCFF"
+                          />
+                        )}
                       </Suspense>
                     </div>
                   </div>
@@ -181,7 +192,7 @@ export default function BootcampPage() {
           {/* Updated Cohort + Perks Section */}
           <div className="mb-16 max-w-4xl mx-auto">
             <h2 className="text-4xl sm:text-5xl font-extrabold mb-8 text-center text-black font-nunito">
-              What You&apos;ll Get
+              What You'll Get
             </h2>
             <div className="space-y-6 font-nunito text-[#4b4b4b]">
               {[
