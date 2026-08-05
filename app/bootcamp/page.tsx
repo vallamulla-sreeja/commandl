@@ -192,7 +192,7 @@ export default function BootcampPage() {
           {/* Updated Cohort + Perks Section */}
           <div className="mb-16 max-w-4xl mx-auto">
             <h2 className="text-4xl sm:text-5xl font-extrabold mb-8 text-center text-black font-nunito">
-              What You'll Get
+              What You&apos;ll Get
             </h2>
             <div className="space-y-6 font-nunito text-[#4b4b4b]">
               {[
@@ -228,6 +228,20 @@ export default function BootcampPage() {
             </Link>
             <p className="text-lg text-[#4b4b4b] mt-6 font-semibold">
               Your career starts in just 14 days.
+            </p>
+          </div>
+
+          {/* Contact Information Section */}
+          <div className="text-center font-nunito mb-12">
+            <p className="text-xl text-[#4b4b4b] font-medium">
+              For any questions, please contact us at{' '}
+              <a href="https://wa.me/19722928701" className="text-blue-600 hover:underline font-semibold">
+                +1 972-292-8701
+              </a>{' '}
+              (WhatsApp) or email{' '}
+              <a href="mailto:sai@vedaverse.io" className="text-blue-600 hover:underline font-semibold">
+                sai@vedaverse.io
+              </a>
             </p>
           </div>
         </div>
