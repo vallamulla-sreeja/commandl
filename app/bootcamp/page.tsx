@@ -4,6 +4,7 @@ import { Stream } from "@cloudflare/stream-react";
 import { Suspense } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import Link from 'next/link';
 
 // const CountdownTimer = () => {
@@ -248,6 +249,7 @@ export default function BootcampPage() {
           </div>
         </div>
       </main>
+      <Footer />
     </>
   );
 } 

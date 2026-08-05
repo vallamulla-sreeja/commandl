@@ -127,7 +127,7 @@ export default function TermsOfService() {
           </h2>
           <p className="text-lg text-gray-600 mb-6">
             If you have any questions about these Terms of Service, please
-            contact us at <a href="mailto:sreeja.v@vedaverse.io" className="text-[#1cb0f6] hover:underline">sreeja.v@vedaverse.io</a>.
+            contact us at <a href="mailto:hi@vedaverse.io" className="text-[#1cb0f6] hover:underline">hi@vedaverse.io</a>.
           </p>
         </div>
       </main>

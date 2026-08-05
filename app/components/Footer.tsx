@@ -50,7 +50,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="mailto:sreeja.v@vedaverse.io" className="text-lg font-semibold text-white hover:text-white/90 transition-colors">
+                <a href="mailto:hi@vedaverse.io" className="text-lg font-semibold text-white hover:text-white/90 transition-colors">
                   Contact
                 </a>
               </li>
