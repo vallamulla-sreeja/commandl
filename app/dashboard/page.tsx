@@ -16,7 +16,8 @@ import { checkUserStatusAPI } from '../services/api';
 import { fetchAccessToken } from '../services/api';
 import { handleLogout } from '../services/api';
 import { BASE_URL } from '../services/api';
-import { toast } from 'react-hot-toast';
+import { toast, Toaster } from 'react-hot-toast';
+import { profileApi, Profile } from '../services/api';
 
 type UserStatus = {
   isPaid: boolean;
@@ -59,6 +60,7 @@ export default function Dashboard() {
   const router = useRouter();
   const [userStatus, setUserStatus] = useState<UserStatus | null>(null);
   const [selectedProject, setSelectedProject] = useState<string>('');
+  const [userProfile, setUserProfile] = useState<Profile | null>(null);
   
   // These state variables are kept for future use and compatibility with the EnrollmentSummary component
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -76,6 +78,92 @@ export default function Dashboard() {
   // Add state for sidebar collapsed status
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
+  // Show toast notifications after a short delay
+  useEffect(() => {
+    if (userProfile && !isCheckingStatus && !isProjectEnrolled) {
+      // Add a small delay before showing first toast
+      const timeout1 = setTimeout(() => {
+        toast.custom(
+          (t) => (
+            <div className={`${
+              t.visible ? 'animate-enter' : 'animate-leave'
+            } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-opacity-5 border-l-4 border-[#58CC02]`}>
+              <div className="flex-1 w-0 p-4">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0 pt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#58CC02]" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3 flex-1">
+                    <p className="text-sm font-medium text-gray-900">
+                      Did you know?
+                    </p>
+                    <p className="mt-1 text-sm text-gray-500">
+                      You'll get 1 year of free access to Code editor with this program!
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex border-l border-gray-200">
+                <button
+                  onClick={() => toast.dismiss(t.id)}
+                  className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-[#58CC02] hover:text-[#58CC02]/80 focus:outline-none"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          ),
+          { duration: 5000 }
+        );
+      }, 3000);
+      
+      // Show second toast with a longer delay to ensure they don't overlap
+      const timeout2 = setTimeout(() => {
+        toast.custom(
+          (t) => (
+            <div className={`${
+              t.visible ? 'animate-enter' : 'animate-leave'
+            } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-opacity-5 border-l-4 border-[#58CC02]`}>
+              <div className="flex-1 w-0 p-4">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0 pt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#58CC02]" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3 flex-1">
+                    <p className="text-sm font-medium text-gray-900">
+                      Did you know?
+                    </p>
+                    <p className="mt-1 text-sm text-gray-500">
+                      Personalizing your resume increases interview call chances by 3x. With this program, you'll have 3 months of unlimited access to this tool!
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex border-l border-gray-200">
+                <button
+                  onClick={() => toast.dismiss(t.id)}
+                  className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-[#58CC02] hover:text-[#58CC02]/80 focus:outline-none"
+                >
+                  Great!
+                </button>
+              </div>
+            </div>
+          ),
+          { duration: 5000 }
+        );
+      }, 12000); // Increased delay to ensure first toast is dismissed
+
+      return () => {
+        clearTimeout(timeout1);
+        clearTimeout(timeout2);
+      };
+    }
+  }, [userProfile, isCheckingStatus, isProjectEnrolled]);
+
   useEffect(() => {
     if (!isUserLoading && !user) {
       router.push('/api/auth/login');
@@ -84,6 +172,19 @@ export default function Dashboard() {
 
   useEffect(() => {
     let isMounted = true;
+
+    const fetchUserProfile = async () => {
+      if (!user) return;
+      
+      try {
+        const profile = await profileApi.getProfile();
+        if (isMounted) {
+          setUserProfile(profile);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
 
     const checkUserStatus = async () => {
       if (!user) return;
@@ -111,6 +212,10 @@ export default function Dashboard() {
             }
             return;
           }
+          
+          // If profile exists, fetch it
+          await fetchUserProfile();
+          
         } catch (error) {
           console.error('Error checking user profile:', error);
           if (error instanceof Error && error.message === 'Unauthorized') {
@@ -276,6 +381,14 @@ export default function Dashboard() {
     }
   };
 
+  // Helper function to get the appropriate greeting based on time of day
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   if (isUserLoading || isCheckingStatus || isProjectEnrolled === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -304,6 +417,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-white">
+      <Toaster position="bottom-right" />
       <Sidebar isCollapsedCallback={setIsSidebarCollapsed} />
       <main className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-72'}`}>
         <div className="min-h-screen p-4 sm:p-6 lg:p-8">
@@ -342,20 +456,23 @@ export default function Dashboard() {
                   <div className="text-center p-4 mb-8">
                     <div className="max-w-4xl mx-auto">
                       <div className="text-center">
-                        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#4b4b4b] mb-6">
-                          Welcome to CommandL
-                        </h1>
-                        {/* <div className="rounded-xl p-4 mb-6">
-                          <div className="inline-flex items-center justify-center space-x-2 bg-[#58CC02]/10 text-[#58CC02] font-medium py-2.5 px-4 rounded-lg text-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>
-                            <span>You&apos;re on our waitlist</span>
+                        {userProfile?.name ? (
+                          <div className="bg-gradient-to-r from-[#e9f7e5] to-[#e5f5fc] p-6 rounded-xl shadow-sm mb-6">
+                            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#4b4b4b]">
+                              <span className="text-[#58CC02]">{getGreeting()}</span>{' '}
+                              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#58CC02] to-[#1cb0f6]">
+                                {userProfile.name.split(' ')[0]}
+                              </span>
+                            </h1>
+                            <p className="text-lg text-gray-700 mt-3">
+                              Let's get started with the 14-day program!
+                            </p>
                           </div>
-                        </div>
-                        <p className="text-lg text-gray-600 mb-6">
-                          While you&apos;re waiting, you can start the enrollment process to get ready for your project.
-                        </p> */}
+                        ) : (
+                          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#4b4b4b] mb-6">
+                            Welcome to CommandL
+                          </h1>
+                        )}
                       </div>
                     </div>
                   </div>
