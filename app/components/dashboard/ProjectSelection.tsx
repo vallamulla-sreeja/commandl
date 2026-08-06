@@ -31,7 +31,7 @@ export default function ProjectSelection({ projects, selectedProject, onProjectS
           Select a project that aligns with your goals
         </p>
         <div className="mt-3 text-sm text-gray-500 bg-blue-50 p-3 rounded-lg inline-block">
-          <span className="font-medium">Note:</span> We add new projects every week! You'll gain access to all projects after completing your first 14-day project.
+          <span className="font-medium">Note:</span> We add new projects every week! You&apos;ll gain access to all projects after completing your first 14-day project.
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
