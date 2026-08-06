@@ -235,6 +235,31 @@ export const checkUserStatusAPI = async (): Promise<PaymentStatusResponse> => {
   }
 };
 
+export interface ScoresResponse {
+  points: number;
+  streak: number;
+  previous_streak: number;
+  fifteen_minutes_challenge: boolean;
+  todayStreak: boolean;
+}
+
+export const getScores = async (): Promise<ScoresResponse> => {
+  try {
+    const response = await api.get('/get-scores');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching scores:', error);
+    // Return default values if there's an error
+    return {
+      points: 0,
+      streak: 0,
+      previous_streak: 0,
+      fifteen_minutes_challenge: false,
+      todayStreak: false
+    };
+  }
+};
+
 // Error handling middleware
 api.interceptors.response.use(
   (response) => response,
