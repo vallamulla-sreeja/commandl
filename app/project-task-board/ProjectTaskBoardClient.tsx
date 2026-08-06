@@ -14,7 +14,7 @@ import TaskDetails from '../components/project-task-board-components/TaskDetails
 import { DropResult } from 'react-beautiful-dnd';
 import { debounce } from 'lodash';
 import { Slide } from 'react-toastify';
-import { Crown } from 'lucide-react';
+import { Crown, CheckCircle2, X } from 'lucide-react';
 // import ApplyFor10DayProgram from '../components/project-task-board-components/applyFor10DayProgram';
 
 const nunito = Nunito({
@@ -110,6 +110,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isPremiumUser, setIsPremiumUser] = useState(true);
   const [currentUnlockedTaskId, setCurrentUnlockedTaskId] = useState<string | null>(null);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
 
   const selectedTask = tasks.find((task) => task.id === selectedTaskId);
 
@@ -573,6 +574,112 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
     }));
   };
 
+  // Function to handle opening the premium modal
+  const handleOpenPremiumModal = () => {
+    setShowPremiumModal(true);
+  };
+  
+  // Function to handle closing the premium modal
+  const handleClosePremiumModal = () => {
+    setShowPremiumModal(false);
+  };
+  
+  // Premium Features Modal Component
+  const PremiumFeaturesModal = () => {
+    if (!showPremiumModal) return null;
+    
+    const features = [
+      {
+        title: "1 Year Full Access to CommandL",
+        description: "Complete access to our powerful development environment with built-in AI assistance"
+      },
+      {
+        title: "3 Months Unlimited AI Resume Generator",
+        description: "Position yourself in the top 1% of job candidates with our advanced resume tool"
+      },
+      {
+        title: "14 Days Daily Mentorship",
+        description: "Get direct guidance from our founders and domain experts"
+      },
+      {
+        title: "Advanced Projects Access",
+        description: "Access to advanced projects as long as you have access to CommandL"
+      },
+      {
+        title: "Full Stack Completion Certification",
+        description: "Earn an official CommandL project completion certificate"
+      },
+      {
+        title: "Weekly New Projects",
+        description: "We're constantly adding new projects including AI/ML and App Development"
+      }
+    ];
+    
+    return (
+      <div 
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
+        onClick={handleClosePremiumModal}
+      >
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="bg-white rounded-2xl shadow-xl w-full max-w-3xl mx-4 overflow-hidden"
+        >
+          {/* Header with gradient background */}
+          <div className="bg-gradient-to-r from-[#58CC02] to-[#1cb0f6] p-6 relative">
+            <button
+              onClick={handleClosePremiumModal}
+              className="absolute right-4 top-4 text-white hover:bg-white/20 p-2 rounded-full transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <div className="flex items-center mb-2">
+              <Crown className="w-8 h-8 text-yellow-300 mr-3" />
+              <h2 className="text-3xl font-extrabold text-white">Unlock Premium Features</h2>
+            </div>
+            <p className="text-white/90 text-lg">
+              Take your career to the next level with our comprehensive program
+            </p>
+          </div>
+          
+          {/* Features Grid */}
+          <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {features.map((feature, index) => (
+              <div key={index} className="flex items-start space-x-3">
+                <CheckCircle2 className="h-6 w-6 text-[#58CC02] flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="text-[#4b4b4b] font-bold text-lg">{feature.title}</h4>
+                  <p className="text-gray-600">{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Pricing and CTA */}
+          <div className="p-6 bg-gray-50 border-t border-gray-200">
+            <div className="flex flex-col items-center mb-6">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-2xl font-bold text-gray-400 line-through">$250</span>
+                <span className="text-4xl font-extrabold text-[#4b4b4b]">$200</span>
+              </div>
+              <p className="text-[#FF4B4B] font-bold">One-time payment • 100% Money-Back Guarantee</p>
+            </div>
+            
+            <div className="flex justify-center">
+              <a
+                href="https://buy.stripe.com/eVa9DB3fr9og0RqeUZ"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto px-8 py-4 bg-[#58CC02] text-white rounded-xl font-extrabold hover:bg-[#58CC02]/90 transition-colors text-xl text-center"
+              >
+                Unlock All Features
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (!isInitialized || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -621,7 +728,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
       />
 
       {!isPremiumUser && (
-        <div className="mb-8 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl p-4 shadow-md">
+        <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white p-4 mb-6 rounded-lg shadow-md mx-4 sm:mx-6 lg:mx-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Crown className="w-6 h-6 mr-3" />
@@ -632,10 +739,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
             </div>
             <button 
               className="px-4 py-2 bg-white text-amber-600 font-semibold rounded-lg hover:bg-amber-50 transition-colors"
-              onClick={() => {
-                // Navigate to the Stripe payment link
-                window.open('https://buy.stripe.com/eVa9DB3fr9og0RqeUZ', '_blank');
-              }}
+              onClick={handleOpenPremiumModal}
             >
               Upgrade Now
             </button>
@@ -695,6 +799,9 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
           <p>This day is currently locked. Please complete Day {maxUnlockedDay - 1} to unlock Day {selectedDay}.</p>
         </div>
       )}
+
+      {/* Render the Premium Features Modal */}
+      <PremiumFeaturesModal />
     </div>
   );
 };
