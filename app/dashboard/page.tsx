@@ -474,7 +474,7 @@ export default function Dashboard() {
       },
       {
         title: "Weekly New Projects",
-        description: "We&apos;re constantly adding new projects including AI/ML and App Development"
+        description: "We're constantly adding new projects including AI/ML and App Development"
       }
     ];
     

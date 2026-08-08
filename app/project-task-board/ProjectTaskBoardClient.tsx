@@ -611,7 +611,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
       },
       {
         title: "Weekly New Projects",
-        description: "We&apos;re constantly adding new projects including AI/ML and App Development"
+        description: "We're constantly adding new projects including AI/ML and App Development"
       }
     ];
     
