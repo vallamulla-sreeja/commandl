@@ -20,9 +20,18 @@ export const fetchAccessToken = async (): Promise<string> => {
     try {
       const response = await fetch('/api/auth/token');
       if (!response.ok) {
+        console.error('Token fetch failed with status:', response.status);
+        // If we get an unauthorized response, trigger logout immediately
+        if (response.status === 401) {
+          await handleLogout();
+        }
         throw new Error('Unauthorized');
       }
       const data = await response.json();
+      if (!data.accessToken) {
+        console.error('No access token returned from server');
+        throw new Error('Unauthorized');
+      }
       return data.accessToken;
     } catch (error) {
       console.error('Error fetching access token:', error);
@@ -268,9 +277,12 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Clear any local session data
       if (typeof window !== 'undefined') {
+        console.log('401 error in API interceptor, logging out');
         // Handle unauthorized access by redirecting to logout
         // This will clear the session and redirect back to login
         await handleLogout();
+        // Return a rejected promise with a clear error message
+        return Promise.reject(new Error('Unauthorized'));
       }
     }
     return Promise.reject(error);

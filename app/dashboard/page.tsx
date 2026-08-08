@@ -185,6 +185,10 @@ export default function Dashboard() {
         }
       } catch (error) {
         console.error('Error fetching user profile:', error);
+        if (error instanceof Error && error.message === 'Unauthorized') {
+          await handleLogout();
+          return;
+        }
       }
     };
 
@@ -194,6 +198,16 @@ export default function Dashboard() {
       try {
         // First check if user profile exists
         try {
+          // Try to fetch the access token first to check if it's valid
+          try {
+            await fetchAccessToken();
+          } catch (error) {
+            console.error('Token fetch error:', error);
+            // If token fetch fails, immediately logout
+            await handleLogout();
+            return;
+          }
+          
           const response = await fetch(`${BASE_URL}/profile`, {
             headers: {
               'Authorization': `Bearer ${await fetchAccessToken()}`
@@ -202,6 +216,7 @@ export default function Dashboard() {
           
           if (response.status === 401) {
             // Token expired or invalid, redirect to logout
+            console.log('Unauthorized response, logging out');
             await handleLogout();
             return;
           }
@@ -221,9 +236,14 @@ export default function Dashboard() {
         } catch (error) {
           console.error('Error checking user profile:', error);
           if (error instanceof Error && error.message === 'Unauthorized') {
+            console.log('Unauthorized error, logging out');
             await handleLogout();
             return;
           }
+          // For any other error, we should also consider logging out the user
+          // as it might be related to token issues
+          await handleLogout();
+          return;
         }
 
         const response = await checkUserStatusAPI();

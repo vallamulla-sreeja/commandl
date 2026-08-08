@@ -7,6 +7,7 @@ import RegistrationForm from './components/registration/RegistrationForm';
 import { AxiosError } from 'axios';
 import { CircularProgress } from '@mui/material';
 import { useRouter, usePathname } from 'next/navigation';
+import { handleLogout } from './services/api';
 
 interface ErrorResponse {
   message: string;
@@ -35,6 +36,13 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         await profileApi.getProfile();
         setIsOnboarded(true);
       } catch (error) {
+        // Check for unauthorized error which could indicate token expiration
+        if (error instanceof Error && error.message === 'Unauthorized') {
+          console.log('Unauthorized error in ClientLayout, logging out');
+          await handleLogout();
+          return;
+        }
+        
         if ((error as AxiosError<ErrorResponse>)?.response?.status === 404) {
           setIsOnboarded(false);
           if (pathname !== '/dashboard') {
@@ -42,6 +50,14 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           }
           return;
         }
+        
+        // Check for 401 status which indicates unauthorized/expired token
+        if ((error as AxiosError<ErrorResponse>)?.response?.status === 401) {
+          console.log('401 error in ClientLayout, logging out');
+          await handleLogout();
+          return;
+        }
+        
         console.error('Unexpected error checking onboarding status:', error);
       } finally {
         setLoading(false);
