@@ -111,6 +111,16 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
   const [isPremiumUser, setIsPremiumUser] = useState(true);
   const [currentUnlockedTaskId, setCurrentUnlockedTaskId] = useState<string | null>(null);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [dbTables, setDbTables] = useState<{ [key: string]: string[] }>({});
+  const [codeFeedback, setCodeFeedback] = useState<{ 
+    [key: string]: { 
+      message: string, 
+      feedback: string,
+      results?: Record<string, unknown>[],
+      ran_user_code?: boolean,
+      code_to_execute?: string | null
+    } 
+  }>({});
 
   const selectedTask = tasks.find((task) => task.id === selectedTaskId);
 
@@ -283,6 +293,8 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
     return !previousTask.subtasks.every(st => st.completed);
   };
 
+  const getVerificationKey = (subtaskId: string, value: string) => `${subtaskId}:${value}`;
+
   const debouncedSaveProgress = useMemo(() => 
     debounce(async (updatedTasks: Task[]) => {
       const savingToastId = toast.info('Saving changes...', {
@@ -310,7 +322,10 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
               subtasks: task.subtasks.map((st) => ({
                 id: st.id,
                 completed: st.completed,
-                input: st.more_info?.data?.verify_field ? urlInputs[st.id] || '' : undefined
+                input: st.more_info?.data?.verify_field ? urlInputs[st.id] || '' : undefined,
+                db_tables: st.more_info?.data?.verify_field?.type === 'db_connection_string' ? dbTables[urlInputs[st.id] || ''] || [] : undefined,
+                feedback: st.more_info?.data?.verify_field?.type === 'code_verify' && urlInputs[st.id] ? 
+                  (codeFeedback[getVerificationKey(st.id, urlInputs[st.id])] || codeFeedback[urlInputs[st.id]]) : undefined
               }))
             })),
           }),
@@ -342,7 +357,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
         });
       }
     }, 1000),
-    [urlInputs]
+    [urlInputs, dbTables, codeFeedback]
   );
 
   const handleSaveProgress = useCallback((updatedTasks: Task[]) => {
@@ -793,6 +808,10 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
         onClose={closeTaskDetails}
         urlInputs={urlInputs}
         handleUrlChange={handleUrlChange}
+        dbTables={dbTables}
+        setDbTables={setDbTables}
+        codeFeedback={codeFeedback}
+        setCodeFeedback={setCodeFeedback}
       />
 
       {selectedDay > maxUnlockedDay && (
