@@ -222,7 +222,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
     
     // Update maxUnlockedDay
     let maxDay = 1;
-    for (let day = 1; day <= 10; day++) {
+    for (let day = 1; day <= 14; day++) {
       const dayTasks = tasks.filter(task => task.day_assigned === day);
       const allDayTasksCompleted = dayTasks.length > 0 && dayTasks.every(task => task.status === 'Done');
 
@@ -232,14 +232,14 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
         break;
       }
     }
-    setMaxUnlockedDay(Math.min(maxDay, 10));
+    setMaxUnlockedDay(Math.min(maxDay, 14));
 
     // Determine the current day for the user
     let currentDay = maxDay; // Default to the first unlocked day that isn't completed
     
     // If all days are completed, show the last day
-    if (maxDay > 10) {
-      currentDay = 10;
+    if (maxDay > 14) {
+      currentDay = 14;
     }
     
     // Always set to the current in-progress day when the component first loads
@@ -600,7 +600,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
 
   const completedDaysMap = useMemo(() => {
     const map = new Map<number, boolean>();
-    for (let day = 1; day <= 10; day++) {
+    for (let day = 1; day <= 14; day++) {
       const dayTasks = tasks.filter(task => task.day_assigned === day);
       const completed = dayTasks.length > 0 && dayTasks.every(task => task.status === 'Done');
       map.set(day, completed);
