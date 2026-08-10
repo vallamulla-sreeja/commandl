@@ -11,6 +11,7 @@ import DaySelector from '../components/project-task-board-components/DaySelector
 import AssignmentHeader from '../components/project-task-board-components/AssignmentHeader';
 import TaskBoard from '../components/project-task-board-components/TaskBoard';
 import TaskDetails from '../components/project-task-board-components/TaskDetails';
+// import ProjectRoadmap from '../components/project-task-board-components/ProjectRoadmap';
 import { DropResult } from 'react-beautiful-dnd';
 import { debounce } from 'lodash';
 import { Slide } from 'react-toastify';
@@ -103,7 +104,10 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [allTasksCompleted, setAllTasksCompleted] = useState<boolean>(false);
+  
+  // Initialize to day 1, but we'll update this immediately once we have task data
   const [selectedDay, setSelectedDay] = useState<number>(1);
+  
   const [lockedMessageDay, setLockedMessageDay] = useState<number | null>(null);
   const [maxUnlockedDay, setMaxUnlockedDay] = useState<number>(1);
   const [urlInputs, setUrlInputs] = useState<{ [key: string]: string }>({});
@@ -128,6 +132,10 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
     const fetchData = async () => {
       if (fetchRef.current) return;
       fetchRef.current = true;
+      
+      // Clear any stored day preference from previous sessions
+      // This ensures we always start with the in-progress day when the page first loads
+      sessionStorage.removeItem('selectedDayManuallyChanged');
       
       setIsLoading(true);
       
@@ -210,6 +218,8 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
 
   // Combine tasks-dependent effects
   useEffect(() => {
+    if (tasks.length === 0) return;
+    
     // Update maxUnlockedDay
     let maxDay = 1;
     for (let day = 1; day <= 10; day++) {
@@ -223,6 +233,25 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
       }
     }
     setMaxUnlockedDay(Math.min(maxDay, 10));
+
+    // Determine the current day for the user
+    let currentDay = maxDay; // Default to the first unlocked day that isn't completed
+    
+    // If all days are completed, show the last day
+    if (maxDay > 10) {
+      currentDay = 10;
+    }
+    
+    // Always set to the current in-progress day when the component first loads
+    // or when tasks change, unless the user has manually selected a day in this session
+    setSelectedDay(prevDay => {
+      // If the user has manually changed the day in this session, respect their choice
+      if (sessionStorage.getItem('selectedDayManuallyChanged')) {
+        return prevDay;
+      }
+      // Otherwise, always set to the current in-progress day
+      return currentDay;
+    });
 
     // Update allTasksCompleted
     const allDone = tasks.every((task) => task.status === 'Done');
@@ -552,13 +581,14 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
     });
   };
 
-  // const handleDaySelect = (day: number, isLocked: boolean) => {
   const handleDaySelect = (day: number) => {
     if (day > maxUnlockedDay) {
       setLockedMessageDay(day);
       setTimeout(() => setLockedMessageDay(null), 2000);
     } else {
       setSelectedDay(day);
+      // Mark that the user has manually changed the day in this session
+      sessionStorage.setItem('selectedDayManuallyChanged', 'true');
     }
   };
 
@@ -695,6 +725,16 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
     );
   };
 
+  const completedDaysArray = useMemo(() => {
+    const completedDays: number[] = [];
+    for (let day = 1; day <= 14; day++) {
+      if (isDayCompleted(day)) {
+        completedDays.push(day);
+      }
+    }
+    return completedDays;
+  }, [isDayCompleted]);
+
   if (!isInitialized || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -763,19 +803,13 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
         </div>
       )}
 
-      {/* <CountdownTimer
-        days={timeRemaining.days}
-        hours={timeRemaining.hours}
-        minutes={timeRemaining.minutes}
-        seconds={timeRemaining.seconds}
-      /> */}
-
       <DaySelector
         selectedDay={selectedDay}
         lockedMessageDay={lockedMessageDay}
         onDaySelect={handleDaySelect}
         maxUnlockedDay={maxUnlockedDay}
         isDayCompleted={isDayCompleted}
+        completedDays={completedDaysArray}
       />
 
       <AssignmentHeader
@@ -820,8 +854,9 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
         </div>
       )}
 
-      {/* Render the Premium Features Modal */}
-      <PremiumFeaturesModal />
+      {showPremiumModal && (
+        <PremiumFeaturesModal />
+      )}
     </div>
   );
 };
