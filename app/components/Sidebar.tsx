@@ -3,8 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { FiHome, FiSettings, FiLogOut, FiMenu, FiChevronLeft, FiUser, FiGift } from 'react-icons/fi';
-// import { FiFolder } from 'react-icons/fi';
+import { FiHome, FiSettings, FiLogOut, FiMenu, FiChevronLeft, FiUser, FiFolder } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
 import { getScores, ScoresResponse } from '../services/api';
 
@@ -78,8 +77,8 @@ export default function Sidebar({ isCollapsedCallback }: { isCollapsedCallback?:
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: FiHome },
-    // { name: 'Projects', path: '/project-dashboard', icon: FiFolder },
-    { name: 'Benefits & Features', path: '/benefits', icon: FiGift },
+    { name: 'Projects', path: '/projects', icon: FiFolder },
+    // { name: 'Benefits & Features', path: '/benefits', icon: FiGift },
     { name: 'Profile', path: '/profile', icon: FiUser },
     { name: 'Settings', icon: FiSettings },
   ];
@@ -104,7 +103,7 @@ export default function Sidebar({ isCollapsedCallback }: { isCollapsedCallback?:
       >
         <div className="flex flex-col h-full relative">
           <div className={`py-5 ${isCollapsed && !isMobile ? 'px-4' : 'px-6'}`}>
-            <Link href="/" className="flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+            <Link href="/" className="flex items-center gap-3 no-underline" onClick={() => setIsMobileMenuOpen(false)}>
               <Image
                 src="/images/commandl_logo.png"
                 alt="CommandL Icon"
@@ -165,7 +164,7 @@ export default function Sidebar({ isCollapsedCallback }: { isCollapsedCallback?:
                     ) : (
                       <Link
                         href={item.path!}
-                        className={`flex items-center ${isCollapsed && !isMobile ? 'justify-center' : ''} gap-4 px-5 py-3.5 rounded-lg transition-all duration-200 ${
+                        className={`flex items-center ${isCollapsed && !isMobile ? 'justify-center' : ''} gap-4 px-5 py-3.5 rounded-lg transition-all duration-200 no-underline ${
                           isActive(item.path!)
                             ? 'bg-[#58cc02] text-white shadow-md'
                             : 'text-gray-700 hover:bg-gray-50 hover:text-[#58cc02]'

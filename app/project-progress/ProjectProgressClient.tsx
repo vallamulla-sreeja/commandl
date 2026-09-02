@@ -130,7 +130,7 @@ const ProjectProgressClient: React.FC = () => {
   }, [dataParam, isUrlParamValid, urlParamDays, calculatedCompletedDaysArray]);
 
   const handleBackToTasks = () => {
-    router.push('/project-task-board');
+    router.push('/projects');
   };
 
   if (isLoading) {
