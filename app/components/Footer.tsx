@@ -4,39 +4,35 @@ import Image from 'next/image';
 const Footer = () => {
   return (
     <footer className="bg-gradient-to-br from-[#58CC02] to-[#4CAF02] text-white relative overflow-hidden">
-      {/* Enhanced background decoration */}
+      {/* Subtle background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Existing gradients */}
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+        {/* Main gradient orbs - subtle and well positioned */}
+        <div className="absolute top-16 left-16 w-64 h-64 bg-white/4 rounded-full mix-blend-overlay filter blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-16 right-16 w-56 h-56 bg-white/5 rounded-full mix-blend-overlay filter blur-3xl animate-pulse" style={{ animationDelay: '5s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-white/3 rounded-full mix-blend-overlay filter blur-3xl animate-pulse" style={{ animationDelay: '10s' }}></div>
         
-        {/* New moving gradient orbs */}
-        <div className="absolute top-16 right-1/5 w-80 h-80 bg-white/8 rounded-full mix-blend-overlay filter blur-2xl animate-pulse"></div>
-        <div className="absolute top-1/2 left-1/8 w-72 h-72 bg-white/6 rounded-full mix-blend-overlay filter blur-2xl animate-pulse" style={{ animationDelay: '3s' }}></div>
-        <div className="absolute bottom-1/6 left-1/2 w-64 h-64 bg-white/7 rounded-full mix-blend-overlay filter blur-2xl animate-pulse" style={{ animationDelay: '6s' }}></div>
-        
-        {/* Floating light particles */}
-        {[...Array(15)].map((_, i) => (
+        {/* Minimal floating particles */}
+        {[...Array(8)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-white/30 rounded-full animate-bounce"
+            className="absolute w-0.5 h-0.5 bg-white/20 rounded-full animate-bounce"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 8}s`,
-              animationDuration: `${4 + Math.random() * 4}s`
+              left: `${20 + Math.random() * 60}%`,
+              top: `${20 + Math.random() * 60}%`,
+              animationDelay: `${Math.random() * 10}s`,
+              animationDuration: `${5 + Math.random() * 3}s`
             }}
           />
         ))}
         
         {/* Subtle grid pattern */}
-        <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='7' cy='7' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+        <div className="absolute inset-0 opacity-3" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='7' cy='7' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
         }} />
         
-        {/* Animated gradient waves */}
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white/5 to-transparent opacity-50"></div>
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white/3 to-transparent opacity-60"></div>
+        {/* Gentle gradient waves */}
+        <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-white/3 to-transparent opacity-40"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white/2 to-transparent opacity-50"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">

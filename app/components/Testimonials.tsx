@@ -240,38 +240,29 @@ export default function Testimonials() {
         <meta name="keywords" content={metadata.keywords as string} />
       </Head>
       <section 
-        className="py-16 px-4 bg-gradient-to-b from-white via-green-50/20 to-white relative overflow-hidden"
+        className="py-16 px-4 bg-gradient-to-b from-white via-green-50/15 to-white relative overflow-hidden"
         aria-label="Student Testimonials and Projects"
       >
-        {/* Enhanced background decoration with moving gradients */}
+        {/* Subtle background decoration */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Existing gradients */}
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-green-100/30 to-blue-100/30 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-gradient-to-r from-purple-100/30 to-green-100/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+          {/* Main gradient orbs - well positioned within bounds */}
+          <div className="absolute top-24 left-20 w-80 h-80 bg-gradient-to-r from-emerald-100/20 to-cyan-100/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
+          <div className="absolute top-1/2 right-20 w-72 h-72 bg-gradient-to-r from-teal-100/20 to-blue-100/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
+          <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 w-64 h-64 bg-gradient-to-r from-green-100/15 to-lime-100/15 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style={{ animationDelay: '8s' }}></div>
           
-          {/* New moving gradient orbs */}
-          <div className="absolute top-20 right-1/6 w-96 h-96 bg-gradient-to-r from-emerald-200/40 to-cyan-200/40 rounded-full mix-blend-multiply filter blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute top-1/2 left-1/8 w-80 h-80 bg-gradient-to-r from-teal-200/40 to-blue-200/40 rounded-full mix-blend-multiply filter blur-2xl animate-pulse" style={{ animationDelay: '3s' }}></div>
-          <div className="absolute bottom-1/5 right-1/2 w-72 h-72 bg-gradient-to-r from-green-200/40 to-lime-200/40 rounded-full mix-blend-multiply filter blur-2xl animate-pulse" style={{ animationDelay: '5s' }}></div>
-          <div className="absolute top-3/4 left-1/3 w-64 h-64 bg-gradient-to-r from-cyan-200/30 to-sky-200/30 rounded-full mix-blend-multiply filter blur-2xl animate-pulse" style={{ animationDelay: '7s' }}></div>
-          
-          {/* Floating particles */}
-          {[...Array(12)].map((_, i) => (
+          {/* Minimal floating particles */}
+          {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="absolute w-1.5 h-1.5 bg-gradient-to-r from-green-300/60 to-blue-300/60 rounded-full animate-bounce opacity-40"
+              className="absolute w-1 h-1 bg-gradient-to-r from-green-200/30 to-blue-200/30 rounded-full animate-bounce opacity-25"
               style={{
-                left: `${10 + Math.random() * 80}%`,
-                top: `${15 + Math.random() * 70}%`,
+                left: `${25 + Math.random() * 50}%`,
+                top: `${25 + Math.random() * 50}%`,
                 animationDelay: `${Math.random() * 10}s`,
-                animationDuration: `${3 + Math.random() * 5}s`
+                animationDuration: `${4 + Math.random() * 4}s`
               }}
             />
           ))}
-          
-          {/* Subtle moving shapes */}
-          <div className="absolute top-1/6 left-3/4 w-32 h-32 bg-gradient-to-r from-green-300/20 to-emerald-300/20 rounded-full blur-xl animate-pulse" style={{ animationDelay: '4s' }}></div>
-          <div className="absolute bottom-1/6 left-1/5 w-40 h-40 bg-gradient-to-r from-blue-300/20 to-cyan-300/20 rounded-full blur-xl animate-pulse" style={{ animationDelay: '8s' }}></div>
         </div>
 
         <div className="max-w-7xl mx-auto relative z-10">
