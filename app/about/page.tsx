@@ -12,25 +12,25 @@ const team = [
     name: "Sai Masetty",
     image: "/images/sai_v.jpg",
     title: "CEO",
-    description: "Built successful health-tech apps. Loves making tech accessible to everyone."
+    description: "5+ yrs of experience, created a recognized health-tech app"
   },
   {
     name: "Sreeja Vallamulla",
     image: "/images/sreeja_2.jpg",
     title: "CTO",
-    description: "Expert developer who turned complex code into simple learning experiences."
+    description: "Masters in Computer Science, Software developer with 3+ years of experience"
   },
   {
     name: "Bob Karr",
     image: "/images/bob.jpeg",
     title: "CSO",
-    description: "25+ years helping startups grow. Knows what students need to succeed."
+    description: "25+ yrs entrepreneur, helped many startups with strategies"
   },
   {
     name: "Kunal Kushwaha",
     image: "/images/kunal.jpeg",
     title: "Advisory Board",
-    description: "CTO at Civo. Taught coding to 700k+ students worldwide."
+    description: "CTO of Civo, recognized figure in software dev education with 700k+ community"
   }
 ];
 
