@@ -124,23 +124,45 @@ const ProjectRoadmapStandalone: React.FC<ProjectRoadmapStandaloneProps> = ({ com
 
   return (
     <>
-      <div className="px-6 py-5 border-b border-gray-100">
-        <h2 className="text-2xl font-semibold text-gray-800">Project Roadmap</h2>
-        <p className="text-sm text-gray-500 mt-1">
-          {completedStages} of {totalStages} phases completed ({progressPercentage}%)
-          {currentStageId && <span className="ml-2 text-blue-600">• Day {currentDayNumber} in progress</span>}
-        </p>
+      <div className="px-8 py-6 bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border-b border-emerald-100">
+        <div className="flex items-center space-x-4">
+          <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl shadow-lg">
+            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+              Project Roadmap
+            </h2>
+            <div className="flex items-center space-x-4 mt-2">
+              <p className="text-lg text-gray-600 font-medium">
+                {completedStages} of {totalStages} phases completed
+              </p>
+              <div className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-bold">
+                {progressPercentage}% Complete
+              </div>
+              {currentStageId && (
+                <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                  Day {currentDayNumber} in progress
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Desktop Timeline (md and up) */}
-      <div className="hidden md:block p-6 pb-12">
-        <div className="relative mb-20">
-          {/* Progress bar */}
-          <div className="absolute top-8 left-0 right-0 h-1 bg-gray-200 z-0"></div>
+      {/* Enhanced Desktop Timeline (md and up) */}
+      <div className="hidden md:block p-8 pb-16">
+        <div className="relative mb-24">
+          {/* Enhanced Progress bar */}
+          <div className="absolute top-10 left-0 right-0 h-2 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full z-0 shadow-inner"></div>
           <div 
-            className="absolute top-8 left-0 h-1 bg-gradient-to-r from-green-500 to-[#58cc02] z-10 transition-all duration-700"
+            className="absolute top-10 left-0 h-2 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-600 z-10 transition-all duration-1000 ease-out rounded-full shadow-lg"
             style={{ width: `${progressPercentage}%` }}
-          ></div>
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent rounded-full animate-pulse"></div>
+          </div>
 
           <div className="flex">
             {roadmapStages.map((stage, index) => (
@@ -148,18 +170,18 @@ const ProjectRoadmapStandalone: React.FC<ProjectRoadmapStandaloneProps> = ({ com
                 key={stage.id} 
                 className={`relative flex-1 ${index === 0 ? 'pl-0' : ''} ${index === roadmapStages.length - 1 ? 'pr-0' : ''}`}
               >
-                {/* Connector to next stage */}
-                {index < roadmapStages.length - 1 && (
-                  <div 
-                    className={`absolute top-8 right-0 w-1/2 h-1 ${
-                      stage.isCompleted && roadmapStages[index + 1].isCompleted
-                        ? 'bg-[#58cc02]' 
-                        : stage.isCompleted && roadmapStages[index + 1].isInProgress
-                          ? 'bg-gradient-to-r from-[#58cc02] to-blue-500'
-                          : 'bg-transparent'
-                    } z-20`}
-                  ></div>
-                )}
+                                    {/* Enhanced Connector to next stage */}
+                    {index < roadmapStages.length - 1 && (
+                      <div 
+                        className={`absolute top-10 right-0 w-1/2 h-2 rounded-full ${
+                          stage.isCompleted && roadmapStages[index + 1].isCompleted
+                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 shadow-md' 
+                            : stage.isCompleted && roadmapStages[index + 1].isInProgress
+                              ? 'bg-gradient-to-r from-emerald-500 to-blue-500 shadow-md'
+                              : 'bg-transparent'
+                        } z-20 transition-all duration-500`}
+                      ></div>
+                    )}
 
                 <div className="flex flex-col items-center">
                   {/* Current indicator */}
@@ -169,22 +191,36 @@ const ProjectRoadmapStandalone: React.FC<ProjectRoadmapStandaloneProps> = ({ com
                     </div>
                   )} */}
 
-                  {/* Stage marker */}
-                  <div 
-                    className={`
-                      w-16 h-16 rounded-full flex items-center justify-center mb-3 z-20
-                      shadow-sm border-2 transition-all duration-300 cursor-pointer
-                      ${stage.isCompleted 
-                        ? 'bg-[#58cc02] text-white border-[#58cc02] hover:bg-green-600' 
-                        : stage.isInProgress
-                          ? 'bg-blue-500 text-white border-blue-500 hover:bg-blue-600'
-                          : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'}
-                      ${stage.isInProgress ? 'ring-4 ring-blue-200' : ''}
-                    `}
-                    onClick={() => toggleStage(stage.id)}
-                  >
-                    {stage.isCompleted ? <CheckCircle className="w-7 h-7" /> : stage.icon}
-                  </div>
+                                        {/* Enhanced Stage marker */}
+                      <div 
+                        className={`
+                          w-20 h-20 rounded-2xl flex items-center justify-center mb-4 z-20 relative
+                          shadow-lg border-3 transition-all duration-300 cursor-pointer group
+                          ${stage.isCompleted 
+                            ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white border-emerald-400 hover:from-emerald-600 hover:to-teal-700 hover:scale-110' 
+                            : stage.isInProgress
+                              ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white border-blue-400 hover:from-blue-600 hover:to-indigo-700 hover:scale-110'
+                              : 'bg-gradient-to-br from-white to-gray-50 text-gray-500 border-gray-200 hover:border-gray-300 hover:shadow-xl hover:scale-105'}
+                          ${stage.isInProgress ? 'ring-4 ring-blue-200 animate-pulse' : ''}
+                        `}
+                        onClick={() => toggleStage(stage.id)}
+                      >
+                        {/* Glow effect for completed stages */}
+                        {stage.isCompleted && (
+                          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-400/20 to-teal-400/20 animate-ping"></div>
+                        )}
+                        
+                        <div className="relative z-10">
+                          {stage.isCompleted ? <CheckCircle className="w-8 h-8" /> : stage.icon}
+                        </div>
+                        
+                        {/* Hover tooltip */}
+                        <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                          <div className="bg-gray-800 text-white text-xs px-3 py-1 rounded-lg shadow-lg whitespace-nowrap">
+                            Click to view details
+                          </div>
+                        </div>
+                      </div>
 
                   {/* Day range */}
                   {/* <div className="text-xs font-medium text-gray-500 mb-1">
@@ -194,19 +230,28 @@ const ProjectRoadmapStandalone: React.FC<ProjectRoadmapStandaloneProps> = ({ com
                     }
                   </div> */}
 
-                  {/* Title with status */}
-                  <div className="text-center">
-                    <div className={`
-                      font-medium text-sm transition-colors duration-300
-                      ${stage.isCompleted 
-                        ? 'text-[#58cc02]' 
-                        : stage.isInProgress 
-                          ? 'text-blue-600 font-semibold' 
-                          : 'text-gray-700'}
-                    `}>
-                      {stage.title}
-                    </div>
-                  </div>
+                                        {/* Enhanced Title with status */}
+                      <div className="text-center max-w-24">
+                        <div className={`
+                          font-bold text-base transition-all duration-300 leading-tight
+                          ${stage.isCompleted 
+                            ? 'text-emerald-600 drop-shadow-sm' 
+                            : stage.isInProgress 
+                              ? 'text-blue-600 font-extrabold animate-pulse' 
+                              : 'text-gray-700 hover:text-gray-800'}
+                        `}>
+                          {stage.title}
+                        </div>
+                        {/* Status indicator */}
+                        <div className="mt-1">
+                          {stage.isCompleted && (
+                            <div className="text-xs text-emerald-500 font-medium">✓ Complete</div>
+                          )}
+                          {stage.isInProgress && (
+                            <div className="text-xs text-blue-500 font-medium animate-pulse">● In Progress</div>
+                          )}
+                        </div>
+                      </div>
                 </div>
 
                 {/* Expanded details */}
@@ -235,59 +280,73 @@ const ProjectRoadmapStandalone: React.FC<ProjectRoadmapStandaloneProps> = ({ com
         </div>
       </div>
 
-      {/* Mobile Timeline (sm and below) */}
-      <div className="md:hidden p-4">
-        <div className="relative pb-4">
-          {/* Vertical timeline line */}
-          <div className="absolute top-0 bottom-0 left-7 w-0.5 bg-gray-200"></div>
+      {/* Enhanced Mobile Timeline (sm and below) */}
+      <div className="md:hidden p-6">
+        <div className="relative pb-6">
+          {/* Enhanced Vertical timeline line */}
+          <div className="absolute top-0 bottom-0 left-8 w-1 bg-gradient-to-b from-gray-200 to-gray-300 rounded-full shadow-inner"></div>
           <div 
-            className="absolute top-0 left-7 w-0.5 bg-[#58cc02] transition-all duration-700"
+            className="absolute top-0 left-8 w-1 bg-gradient-to-b from-emerald-400 via-teal-500 to-emerald-600 transition-all duration-1000 ease-out rounded-full shadow-lg"
             style={{ height: `${progressPercentage}%` }}
-          ></div>
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent rounded-full animate-pulse"></div>
+          </div>
 
           {/* Timeline stages */}
-          {roadmapStages.map((stage) => (
-            <div key={stage.id} className={`
-              mb-8 relative
-              ${stage.isInProgress ? 'bg-blue-50 rounded-lg p-2 -ml-2 border-l-4 border-blue-500' : ''}
-            `}>
-              <div className="flex items-start">
-                {/* Stage marker */}
-                <div 
-                  className={`
-                    w-14 h-14 rounded-full flex items-center justify-center mr-4 z-10
-                    shadow-sm border-2 transition-all duration-300
-                    ${stage.isCompleted 
-                      ? 'bg-[#58cc02] text-white border-[#58cc02]' 
-                      : stage.isInProgress 
-                        ? 'bg-blue-500 text-white border-blue-500' 
-                        : 'bg-white text-gray-500 border-gray-200'}
-                    ${stage.isInProgress ? 'ring-2 ring-blue-300' : ''}
-                  `}
-                >
-                  {stage.isCompleted ? <CheckCircle className="w-6 h-6" /> : stage.icon}
-                </div>
+                      {roadmapStages.map((stage) => (
+              <div key={stage.id} className={`
+                mb-10 relative transition-all duration-300
+                ${stage.isInProgress ? 'bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 -ml-4 border-l-4 border-blue-500 shadow-md' : ''}
+              `}>
+                <div className="flex items-start">
+                  {/* Enhanced Stage marker */}
+                  <div 
+                    className={`
+                      w-16 h-16 rounded-2xl flex items-center justify-center mr-5 z-10 relative
+                      shadow-lg border-3 transition-all duration-300 group
+                      ${stage.isCompleted 
+                        ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white border-emerald-400 hover:scale-110' 
+                        : stage.isInProgress 
+                          ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white border-blue-400 hover:scale-110 animate-pulse' 
+                          : 'bg-gradient-to-br from-white to-gray-50 text-gray-500 border-gray-200 hover:shadow-xl'}
+                      ${stage.isInProgress ? 'ring-3 ring-blue-200' : ''}
+                    `}
+                  >
+                    {/* Glow effect for completed stages */}
+                    {stage.isCompleted && (
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-400/20 to-teal-400/20 animate-ping"></div>
+                    )}
+                    
+                    <div className="relative z-10">
+                      {stage.isCompleted ? <CheckCircle className="w-7 h-7" /> : stage.icon}
+                    </div>
+                  </div>
 
                 <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    {/* Title and current indicator */}
-                    <div>
-                      <h3 className={`
-                        font-medium transition-colors duration-300
-                        ${stage.isCompleted 
-                          ? 'text-[#58cc02]' 
-                          : stage.isInProgress 
-                            ? 'text-blue-700' 
-                            : 'text-gray-700'}
-                      `}>
-                        {stage.title}
-                        {stage.isInProgress && (
-                          <span className="ml-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full">
-                            Current Day
-                          </span>
-                        )}
-                      </h3>
-                    </div>
+                                      <div className="flex items-center justify-between">
+                      {/* Enhanced Title and current indicator */}
+                      <div>
+                        <h3 className={`
+                          font-bold text-lg transition-all duration-300
+                          ${stage.isCompleted 
+                            ? 'text-emerald-600 drop-shadow-sm' 
+                            : stage.isInProgress 
+                              ? 'text-blue-700 font-extrabold' 
+                              : 'text-gray-700'}
+                        `}>
+                          {stage.title}
+                          {stage.isInProgress && (
+                            <span className="ml-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm px-3 py-1 rounded-full shadow-md animate-pulse">
+                              ● Current Phase
+                            </span>
+                          )}
+                          {stage.isCompleted && (
+                            <span className="ml-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm px-3 py-1 rounded-full shadow-md">
+                              ✓ Completed
+                            </span>
+                          )}
+                        </h3>
+                      </div>
                     
                     {/* Toggle button */}
                     <button 
@@ -298,22 +357,27 @@ const ProjectRoadmapStandalone: React.FC<ProjectRoadmapStandaloneProps> = ({ com
                     </button>
                   </div>
                   
-                  {/* Day range and status tag */}
-                  <div className="flex items-center gap-2">
-                    <div className="text-xs text-gray-500">
-                      {stage.daysRange[0] === stage.daysRange[1]
-                        ? `Day ${stage.daysRange[0]}`
-                        : `Days ${stage.daysRange[0]}-${stage.daysRange[1]}`
-                      }
-                    </div>
-                  </div>
-                  
-                  {/* Expanded content */}
-                  {activeStage === stage.id && (
-                    <div className="mt-3 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-                      {stage.description}
-                    </div>
-                  )}
+                                        {/* Enhanced Day range and status tag */}
+                      <div className="flex items-center gap-3 mt-2">
+                        <div className="px-2 py-1 bg-gray-100 text-gray-600 text-sm font-medium rounded-lg">
+                          {stage.daysRange[0] === stage.daysRange[1]
+                            ? `Day ${stage.daysRange[0]}`
+                            : `Days ${stage.daysRange[0]}-${stage.daysRange[1]}`
+                          }
+                        </div>
+                        {stage.isInProgress && (
+                          <div className="px-2 py-1 bg-blue-100 text-blue-600 text-sm font-medium rounded-lg">
+                            Day {currentDayNumber} Active
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Enhanced Expanded content */}
+                      {activeStage === stage.id && (
+                        <div className="mt-4 p-4 bg-gradient-to-r from-slate-50 to-blue-50 border border-gray-200 rounded-xl shadow-sm animate-in slide-in-from-top-2 duration-300">
+                          <p className="text-gray-700 leading-relaxed font-medium">{stage.description}</p>
+                        </div>
+                      )}
                 </div>
               </div>
             </div>

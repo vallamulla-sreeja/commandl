@@ -136,13 +136,33 @@ const ProjectRoadmap: React.FC<ProjectRoadmapProps> = ({ completedDays, onClose 
           </button>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-8">
-          <div className="px-6 py-5 border-b border-gray-100">
-            <h2 className="text-2xl font-semibold text-gray-800">Project Roadmap</h2>
-            <p className="text-sm text-gray-500 mt-1">
-              {completedStages} of {totalStages} stages completed ({progressPercentage}%)
-              {currentStageId && <span className="ml-2 text-blue-600">• Day {currentDayNumber} in progress</span>}
-            </p>
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 mb-8 overflow-hidden">
+          <div className="px-8 py-6 bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border-b border-emerald-100">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl shadow-lg">
+                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                  Project Roadmap
+                </h2>
+                <div className="flex items-center space-x-4 mt-2">
+                  <p className="text-lg text-gray-600 font-medium">
+                    {completedStages} of {totalStages} phases completed
+                  </p>
+                  <div className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-bold">
+                    {progressPercentage}% Complete
+                  </div>
+                  {currentStageId && (
+                    <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                      Day {currentDayNumber} in progress
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
           
           {/* Desktop Timeline (md and up) */}

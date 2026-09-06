@@ -15,7 +15,7 @@ import TaskDetails from '../components/project-task-board-components/TaskDetails
 import { DropResult } from 'react-beautiful-dnd';
 import { debounce } from 'lodash';
 import { Slide } from 'react-toastify';
-import { Crown, CheckCircle2, X } from 'lucide-react';
+import { Crown, CheckCircle2, X, Sparkles, TrendingUp } from 'lucide-react';
 // import ApplyFor10DayProgram from '../components/project-task-board-components/applyFor10DayProgram';
 
 const nunito = Nunito({
@@ -85,13 +85,14 @@ interface AssignmentPageProps {
 
 const markdownLinkStyles = `
   a {
-    color: #274c77;
+    color: #1a56db;
     text-decoration: underline;
     font-weight: 500;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
   }
   a:hover {
-    color: #1e3a5f;
+    color: #1e40af;
+    text-shadow: 0 0 8px rgba(26, 86, 219, 0.2);
   }
 `;
 
@@ -274,32 +275,6 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
     setCurrentUnlockedTaskId(unlockedTaskId);
   }, [tasks]);
 
-  // useEffect(() => {
-  //   const startDate = new Date('2024-12-28T00:00:00.000Z');
-  //   const endDate = new Date(startDate);
-  //   endDate.setDate(endDate.getDate() + 6);
-
-  //   const timer = setInterval(() => {
-  //     const now = new Date();
-  //     const diff = endDate.getTime() - now.getTime();
-
-  //     if (diff <= 0) {
-  //       setTimeRemaining({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  //       clearInterval(timer);
-  //       return;
-  //     }
-
-  //     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  //     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  //     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  //     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-  //     setTimeRemaining({ days, hours, minutes, seconds });
-  //   }, 1000);
-
-  //   return () => clearInterval(timer);
-  // }, []);
-
   const getTaskProgress = (task: Task) => {
     const completed = task.subtasks.filter((st) => st.completed).length;
     const total = task.subtasks.length;
@@ -333,7 +308,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
         closeOnClick: false,
         pauseOnHover: false,
         draggable: false,
-        className: 'bg-blue-500 text-white font-medium'
+        className: 'bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium shadow-lg'
       });
 
       try {
@@ -372,6 +347,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
           closeOnClick: true,
           pauseOnHover: false,
           draggable: false,
+          className: 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg'
         });
       } catch (error) {
         console.error('Error saving progress:', error);
@@ -383,6 +359,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
           closeOnClick: true,
           pauseOnHover: false,
           draggable: false,
+          className: 'bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-lg'
         });
       }
     }, 1000),
@@ -414,14 +391,18 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
         closeOnClick: true,
         pauseOnHover: false,
         draggable: false,
+        className: 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg'
       });
       
       // Show a toast with an upgrade button
       toast.info(
-        <div className="flex flex-col items-center">
-          <p className="mb-2">Upgrade to premium to access all features</p>
+        <div className="flex flex-col items-center space-y-3">
+          <div className="flex items-center space-x-2">
+            <Sparkles className="w-5 h-5 text-amber-300" />
+            <p className="font-medium">Upgrade to premium to access all features</p>
+          </div>
           <button
-            className="px-4 py-2 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition-colors"
+            className="px-6 py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 text-white font-semibold rounded-lg hover:from-amber-500 hover:to-amber-600 transition-all duration-200 transform hover:scale-105 shadow-md"
             onClick={() => {
               window.open('https://buy.stripe.com/eVa9DB3fr9og0RqeUZ', '_blank');
             }}
@@ -436,6 +417,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: false,
+          className: 'bg-white shadow-xl border border-amber-200'
         }
       );
       
@@ -457,6 +439,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
           closeOnClick: true,
           pauseOnHover: false,
           draggable: false,
+          className: 'bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-lg'
         });
         return;
       }
@@ -473,7 +456,10 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
 
     if (movingToInProgressFromDifferentStatus && taskHasSparkStudio(task)) {
       toast.info(
-        "This task will be completed on CommandL. Please open CommandL. See task details for more info.",
+        <div className="flex items-center space-x-2">
+          <TrendingUp className="w-5 h-5 text-blue-300" />
+          <span>This task will be completed on CommandL. Please open CommandL. See task details for more info.</span>
+        </div>,
         {
           position: "bottom-center",
           autoClose: 5000,
@@ -481,6 +467,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
           closeOnClick: true,
           pauseOnHover: false,
           draggable: false,
+          className: 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
         }
       );
     }
@@ -501,14 +488,18 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
         closeOnClick: true,
         pauseOnHover: false,
         draggable: false,
+        className: 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg'
       });
       
       // Show a toast with an upgrade button
       toast.info(
-        <div className="flex flex-col items-center">
-          <p className="mb-2">Upgrade to premium to access all features</p>
+        <div className="flex flex-col items-center space-y-3">
+          <div className="flex items-center space-x-2">
+            <Sparkles className="w-5 h-5 text-amber-300" />
+            <p className="font-medium">Upgrade to premium to access all features</p>
+          </div>
           <button
-            className="px-4 py-2 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition-colors"
+            className="px-6 py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 text-white font-semibold rounded-lg hover:from-amber-500 hover:to-amber-600 transition-all duration-200 transform hover:scale-105 shadow-md"
             onClick={() => {
               window.open('https://buy.stripe.com/eVa9DB3fr9og0RqeUZ', '_blank');
             }}
@@ -523,6 +514,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: false,
+          className: 'bg-white shadow-xl border border-amber-200'
         }
       );
       
@@ -563,6 +555,7 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
         draggable: true,
         progress: undefined,
         transition: Slide,
+        className: 'bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 shadow-lg'
       });
       return;
     }
@@ -629,95 +622,128 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
     setShowPremiumModal(false);
   };
   
-  // Premium Features Modal Component
+  // Enhanced Premium Features Modal Component
   const PremiumFeaturesModal = () => {
     if (!showPremiumModal) return null;
     
     const features = [
       {
         title: "1 Year Full Access to CommandL",
-        description: "Complete access to our powerful development environment with built-in AI assistance"
+        description: "Complete access to our powerful development environment with built-in AI assistance",
+        icon: <TrendingUp className="w-6 h-6" />
       },
       {
         title: "3 Months Unlimited AI Resume Generator",
-        description: "Position yourself in the top 1% of job candidates with our advanced resume tool"
+        description: "Position yourself in the top 1% of job candidates with our advanced resume tool",
+        icon: <Sparkles className="w-6 h-6" />
       },
       {
         title: "14 Days Daily Mentorship",
-        description: "Get direct guidance from our founders and domain experts"
+        description: "Get direct guidance from our founders and domain experts",
+        icon: <CheckCircle2 className="w-6 h-6" />
       },
       {
         title: "Advanced Projects Access",
-        description: "Access to advanced projects as long as you have access to CommandL"
+        description: "Access to advanced projects as long as you have access to CommandL",
+        icon: <Crown className="w-6 h-6" />
       },
       {
         title: "Full Stack Completion Certification",
-        description: "Earn an official CommandL project completion certificate"
+        description: "Earn an official CommandL project completion certificate",
+        icon: <CheckCircle2 className="w-6 h-6" />
       },
       {
         title: "Weekly New Projects",
-        description: "We're constantly adding new projects including AI/ML and App Development"
+        description: "We're constantly adding new projects including AI/ML and App Development",
+        icon: <Sparkles className="w-6 h-6" />
       }
     ];
     
     return (
       <div 
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300"
         onClick={handleClosePremiumModal}
       >
         <div
           onClick={(e) => e.stopPropagation()}
-          className="bg-white rounded-2xl shadow-xl w-full max-w-3xl overflow-hidden max-h-[90vh] overflow-y-auto"
+          className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-300"
         >
-          {/* Header with gradient background */}
-          <div className="bg-gradient-to-r from-[#58CC02] to-[#1cb0f6] p-4 sm:p-6 relative">
+          {/* Enhanced Header with gradient background */}
+          <div className="bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 p-8 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
             <button
               onClick={handleClosePremiumModal}
-              className="absolute right-3 top-3 sm:right-4 sm:top-4 text-white hover:bg-white/20 p-1.5 sm:p-2 rounded-full transition-colors"
+              className="absolute right-4 top-4 text-white hover:bg-white/20 p-2 rounded-full transition-all duration-200 hover:scale-110"
             >
-              <X className="w-5 h-5 sm:w-6 sm:h-6" />
+              <X className="w-6 h-6" />
             </button>
-            <div className="flex items-center mb-2">
-              <Crown className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300 mr-2 sm:mr-3 flex-shrink-0" />
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Unlock Premium Features</h2>
+            <div className="relative z-10">
+              <div className="flex items-center mb-4">
+                <div className="p-3 bg-yellow-400/20 rounded-full mr-4">
+                  <Crown className="w-8 h-8 text-yellow-300" />
+                </div>
+                <div>
+                  <h2 className="text-3xl font-bold text-white mb-2">Unlock Premium Features</h2>
+                  <p className="text-emerald-100 text-lg">
+                    Take your career to the next level with our comprehensive program
+                  </p>
+                </div>
+              </div>
             </div>
-            <p className="text-white/90 text-base sm:text-lg">
-              Take your career to the next level with our comprehensive program
-            </p>
           </div>
           
-          {/* Features Grid */}
-          <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          {/* Enhanced Features Grid */}
+          <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
             {features.map((feature, index) => (
-              <div key={index} className="flex items-start space-x-3">
-                <CheckCircle2 className="h-5 w-5 sm:h-6 sm:w-6 text-[#58CC02] flex-shrink-0 mt-1" />
-                <div>
-                  <h4 className="text-[#4b4b4b] font-bold text-base sm:text-lg">{feature.title}</h4>
-                  <p className="text-gray-600 text-sm sm:text-base">{feature.description}</p>
+              <div 
+                key={index} 
+                className="group p-6 rounded-xl border border-gray-100 hover:border-emerald-200 hover:shadow-lg transition-all duration-300 hover:bg-gradient-to-br hover:from-emerald-50/50 hover:to-teal-50/50"
+              >
+                <div className="flex items-start space-x-4">
+                  <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600 group-hover:bg-emerald-200 transition-colors duration-300">
+                    {feature.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-gray-800 font-bold text-lg mb-2 group-hover:text-emerald-700 transition-colors duration-300">
+                      {feature.title}
+                    </h4>
+                    <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
           
-          {/* Pricing and CTA */}
-          <div className="p-4 sm:p-6 bg-gray-50 border-t border-gray-200">
-            <div className="flex flex-col items-center mb-4 sm:mb-6">
-              <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
-                <span className="text-xl sm:text-2xl font-bold text-gray-400 line-through">$250</span>
-                <span className="text-3xl sm:text-4xl font-extrabold text-[#4b4b4b]">$200</span>
+          {/* Enhanced Pricing and CTA */}
+          <div className="p-8 bg-gradient-to-r from-gray-50 to-emerald-50/30 border-t border-gray-100">
+            <div className="text-center mb-6">
+              <div className="flex items-center justify-center gap-4 mb-3">
+                <span className="text-2xl font-bold text-gray-400 line-through">$250</span>
+                <div className="flex items-center">
+                  <span className="text-4xl font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                    $200
+                  </span>
+                  <div className="ml-2 px-2 py-1 bg-red-500 text-white text-sm font-bold rounded-full animate-pulse">
+                    SAVE $50
+                  </div>
+                </div>
               </div>
-              <p className="text-[#FF4B4B] font-bold text-sm sm:text-base">One-time payment • 100% Money-Back Guarantee</p>
+              <p className="text-red-600 font-bold text-lg mb-2">One-time payment • 100% Money-Back Guarantee</p>
+              <p className="text-gray-600">Join 500+ students who&apos;ve transformed their careers</p>
             </div>
             
-            <div className="flex justify-center">
+            <div className="max-w-md mx-auto">
               <a
                 href="https://buy.stripe.com/eVa9DB3fr9og0RqeUZ"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full px-6 py-3 sm:px-8 sm:py-4 bg-[#58CC02] text-white rounded-xl font-extrabold hover:bg-[#58CC02]/90 transition-colors text-lg sm:text-xl text-center"
+                className="block w-full px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 text-xl text-center shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                Unlock All Features
+                🚀 Unlock All Features Now
               </a>
+              <p className="text-center text-sm text-gray-500 mt-3">
+                Start building your portfolio in minutes
+              </p>
             </div>
           </div>
         </div>
@@ -737,18 +763,24 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
 
   if (!isInitialized || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-t-2 border-b-2 border-[#58cc02]"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-emerald-200 border-t-emerald-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading your project dashboard...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-red-600">
-        <div className="text-center">
-          <p className="text-xl font-semibold mb-2">Error Loading Project</p>
-          <p>{error}</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-rose-50">
+        <div className="text-center p-8 bg-white rounded-2xl shadow-xl border border-red-100">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <X className="w-8 h-8 text-red-500" />
+          </div>
+          <p className="text-2xl font-bold text-red-600 mb-2">Error Loading Project</p>
+          <p className="text-gray-600">{error}</p>
         </div>
       </div>
     );
@@ -756,107 +788,140 @@ const AssignmentPage: React.FC<AssignmentPageProps> = () => {
 
   if (!assignment) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-xl font-semibold mb-2">No Project Found</p>
-          <p className="text-gray-600">Please enroll in a project first.</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="text-center p-8 bg-white rounded-2xl shadow-lg border border-gray-100">
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <TrendingUp className="w-8 h-8 text-blue-500" />
+          </div>
+          <p className="text-2xl font-bold text-gray-800 mb-2">No Project Found</p>
+          <p className="text-gray-600">Please enroll in a project first to get started.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`container mx-auto px-4 py-8 min-h-screen relative ${nunito.className}`}>
-      <ToastContainer 
-        position="bottom-center"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable={false}
-        pauseOnHover={false}
-        theme="light"
-        limit={2}
-        transition={Slide}
-      />
+    <div className={`min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-emerald-50/20 ${nunito.className}`}>
+      <div className="container mx-auto px-4 py-8">
+        <ToastContainer 
+          position="bottom-center"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable={false}
+          pauseOnHover={false}
+          theme="light"
+          limit={2}
+          transition={Slide}
+          toastClassName="rounded-xl shadow-lg"
+        />
 
-      {/* Premium banner for unpaid users */}
-      {!isPremiumUser && (
-        <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white p-3 sm:p-4 mb-4 sm:mb-6 rounded-lg shadow-md mx-3 sm:mx-4 md:mx-6 lg:mx-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
-            <div className="flex items-start sm:items-center">
-              <Crown className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 mt-0.5 sm:mt-0 flex-shrink-0" />
-              <div>
-                <h3 className="font-bold text-base sm:text-lg">Unlock All Tasks & Features</h3>
-                <p className="text-amber-100 font-bold text-sm sm:text-base">Start your first project and get full access to AI resume tool and CommandL</p>
+        {/* Enhanced Premium banner for unpaid users */}
+        {!isPremiumUser && (
+          <div className="relative overflow-hidden bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 text-white p-6 mb-8 rounded-2xl shadow-xl mx-4 md:mx-6 lg:mx-8 animate-in slide-in-from-top duration-500">
+            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
+            <div className="relative z-10">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div className="flex items-start">
+                  <div className="p-3 bg-white/20 rounded-full mr-4 flex-shrink-0">
+                    <Crown className="w-6 h-6 text-yellow-200" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-xl mb-2">Unlock All Tasks & Premium Features</h3>
+                    <p className="text-amber-100 font-medium text-lg leading-relaxed">
+                      Start your first project and get full access to CommandL IDE
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button 
+                    className="px-6 py-3 bg-white text-amber-600 font-bold rounded-xl hover:bg-amber-50 transition-all duration-300 hover:scale-105 shadow-lg whitespace-nowrap"
+                    onClick={handleOpenPremiumModal}
+                  >
+                    View Features
+                  </button>
+                  <a
+                    href="https://buy.stripe.com/eVa9DB3fr9og0RqeUZ"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 hover:scale-105 shadow-lg text-center"
+                  >
+                    Upgrade Now
+                  </a>
+                </div>
               </div>
             </div>
-            <button 
-              className="px-4 py-2 bg-white text-amber-600 font-semibold rounded-lg hover:bg-amber-50 transition-colors text-sm sm:text-base whitespace-nowrap"
-              onClick={handleOpenPremiumModal}
-            >
-              Upgrade Now
-            </button>
           </div>
-        </div>
-      )}
+        )}
 
-      <DaySelector
-        selectedDay={selectedDay}
-        lockedMessageDay={lockedMessageDay}
-        onDaySelect={handleDaySelect}
-        maxUnlockedDay={maxUnlockedDay}
-        isDayCompleted={isDayCompleted}
-        completedDays={completedDaysArray}
-      />
+        <DaySelector
+          selectedDay={selectedDay}
+          lockedMessageDay={lockedMessageDay}
+          onDaySelect={handleDaySelect}
+          maxUnlockedDay={maxUnlockedDay}
+          isDayCompleted={isDayCompleted}
+          completedDays={completedDaysArray}
+        />
 
-      <AssignmentHeader
-        title={assignment.title}
-        description={assignment.description}
-      />
+        <AssignmentHeader
+          title={assignment.title}
+          description={assignment.description}
+        />
 
-      {allTasksCompleted && (
-        <div className="mb-8 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 text-sm sm:text-base">
-          <p>Congratulations! All the tasks for Day {selectedDay} are done.</p>
-        </div>
-      )}
+        {allTasksCompleted && (
+          <div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-emerald-500 text-emerald-700 rounded-xl shadow-sm animate-in slide-in-from-left duration-500">
+            <div className="flex items-center space-x-3">
+              <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+              <p className="font-semibold text-lg">
+                🎉 Congratulations! All tasks for Day {selectedDay} are completed.
+              </p>
+            </div>
+          </div>
+        )}
 
-      <TaskBoard
-        tasks={filteredTasks}
-        onDragEnd={onDragEnd}
-        handleTaskClick={handleTaskClick}
-        getTaskProgress={getTaskProgress}
-        isTaskLocked={isTaskLocked}
-      />
+        <TaskBoard
+          tasks={filteredTasks}
+          onDragEnd={onDragEnd}
+          handleTaskClick={handleTaskClick}
+          getTaskProgress={getTaskProgress}
+          isTaskLocked={isTaskLocked}
+        />
 
-      <TaskDetails
-        selectedTask={selectedTask || null}
-        expandedSubtasks={expandedSubtasks}
-        toggleSubtaskDescription={toggleSubtaskDescription}
-        handleSubtaskToggle={handleSubtaskToggle}
-        markdownLinkStyles={markdownLinkStyles}
-        selectedDay={selectedDay}
-        maxUnlockedDay={maxUnlockedDay}
-        onClose={closeTaskDetails}
-        urlInputs={urlInputs}
-        handleUrlChange={handleUrlChange}
-        dbTables={dbTables}
-        setDbTables={setDbTables}
-        codeFeedback={codeFeedback}
-        setCodeFeedback={setCodeFeedback}
-      />
+        <TaskDetails
+          selectedTask={selectedTask || null}
+          expandedSubtasks={expandedSubtasks}
+          toggleSubtaskDescription={toggleSubtaskDescription}
+          handleSubtaskToggle={handleSubtaskToggle}
+          markdownLinkStyles={markdownLinkStyles}
+          selectedDay={selectedDay}
+          maxUnlockedDay={maxUnlockedDay}
+          onClose={closeTaskDetails}
+          urlInputs={urlInputs}
+          handleUrlChange={handleUrlChange}
+          dbTables={dbTables}
+          setDbTables={setDbTables}
+          codeFeedback={codeFeedback}
+          setCodeFeedback={setCodeFeedback}
+        />
 
-      {selectedDay > maxUnlockedDay && (
-        <div className="mt-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 text-sm sm:text-base">
-          <p>This day is currently locked. Please complete Day {maxUnlockedDay - 1} to unlock Day {selectedDay}.</p>
-        </div>
-      )}
+        {selectedDay > maxUnlockedDay && (
+          <div className="mt-8 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 text-yellow-800 rounded-xl shadow-sm animate-in slide-in-from-bottom duration-500">
+            <div className="flex items-center space-x-3">
+              <div className="w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
+                <span className="text-white text-sm font-bold">!</span>
+              </div>
+              <p className="font-semibold">
+                This day is currently locked. Please complete Day {maxUnlockedDay - 1} to unlock Day {selectedDay}.
+              </p>
+            </div>
+          </div>
+        )}
 
-      {showPremiumModal && (
-        <PremiumFeaturesModal />
-      )}
+        {showPremiumModal && <PremiumFeaturesModal />}
+      </div>
     </div>
   );
 };
