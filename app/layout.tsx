@@ -1,5 +1,4 @@
 import { UserProvider } from '@auth0/nextjs-auth0/client';
-import { Nunito } from 'next/font/google';
 import { Inter } from 'next/font/google';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
@@ -12,19 +11,13 @@ export { metadata, viewport };
 
 const inter = Inter({ subsets: ['latin'] });
 
-const nunito = Nunito({
-  subsets: ['latin'],
-  weight: ['200', '300', '400', '600', '700', '800'],
-  variable: '--font-nunito',
-});
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${nunito.variable}`}>
+    <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />

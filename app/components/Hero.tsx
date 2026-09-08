@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Stream } from "@cloudflare/stream-react";
 import { Suspense, useState } from 'react';
 import Link from 'next/link';
+import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiNodedotjs, SiJavascript, SiHtml5, SiCss3, SiPython } from 'react-icons/si';
 
 const VideoPlayer = ({ muted = true }) => {
   return (
@@ -30,47 +31,73 @@ export default function Hero() {
   const [showVideo, setShowVideo] = useState(false);
 
   return (
-    <section className="flex flex-col items-center text-center py-4 md:py-8 px-4 max-w-[1000px] mx-auto">
-      {/* Text Content */}
-      <div className="flex flex-col items-center gap-3 md:gap-5 mb-6 md:mb-8">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#1e1e1e] tracking-tight max-w-[800px] leading-tight">
-          <span className="relative z-10 block mb-4">Code Editor for</span>
-          <span className="relative inline-block">
-            <span className="relative z-10">Students</span>
-            <span className="absolute inset-x-[-1rem] inset-y-[-0.5rem] bg-[#EFCCFF] -rotate-0 rounded-lg -z-0"></span>
-          </span>
-        </h1>
-        <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-600 font-bold mt-2 max-w-[600px]">
-          The fun &amp; effective way to build complete projects
-        </p>
+    <section className="relative flex flex-col items-center text-center py-6 md:py-10 px-4 max-w-5xl mx-auto overflow-hidden">
+      {/* Heading */}
+      <h1 className="font-bold tracking-tight text-4xl sm:text-5xl md:text-6xl lg:text-7xl max-w-3xl leading-tight">
+        Ship <span className="bg-gradient-to-r from-[#6E46FF] via-[#00D3FF] to-[#FF4BCD] bg-[length:200%_200%] bg-clip-text text-transparent animate-gradient">beautiful</span> projects in <em className="italic">record</em> time
+      </h1>
 
-        {/* Buttons */}
-        <div className="flex gap-3 justify-center w-full sm:w-auto flex-col sm:flex-row mt-6">
-          <Link href="/api/auth/login" className="buttonPrimary font-bold w-full sm:w-auto">
-            GET STARTED
-          </Link>
-          <button
-            onClick={() => setShowVideo(true)}
-            className="buttonSecondary font-bold w-full sm:w-auto"
-          >
-            WATCH DEMO
-          </button>
-        </div>
+      {/* Tagline */}
+      <p className="mt-6 text-lg sm:text-xl md:text-2xl text-gray-600 max-w-xl">
+        50+ interactive tasks and templates built with React, Typescript, and Tailwind CSS to help students build real-world applications fast.
+      </p>
+
+      {/* Buttons */}
+      <div className="flex flex-row flex-wrap sm:flex-row justify-center gap-3 mt-8 w-full">
+        <Link href="/api/auth/login" className="magicPrimary flex-1 basis-0 sm:flex-none sm:w-auto px-5 py-2 text-sm text-center">
+          Get Started
+          <span className="ml-1 text-base">→</span>
+        </Link>
+        <button
+          onClick={() => setShowVideo(true)}
+          className="magicSecondary flex-1 basis-0 sm:flex-none sm:w-auto px-5 py-2 text-sm"
+        >
+          Watch Demo
+        </button>
       </div>
 
-      <div className="flex items-center gap-2 text-lg sm:text-xl text-gray-700 font-semibold bg-white/80 px-4 mb-4 rounded-full">
-        <Image
-          src="/images/microsoft-logo.png"
-          alt="Microsoft Logo"
-          width={24}
-          height={24}
-          className="w-6 h-6"
-        />
-        Backed by Microsoft for Startups
+      {/* Tech Logos */}
+      <div className="flex items-center gap-3 mt-8 text-2xl sm:text-3xl">
+        <span className="relative group transition-transform hover:-translate-y-1 hover:scale-110">
+          <SiNextdotjs className="text-black" />
+          <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity">Next.js</span>
+        </span>
+        <span className="relative group transition-transform hover:-translate-y-1 hover:scale-110">
+          <SiReact className="text-[#61DAFB]" />
+          <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity">React</span>
+        </span>
+        <span className="relative group transition-transform hover:-translate-y-1 hover:scale-110">
+          <SiTypescript className="text-[#3178C6]" />
+          <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity">TypeScript</span>
+        </span>
+        <span className="relative group transition-transform hover:-translate-y-1 hover:scale-110">
+          <SiTailwindcss className="text-[#38B2AC]" />
+          <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity">Tailwind</span>
+        </span>
+        <span className="relative group transition-transform hover:-translate-y-1 hover:scale-110">
+          <SiNodedotjs className="text-[#339933]" />
+          <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity">Node.js</span>
+        </span>
+        <span className="relative group transition-transform hover:-translate-y-1 hover:scale-110">
+          <SiJavascript className="text-[#F7DF1E]" />
+          <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity">JavaScript</span>
+        </span>
+        <span className="relative group transition-transform hover:-translate-y-1 hover:scale-110">
+          <SiPython className="text-[#3776AB]" />
+          <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity">Python</span>
+        </span>
+        <span className="relative group transition-transform hover:-translate-y-1 hover:scale-110">
+          <SiHtml5 className="text-[#E34F26]" />
+          <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity">HTML5</span>
+        </span>
+        <span className="relative group transition-transform hover:-translate-y-1 hover:scale-110">
+          <SiCss3 className="text-[#1572B6]" />
+          <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity">CSS3</span>
+        </span>
       </div>
 
       {/* Screenshot or Video */}
-      <div className="w-full max-w-[1000px] mx-auto px-2 sm:px-4">
+      <div className="w-full max-w-5xl mx-auto px-2 sm:px-4 mt-10">
         {showVideo ? (
           <Suspense fallback={
             <div className="w-full aspect-video bg-gray-100 animate-pulse rounded-lg md:rounded-xl flex items-center justify-center">
@@ -87,7 +114,7 @@ export default function Hero() {
             height={625}
             priority
             quality={100}
-            className="w-full h-auto rounded-lg md:rounded-xl"
+            className="w-full h-auto rounded-lg md:rounded-xl shadow-lg"
           />
         )}
       </div>

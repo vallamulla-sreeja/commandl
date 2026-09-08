@@ -11,7 +11,7 @@
 
 @layer base {
   body {
-    @apply overflow-x-hidden font-['Nunito'];
+    @apply overflow-x-hidden font-sans;
   }
 }
 
@@ -22,6 +22,22 @@
 
   .buttonSecondary {
     @apply bg-white text-[#1CB0F6] px-4 py-2 rounded-xl font-semibold text-lg transition-all border-2 border-gray-200 min-w-[150px] inline-block text-center relative hover:bg-gray-50 hover:translate-y-[1px];
+  }
+
+  .magicPrimary {
+    @apply relative inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold text-white bg-black hover:bg-black/90 transition-colors;
+  }
+  .magicPrimary::after {
+    content: "";
+    @apply absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 -z-10 blur-md;
+    background: linear-gradient(90deg,#ff80b5 0%,#9089fc 50%,#00d3ff 100%);
+  }
+  .magicPrimary:hover::after {
+    @apply opacity-60;
+  }
+
+  .magicSecondary {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 transition-colors;
   }
 }
 

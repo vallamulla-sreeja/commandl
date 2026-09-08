@@ -18,7 +18,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center gap-4 py-3 px-4 md:px-8 border-b border-gray-200 bg-white">
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center gap-4 py-2 px-4 md:px-6 backdrop-blur supports-backdrop-blur:bg-white/70 bg-white/80 border-b border-gray-200">
       <div className="max-w-7xl w-full mx-auto flex items-center gap-4">
         <Link href="/" className="flex items-center gap-2">
           <Image
@@ -38,21 +38,27 @@ export default function Navbar() {
         </Link>
         
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-8">
-          {/* Navigation items can be added here */}
+        <div className="hidden md:flex items-center gap-3 ml-8">
+          <Link href="/projects" className="magicSecondary px-4 py-2 border-none text-base font-normal">Projects</Link>
+          <Link href="/updates" className="magicSecondary px-4 py-2 border-none text-base font-normal">Updates</Link>
+          <Link href="/faq" className="magicSecondary px-4 py-2 border-none text-base font-normal">FAQ</Link>
         </div>
         
         {/* Desktop Right Side Navigation */}
-        <div className="hidden md:flex items-center gap-6 ml-auto">
-          <Link href="/projects" className="text-base font-medium text-gray-600 hover:text-gray-900 transition-colors">Projects</Link>
-          <Link href="/updates" className="text-base font-medium text-gray-600 hover:text-gray-900 transition-colors">Updates</Link>
-          <Link href="/faq" className="text-base font-medium text-gray-600 hover:text-gray-900 transition-colors">FAQ</Link>
-          <button 
+        <div className="hidden md:flex items-center gap-3 ml-auto">
+          <button
             onClick={handleAuth}
-            className="buttonPrimary"
+            className="magicSecondary px-4 py-2 border-none text-base font-normal"
           >
             {isLoading ? 'Loading...' : user ? 'Logout' : 'Login'}
           </button>
+          <Link
+            href="/api/auth/login"
+            className="magicPrimary px-4 py-2 text-base font-normal"
+          >
+            Get Started
+            <span className="ml-1">→</span>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -82,9 +88,9 @@ export default function Navbar() {
         {isMenuOpen && (
           <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-200 md:hidden min-h-[calc(100vh-4rem)] shadow-lg">
             <div className="flex flex-col p-6 gap-6">
-              <Link href="/projects" className="text-base font-medium text-gray-600 hover:text-gray-900 transition-colors">Projects</Link>
-              <Link href="/updates" className="text-base font-medium text-gray-600 hover:text-gray-900 transition-colors">Updates</Link>
-              <Link href="/faq" className="text-base font-medium text-gray-600 hover:text-gray-900 transition-colors">FAQ</Link>
+              <Link href="/projects" className="magicSecondary text-base font-normal px-4 py-2 border-none">Projects</Link>
+              <Link href="/updates" className="magicSecondary text-base font-normal px-4 py-2 border-none">Updates</Link>
+              <Link href="/faq" className="magicSecondary text-base font-normal px-4 py-2 border-none">FAQ</Link>
               <button 
                 onClick={handleAuth}
                 className="buttonPrimary"
