@@ -22,7 +22,7 @@ export default function Home() {
       <main className="pt-[72px]">
         <Hero />
         <FeatureCards />
-        <Testimonials />
+        {/* <Testimonials /> */}
         <CallToAction />
       </main>
       <Footer />
