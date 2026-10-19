@@ -25,12 +25,6 @@ const team = [
     image: "/images/bob.jpeg",
     title: "CSO",
     description: "25+ yrs entrepreneur, helped many startups with strategies"
-  },
-  {
-    name: "Kunal Kushwaha",
-    image: "/images/kunal.jpeg",
-    title: "Advisory Board",
-    description: "CTO of Civo, recognized figure in software dev education with 700k+ community"
   }
 ];
 
