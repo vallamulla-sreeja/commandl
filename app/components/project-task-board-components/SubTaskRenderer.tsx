@@ -91,31 +91,32 @@ const SubTaskRenderer: React.FC<SubTaskRendererProps> = ({
         );
       }
       return (
-        <code className={className} {...props}>
+        <code className={`${className} bg-gray-100 text-gray-800 px-2 py-1 rounded font-mono text-sm font-semibold`} {...props}>
           {children}
         </code>
       );
     },
-    h1: ({ children }: HeadingProps) => <h1 className="text-2xl font-bold">{children}</h1>,
-    h2: ({ children }: HeadingProps) => <h2 className="text-xl font-bold">{children}</h2>,
-    h3: ({ children }: HeadingProps) => <h3 className="text-lg font-bold">{children}</h3>,
-    ul: ({ children }: ListProps) => <ul className="list-disc list-outside">{children}</ul>,
-    ol: ({ children }: ListProps) => <ol className="list-decimal list-outside">{children}</ol>,
-    li: ({ children }: ListProps) => <li className="ml-4">{children}</li>,
+    h1: ({ children }: HeadingProps) => <h1 className="text-3xl font-bold text-gray-800 mb-4 border-b-2 border-emerald-500 pb-2">{children}</h1>,
+    h2: ({ children }: HeadingProps) => <h2 className="text-2xl font-bold text-gray-800 mb-3">{children}</h2>,
+    h3: ({ children }: HeadingProps) => <h3 className="text-xl font-bold text-gray-800 mb-2">{children}</h3>,
+    p: ({ children }: { children?: React.ReactNode }) => <p className="mb-4 text-gray-700 font-medium leading-relaxed">{children}</p>,
+    ul: ({ children }: ListProps) => <ul className="list-disc list-outside ml-6 mb-4 space-y-2">{children}</ul>,
+    ol: ({ children }: ListProps) => <ol className="list-decimal list-outside ml-6 mb-4 space-y-2">{children}</ol>,
+    li: ({ children }: ListProps) => <li className="text-gray-700 font-medium">{children}</li>,
     a: ({ href, children }: AnchorProps) => (
       <a 
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-blue-600 hover:text-blue-800 underline"
+        className="text-blue-600 hover:text-blue-800 underline font-semibold transition-colors duration-200"
       >
         {children}
       </a>
     ),
-    strong: ({ children }: StrongProps) => <strong className="font-semibold">{children}</strong>,
-    em: ({ children }: EmphasizeProps) => <em className="italic text-gray-700">{children}</em>,
+    strong: ({ children }: StrongProps) => <strong className="font-bold text-gray-800">{children}</strong>,
+    em: ({ children }: EmphasizeProps) => <em className="italic text-gray-600 font-medium">{children}</em>,
     blockquote: ({ children }: BlockquoteProps) => (
-      <blockquote className="border-l-4 border-gray-300 pl-4 italic">{children}</blockquote>
+      <blockquote className="border-l-4 border-emerald-500 bg-emerald-50 pl-6 py-4 my-4 italic text-gray-700 rounded-r-lg">{children}</blockquote>
     ),
   };
 
@@ -125,24 +126,26 @@ const SubTaskRenderer: React.FC<SubTaskRendererProps> = ({
   return (
     <div className="container mx-auto px-2 sm:px-4 py-2 relative">
       <div className="pr-4 sm:pr-16">
-        <div className="prose max-w-none prose-sm sm:prose-base">
+        <div className="prose max-w-none prose-lg">
           {isLimitedDetails ? (
-            <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-6 mb-4 w-full">
-              <div className="flex items-center justify-center mb-4">
-                <Crown className="w-8 h-8 text-amber-500 mr-2" />
-                <h3 className="text-lg font-bold text-amber-700">Premium Content</h3>
+            <div className="bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-amber-200 rounded-2xl p-8 mb-6 w-full shadow-sm">
+              <div className="flex items-center justify-center mb-6">
+                <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl shadow-lg mr-4">
+                  <Crown className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-amber-700">Premium Content</h3>
               </div>
-              <p className="text-center text-amber-700 mb-6">
+              <p className="text-center text-amber-800 mb-8 text-lg font-medium leading-relaxed">
                 This content is only available for premium users. Upgrade now to access the full details and complete this task.
               </p>
               <button 
-                className="w-full py-3 px-4 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg transition-colors"
+                className="w-full py-4 px-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 onClick={() => {
                   // Navigate to the Stripe payment link
                   window.open('https://buy.stripe.com/eVa9DB3fr9og0RqeUZ', '_blank');
                 }}
               >
-                Upgrade Now
+                🚀 Upgrade Now
               </button>
             </div>
           ) : (

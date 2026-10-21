@@ -457,38 +457,71 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
       >
         {selectedTask ? (
           <>
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-[#4B4B4B]">
-                {selectedTask.title}
-              </h2>
+            <div className="flex items-start justify-between mb-8">
+              <div className="flex-1 mr-6">
+                <h2 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-4">
+                  {selectedTask.title}
+                </h2>
+                <div className="flex items-center space-x-3">
+                  <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
+                    Day {selectedTask.day_assigned}
+                  </div>
+                  <div className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    selectedTask.status === 'Done' 
+                      ? 'bg-emerald-100 text-emerald-700' 
+                      : selectedTask.status === 'In Progress'
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'bg-orange-100 text-orange-700'
+                  }`}>
+                    {selectedTask.status}
+                  </div>
+                </div>
+              </div>
               <button
                 onClick={onClose}
                 aria-label="Close details panel"
-                className="text-[#4B4B4B] hover:text-[#777777] p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="text-gray-500 hover:text-gray-700 p-3 hover:bg-gray-100 rounded-full transition-all duration-200 hover:scale-110 flex-shrink-0"
               >
-                <X className="w-6 h-6" />
+                <X className="w-7 h-7" />
               </button>
             </div>
 
-            <p className="text-[#4B4B4B] mb-8 text-xl leading-relaxed">
-              {selectedTask.description}
-            </p>
+            <div className="mb-8 p-6 bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200">
+              <p className="text-gray-800 text-lg leading-relaxed font-medium">
+                {selectedTask.description}
+              </p>
+            </div>
 
-            {/* Add CommandL note if the task has CommandL-tagged subtasks */}
+            {/* Enhanced CommandL note if the task has CommandL-tagged subtasks */}
             {hasCommandLSubtasks && (
-              <div className="mb-8 p-4 bg-pink-50 border border-pink-200 rounded-lg">
-                <p className="text-pink-800 flex items-center">
-                  <span className="mr-2 px-2 py-1 text-xs font-semibold text-white bg-pink-500 rounded-full">
-                    CommandL
-                  </span>
-                  <span>This task has CommandL tag for one or more subtasks. You need to open CommandL IDE application for doing those tasks.</span>
+              <div className="mb-8 p-6 bg-gradient-to-r from-pink-50 to-rose-50 border-2 border-pink-200 rounded-2xl">
+                <div className="flex items-center mb-3">
+                  <div className="p-2 bg-pink-500 rounded-lg mr-3">
+                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <span className="text-lg font-bold text-pink-800">CommandL IDE Required</span>
+                </div>
+                <p className="text-pink-700 font-medium leading-relaxed">
+                  This task contains subtasks that require the CommandL IDE application. Please move the <strong>entire task</strong> to "In Progress" and open CommandL to complete these specialized development tasks.
                 </p>
               </div>
             )}
 
-            <h3 className="text-2xl font-semibold text-[#4B4B4B] mb-6">
-              Subtasks
-            </h3>
+            <div className="flex items-center space-x-3 mb-8">
+              <div className="p-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg">
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h3 className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                Subtasks
+              </h3>
+              <div className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                {selectedTask.subtasks.filter(st => st.completed).length} of {selectedTask.subtasks.length} completed
+              </div>
+            </div>
 
             <div className="space-y-6">
               {selectedTask.subtasks.map((subtask) => {
@@ -512,19 +545,21 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                 return (
                   <div
                     key={subtask.id}
-                    className="bg-[#F7F7F7] rounded-lg hover:bg-gray-100 transition-colors"
+                    className="bg-white border-2 border-gray-100 rounded-2xl hover:border-emerald-200 hover:shadow-md transition-all duration-300"
                   >
                     <div
                       onClick={() => toggleSubtaskDescription(subtask.id)}
-                      className="flex items-center p-4 cursor-pointer"
+                      className="flex items-center p-5 cursor-pointer hover:bg-slate-50 transition-colors duration-200"
                     >
-                      <div className="flex-grow flex items-center space-x-3">
-                        <ChevronDown
-                          className={`w-5 h-5 text-[#4B4B4B] transform transition-transform duration-200 ${expandedSubtasks.has(subtask.id) ? 'rotate-180' : ''
-                            }`}
-                        />
+                      <div className="flex-grow flex items-center space-x-4">
+                        <div className="p-1.5 bg-gray-100 rounded-lg hover:bg-emerald-100 transition-colors duration-200">
+                          <ChevronDown
+                            className={`w-5 h-5 text-gray-600 transform transition-transform duration-200 ${expandedSubtasks.has(subtask.id) ? 'rotate-180' : ''
+                              }`}
+                          />
+                        </div>
                         <span
-                          className={`text-lg ${subtask.completed ? 'text-[#777777]' : 'text-[#4B4B4B]'
+                          className={`text-lg font-semibold ${subtask.completed ? 'text-gray-500 line-through' : 'text-gray-800'
                             }`}
                         >
                           {subtask.title}
@@ -563,20 +598,20 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                           !canBeCompleted
                         }
                         className={`
-                          w-6 h-6 rounded-lg flex items-center justify-center
-                          transition-all duration-200 ease-in-out ml-4
+                          w-7 h-7 rounded-xl flex items-center justify-center
+                          transition-all duration-200 ease-in-out ml-4 shadow-sm
                           ${subtask.completed
-                            ? 'bg-[#58cc02] text-white cursor-not-allowed'
+                            ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white cursor-not-allowed ring-2 ring-emerald-200'
                             : canBeCompleted
-                              ? 'bg-white border-2 border-[#58cc02]'
-                              : 'bg-white border-2 border-gray-300 cursor-not-allowed'
+                              ? 'bg-white border-2 border-emerald-400 hover:border-emerald-500'
+                              : 'bg-gray-100 border-2 border-gray-300 cursor-not-allowed'
                           }
                           ${(selectedTask.day_assigned > maxUnlockedDay || 
                             (verifyField && !isUrlValid) || 
                             (isSubtaskSparkStudio && !subtask.completed) ||
                             !canBeCompleted)
                             ? 'opacity-50 cursor-not-allowed'
-                            : 'hover:bg-[#58cc02] hover:bg-opacity-10 cursor-pointer'
+                            : 'hover:bg-emerald-50 cursor-pointer hover:scale-110'
                           }
                         `}
                         aria-label={

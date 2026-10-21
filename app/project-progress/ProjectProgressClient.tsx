@@ -135,37 +135,49 @@ const ProjectProgressClient: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full py-24">
-        <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-t-2 border-b-2 border-[#58cc02]"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-emerald-50/20">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-emerald-200 border-t-emerald-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium text-lg">Loading your progress roadmap...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-full py-24 text-red-600">
-        <div className="text-center">
-          <p className="text-xl font-semibold mb-2">Error Loading Project</p>
-          <p>{error}</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-rose-50">
+        <div className="text-center p-8 bg-white rounded-2xl shadow-xl border border-red-100">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <p className="text-2xl font-bold text-red-600 mb-2">Error Loading Progress</p>
+          <p className="text-gray-600">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center mb-6">
-        <button 
-          onClick={handleBackToTasks}
-          className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
-        >
-          <ArrowLeft className="h-5 w-5 mr-2" />
-          <span className="font-medium">Back to Tasks</span>
-        </button>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-emerald-50/20">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center mb-8">
+          <button 
+            onClick={handleBackToTasks}
+            className="flex items-center text-gray-600 hover:text-gray-900 transition-all duration-300 hover:scale-105 group"
+          >
+            <div className="p-2 bg-white rounded-xl shadow-md mr-3 group-hover:shadow-lg transition-all duration-300">
+              <ArrowLeft className="h-5 w-5" />
+            </div>
+            <span className="font-semibold text-lg">Back to Tasks</span>
+          </button>
+        </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-8">
-        <ProjectRoadmapStandalone completedDays={displayCompletedDays} />
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 mb-8 overflow-hidden">
+          <ProjectRoadmapStandalone completedDays={displayCompletedDays} />
+        </div>
       </div>
     </div>
   );
